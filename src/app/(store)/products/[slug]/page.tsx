@@ -77,7 +77,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     reviews: dbProduct.reviews.map(r => ({
       id: r.id,
       rating: r.rating,
-      comment: r.comment,
+      comment: r.body,
       createdAt: r.createdAt.toISOString(),
       userName: r.user?.name || 'Anonim',
     })),
