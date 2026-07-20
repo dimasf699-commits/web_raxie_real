@@ -28,6 +28,7 @@ export default function WishlistPage() {
       variantId: '',
       name: item.name,
       variantName: '',
+      slug: item.slug,
       sku: '',
       price: item.price,
       image: item.image,
