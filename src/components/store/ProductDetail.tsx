@@ -198,7 +198,12 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
             <VariantSelector
               variants={DUMMY_VARIANTS}
               selectedVariantId={selectedVariant.id}
-              onSelect={setSelectedVariant}
+              onSelect={(variant) => setSelectedVariant({
+                  id: variant.id,
+                  name: variant.name,
+                  colorHex: variant.colorHex ?? null,
+                  stock: variant.stock,
+                })}
             />
           </div>
 
