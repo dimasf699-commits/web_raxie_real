@@ -187,7 +187,7 @@ export function Navbar() {
                       transition={{ duration: 0.15 }}
                       className="absolute top-full left-0 mt-1 w-52 rounded-xl bg-card border border-border shadow-xl overflow-hidden py-1"
                     >
-                      {link.children.map((child) => (
+                      {link.children.map((child: any) => (
                         <Link
                           key={child.href}
                           href={child.href}
@@ -503,7 +503,7 @@ export function Navbar() {
                     </Link>
                     {link.children && (
                       <div className="pl-4 border-l-2 border-border ml-5 mb-1">
-                        {link.children.map((child) => (
+                        {link.children.map((child: any) => (
                           <Link
                             key={child.href}
                             href={child.href}
