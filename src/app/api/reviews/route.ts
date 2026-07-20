@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
         productId,
         userId: session.user.id,
         rating,
-        comment,
+        body: comment,
         isApproved: true, // Auto approve for now
       }
     })
