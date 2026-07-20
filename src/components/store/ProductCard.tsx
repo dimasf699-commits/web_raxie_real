@@ -30,7 +30,7 @@ interface ProductCardProduct {
   sku: string
   material?: string
   dimensions?: string
-  weight?: string
+  weight?: number
 }
 
 interface ProductCardProps {
@@ -101,7 +101,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
       avgRating: product.avgRating,
       material: product.material,
       dimensions: product.dimensions,
-      weight: product.weight
+      weight: typeof product.weight === 'string' ? parseFloat(product.weight) : product.weight
     })
     toast.success('Ditambahkan ke perbandingan')
   }
