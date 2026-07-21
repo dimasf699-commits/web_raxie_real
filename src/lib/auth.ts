@@ -11,8 +11,48 @@ const loginSchema = z.object({
   password: z.string().min(6),
 })
 
+const adapter = PrismaAdapter(prisma)
+const originalCreateUser = adapter.createUser!
+
+adapter.createUser = async (data) => {
+  const user = await originalCreateUser(data)
+  
+  // Jika email cocok dengan ADMIN_EMAIL, ubah role di database juga
+  if (user.email === process.env.ADMIN_EMAIL) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { role: 'ADMIN' },
+    })
+  }
+
+  // Auto-create referral code & points
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      loyaltyPoints: {
+        create: {
+          points: 100, // Welcome bonus
+          description: 'Selamat datang di Raxie! Bonus poin pendaftaran.',
+        },
+      },
+    },
+  })
+
+  // Send welcome email for OAuth users
+  if (user.email) {
+    try {
+      const { sendWelcomeEmail } = await import('@/lib/email')
+      await sendWelcomeEmail(user.email, user.name || 'Pelanggan')
+    } catch (e) {
+      console.error('[AUTH] Failed to send welcome email', e)
+    }
+  }
+
+  return user
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter,
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/login',
@@ -83,42 +123,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.role = token.role as string
       }
       return session
-    },
-  },
-  events: {
-    async createUser({ user }) {
-      if (user.id) {
-        // Jika email cocok dengan ADMIN_EMAIL, ubah role di database juga
-        if (user.email === process.env.ADMIN_EMAIL) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { role: 'ADMIN' },
-          })
-        }
-
-        // Auto-create referral code & points
-        await prisma.user.update({
-          where: { id: user.id },
-          data: {
-            loyaltyPoints: {
-              create: {
-                points: 100, // Welcome bonus
-                description: 'Selamat datang di Raxie! Bonus poin pendaftaran.',
-              },
-            },
-          },
-        })
-
-        // Send welcome email for OAuth users
-        if (user.email) {
-          try {
-            const { sendWelcomeEmail } = await import('@/lib/email')
-            await sendWelcomeEmail(user.email, user.name || 'Pelanggan')
-          } catch (e) {
-            console.error('[AUTH] Failed to send welcome email', e)
-          }
-        }
-      }
     },
   },
 })
