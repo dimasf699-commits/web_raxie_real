@@ -111,9 +111,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         // Send welcome email for OAuth users
         if (user.email) {
-          import('@/lib/email').then(({ sendWelcomeEmail }) => {
-            sendWelcomeEmail(user.email!, user.name || 'Pelanggan').catch(console.error)
-          })
+          try {
+            const { sendWelcomeEmail } = await import('@/lib/email')
+            await sendWelcomeEmail(user.email, user.name || 'Pelanggan')
+          } catch (e) {
+            console.error('[AUTH] Failed to send welcome email', e)
+          }
         }
       }
     },
