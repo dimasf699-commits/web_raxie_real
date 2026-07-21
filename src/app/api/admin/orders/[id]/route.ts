@@ -65,3 +65,21 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     return NextResponse.json({ message: 'Server error' }, { status: 500 })
   }
 }
+
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const session = await auth()
+    if (!session || (session.user as any)?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    await prisma.order.delete({
+      where: { id: params.id },
+    })
+
+    return NextResponse.json({ message: 'Pesanan berhasil dihapus' })
+  } catch (error) {
+    console.error('Admin order DELETE error:', error)
+    return NextResponse.json({ error: 'Gagal menghapus pesanan' }, { status: 500 })
+  }
+}

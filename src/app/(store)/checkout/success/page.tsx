@@ -6,12 +6,14 @@ import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { CircleCheck, Package, ArrowRight, Home } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { useCartStore } from '@/store/cart.store'
 
 function CheckoutSuccessContent() {
   const [mounted, setMounted] = useState(false)
   const searchParams = useSearchParams()
   const [orderId, setOrderId] = useState('')
   const [status, setStatus] = useState('')
+  const clearCart = useCartStore(state => state.clearCart)
 
   useEffect(() => {
     setMounted(true)
@@ -23,7 +25,11 @@ function CheckoutSuccessContent() {
       setOrderId(`INV-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`)
     }
     if (statusFromUrl) setStatus(statusFromUrl)
-  }, [searchParams])
+
+    if (statusFromUrl !== 'failed' && statusFromUrl !== 'pending') {
+      clearCart()
+    }
+  }, [searchParams, clearCart])
 
   if (!mounted) return null
 

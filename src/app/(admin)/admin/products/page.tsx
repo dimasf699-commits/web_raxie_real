@@ -55,10 +55,11 @@ export default function AdminProductsPage() {
         toast.success('Produk berhasil dihapus')
         fetchProducts()
       } else {
-        toast.error('Gagal menghapus produk')
+        const data = await res.json().catch(() => ({}))
+        toast.error(data.error || 'Gagal menghapus produk')
       }
     } catch (e) {
-      toast.error('Terjadi kesalahan')
+      toast.error('Terjadi kesalahan koneksi')
     }
   }
 

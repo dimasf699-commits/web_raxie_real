@@ -57,6 +57,22 @@ export default function AdminOrdersPage() {
     return () => clearTimeout(t)
   }, [fetchOrders])
 
+  const handleDelete = async (id: string, orderNumber: string) => {
+    if (!confirm(`Hapus pesanan ${orderNumber}? Tindakan ini tidak bisa dibatalkan.`)) return
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        toast.success('Pesanan berhasil dihapus')
+        fetchOrders()
+      } else {
+        const err = await res.json().catch(() => ({}))
+        toast.error(err.error || 'Gagal menghapus pesanan')
+      }
+    } catch {
+      toast.error('Terjadi kesalahan')
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -166,14 +182,22 @@ export default function AdminOrdersPage() {
                         )}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        {!['SHIPPED', 'DELIVERED', 'COMPLETED', 'CANCELLED'].includes(order.status) && (
+                        <div className="flex items-center justify-end gap-2">
+                          {!['SHIPPED', 'DELIVERED', 'COMPLETED', 'CANCELLED'].includes(order.status) && (
+                            <button
+                              onClick={() => setTrackingOrder(order)}
+                              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-indigo-600 border border-indigo-200 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                            >
+                              <Truck className="w-3.5 h-3.5" /> Kirim
+                            </button>
+                          )}
                           <button
-                            onClick={() => setTrackingOrder(order)}
-                            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-indigo-600 border border-indigo-200 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors font-medium ml-auto"
+                            onClick={() => handleDelete(order.id, order.orderNumber)}
+                            className="text-xs text-red-600 hover:text-red-700 font-medium px-2 py-1.5"
                           >
-                            <Truck className="w-3.5 h-3.5" /> Kirim
+                            Hapus
                           </button>
-                        )}
+                        </div>
                       </td>
                     </tr>
                   )
@@ -185,7 +209,7 @@ export default function AdminOrdersPage() {
       </div>
 
       <TrackingModal
-        orderId={trackingOrder?.id ?? null}
+        order={trackingOrder}
         onClose={() => setTrackingOrder(null)}
         onSuccess={fetchOrders}
       />

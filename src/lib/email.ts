@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = 'onboarding@resend.dev' // Default for Resend free tier without verified domain
+const FROM_EMAIL = 'Raxie <admin@raxie.my.id>' // Email resmi toko menggunakan domain yang sudah di-add di Resend
 
 export const sendWelcomeEmail = async (email: string, name: string) => {
   if (!process.env.RESEND_API_KEY) {

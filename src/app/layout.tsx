@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { Toaster } from '@/components/ui/Toaster'
+import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -111,6 +112,7 @@ export default function RootLayout({
             <QueryProvider>
               {children}
               <Toaster />
+              <WhatsAppButton phoneNumber="081546894549" />
             </QueryProvider>
           </AuthProvider>
         </ThemeProvider>

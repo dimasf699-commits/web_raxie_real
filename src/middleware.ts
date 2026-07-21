@@ -12,13 +12,19 @@ export default auth((req) => {
       return NextResponse.redirect(new URL('/login', nextUrl))
     }
     if (!isAdmin) {
-      // Redirect non-admins to the home page or account page
       return NextResponse.redirect(new URL('/', nextUrl))
+    }
+  }
+
+  // Protect /account routes
+  if (nextUrl.pathname.startsWith('/account')) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/login', nextUrl))
     }
   }
 })
 
 export const config = {
-  // Only run middleware on admin routes to optimize performance
-  matcher: ['/admin/:path*'],
+  // Run middleware on admin and account routes
+  matcher: ['/admin/:path*', '/account/:path*'],
 }

@@ -7,6 +7,7 @@ import { signIn } from 'next-auth/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { toast } from '@/components/ui/Toaster'
 
 type Mode = 'login' | 'register'
 
@@ -39,6 +40,7 @@ export default function AuthPage() {
         if (!res.ok) { setError(data.error); setLoading(false); return }
 
         // Auto login after register
+        toast.success('Pendaftaran Berhasil!', 'Akun Anda telah dibuat. Selamat datang di Raxie!')
         await signIn('credentials', { email: form.email, password: form.password, redirect: false })
         router.push('/account')
       } else {
@@ -213,6 +215,7 @@ export default function AuthPage() {
 
           {/* Google Login */}
           <button
+            type="button"
             onClick={() => signIn('google', { callbackUrl: '/account' })}
             className="w-full flex items-center justify-center gap-3 py-3 border border-border rounded-xl hover:bg-muted transition-colors text-sm font-medium"
           >

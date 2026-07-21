@@ -59,59 +59,62 @@ export async function POST(req: NextRequest) {
     if (data.paymentMethod === 'cc') paymentEnum = 'CREDIT_CARD'
     if (data.paymentMethod === 'bca' || data.paymentMethod === 'mandiri') paymentEnum = 'VIRTUAL_ACCOUNT'
 
-    // Create Order with nested items
-    const order = await prisma.order.create({
-      data: {
-        orderNumber: generateOrderNumber(),
-        userId: session?.user?.id || null,
-        guestEmail: !session ? data.shipping.email : null,
-        guestName: !session ? data.shipping.name : null,
-        guestPhone: !session ? data.shipping.phone : null,
-        shippingName: data.shipping.name,
-        shippingPhone: data.shipping.phone,
-        shippingStreet: data.shipping.detail,
-        shippingCity: data.shipping.areaName || 'Jakarta', 
-        shippingProvince: '', 
-        shippingPostalCode: data.shipping.postalCode || '10000', 
-        subtotal,
-        shippingCost: data.shippingCost,
-        totalAmount,
-        paymentMethod: paymentEnum,
-        courierName: data.courierName,
-        status: 'PENDING_PAYMENT',
-        items: {
-          create: data.items.map(item => ({
-            productId: item.productId,
-            variantId: item.variantId || null,
-            productName: item.name,
-            variantName: item.variantName || null,
-            sku: item.sku,
-            price: item.price,
-            quantity: item.quantity,
-            totalPrice: item.price * item.quantity,
-            image: item.image,
-          }))
-        }
-      },
-    })
-
-    // Reduce stock for each variant concurrently
-    await Promise.all(
-      data.items.map(item => {
-        if (item.variantId) {
-          return prisma.productVariant.update({
-            where: { id: item.variantId },
-            data: { stock: { decrement: item.quantity } }
-          }).catch(e => console.error('Failed to decrement stock:', e))
-        } else {
-          // If no variant, search for variant with matching SKU to reduce
-          return prisma.productVariant.update({
-            where: { sku: item.sku },
-            data: { stock: { decrement: item.quantity } }
-          }).catch(e => console.error('Failed to decrement stock by SKU:', e))
-        }
+    // Create Order and reduce stock in a single transaction
+    const order = await prisma.$transaction(async (tx) => {
+      const newOrder = await tx.order.create({
+        data: {
+          orderNumber: generateOrderNumber(),
+          userId: session?.user?.id || null,
+          guestEmail: !session ? data.shipping.email : null,
+          guestName: !session ? data.shipping.name : null,
+          guestPhone: !session ? data.shipping.phone : null,
+          shippingName: data.shipping.name,
+          shippingPhone: data.shipping.phone,
+          shippingStreet: data.shipping.detail,
+          shippingCity: data.shipping.areaName || 'Jakarta', 
+          shippingProvince: '', 
+          shippingPostalCode: data.shipping.postalCode || '10000', 
+          subtotal,
+          shippingCost: data.shippingCost,
+          totalAmount,
+          paymentMethod: paymentEnum,
+          courierName: data.courierName,
+          status: 'PENDING_PAYMENT',
+          items: {
+            create: data.items.map(item => ({
+              productId: item.productId,
+              variantId: item.variantId || null,
+              productName: item.name,
+              variantName: item.variantName || null,
+              sku: item.sku,
+              price: item.price,
+              quantity: item.quantity,
+              totalPrice: item.price * item.quantity,
+              image: item.image,
+            }))
+          }
+        },
       })
-    )
+
+      // Reduce stock for each variant concurrently
+      await Promise.all(
+        data.items.map(item => {
+          if (item.variantId) {
+            return tx.productVariant.update({
+              where: { id: item.variantId },
+              data: { stock: { decrement: item.quantity } }
+            })
+          } else {
+            return tx.productVariant.update({
+              where: { sku: item.sku },
+              data: { stock: { decrement: item.quantity } }
+            })
+          }
+        })
+      )
+
+      return newOrder
+    })
 
     // Send order confirmation email asynchronously
     const customerEmail = session?.user?.email || data.shipping.email

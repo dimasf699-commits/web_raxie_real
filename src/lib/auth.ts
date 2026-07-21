@@ -22,6 +22,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
       clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       name: 'credentials',
@@ -71,7 +72,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (user.email && user.email === process.env.ADMIN_EMAIL) {
           token.role = 'ADMIN'
         } else {
-          token.role = 'CUSTOMER' // Paksa yang lain jadi CUSTOMER
+          token.role = user.role || 'CUSTOMER' // Paksa yang lain jadi CUSTOMER jika tidak ada
         }
       }
       return token
@@ -107,6 +108,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
           },
         })
+
+        // Send welcome email for OAuth users
+        if (user.email) {
+          import('@/lib/email').then(({ sendWelcomeEmail }) => {
+            sendWelcomeEmail(user.email!, user.name || 'Pelanggan').catch(console.error)
+          })
+        }
       }
     },
   },

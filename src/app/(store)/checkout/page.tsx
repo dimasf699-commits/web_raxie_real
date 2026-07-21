@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, CircleCheck, ShieldCheck, MapPin, Truck, CreditCard } from 'lucide-react'
 import { useCartStore } from '@/store/cart.store'
 import { Button } from '@/components/ui/Button'
+import { toast } from '@/components/ui/Toaster'
 import { cn, formatPrice } from '@/lib/utils'
 import Script from 'next/script'
 
@@ -138,27 +139,33 @@ export default function CheckoutPage() {
         (window as any).snap.pay(data.snapToken, {
           onSuccess: function (result: any) {
             clearCart()
+            toast.success('Pembayaran Berhasil!', 'Pesanan Anda sedang diproses.')
             router.push(`/checkout/success?order=${data.orderNumber}`)
           },
           onPending: function (result: any) {
             clearCart()
+            toast.info('Menunggu Pembayaran', 'Selesaikan pembayaran Anda segera.')
             router.push(`/checkout/success?order=${data.orderNumber}&status=pending`)
           },
           onError: function (result: any) {
             clearCart()
+            toast.error('Pembayaran Gagal', 'Terjadi kesalahan saat memproses pembayaran.')
             router.push(`/checkout/success?order=${data.orderNumber}&status=failed`)
           },
           onClose: function () {
             clearCart()
+            toast.warning('Pembayaran Dibatalkan', 'Silakan coba bayar lagi dari riwayat pesanan.')
             router.push(`/checkout/success?order=${data.orderNumber}&status=pending`)
           }
         })
       } else {
         // Fallback for payment methods that don't use Midtrans (if any) or if token is missing
         clearCart()
+        toast.success('Pesanan Dibuat', 'Silakan lanjutkan pembayaran.')
         router.push(`/checkout/success?order=${data.orderNumber}&status=pending`)
       }
     } catch (err: any) {
+      toast.error('Gagal', err.message || 'Terjadi kesalahan')
       setErrorMsg(err.message || 'Terjadi kesalahan')
       setIsProcessing(false)
     }
@@ -428,7 +435,7 @@ export default function CheckoutPage() {
               {cartItems.map((item) => (
                 <div key={item.id} className="flex gap-4">
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0 border border-border">
-                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                    <Image src={item.image || '/placeholder.jpg'} alt={item.name} fill className="object-cover" />
                     <div className="absolute -top-2 -right-2 w-5 h-5 bg-tan-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold z-10 border-2 border-card">
                       {item.quantity}
                     </div>

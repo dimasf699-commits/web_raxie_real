@@ -7,26 +7,26 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from '@/components/ui/Toaster'
 
 interface TrackingModalProps {
-  orderId: string | null
+  order: any | null
   onClose: () => void
   onSuccess?: () => void
 }
 
-export function TrackingModal({ orderId, onClose, onSuccess }: TrackingModalProps) {
+export function TrackingModal({ order, onClose, onSuccess }: TrackingModalProps) {
   const [trackingNumber, setTrackingNumber] = useState('')
-  const [courierName, setCourierName] = useState('JNE')
+  const [courierName, setCourierName] = useState(order?.courierName || 'JNE')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!orderId || !trackingNumber) return
+    if (!order?.id || !trackingNumber) return
 
     setIsSubmitting(true)
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}`, {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trackingNumber, courierName, courierCode: courierName.toLowerCase().replace(/\s/g,''), status: 'SHIPPED' })
+        body: JSON.stringify({ trackingNumber, courierName: order?.courierName || courierName, courierCode: (order?.courierName || courierName).toLowerCase().replace(/\s/g,''), status: 'SHIPPED' })
       })
 
       if (!res.ok) throw new Error('Gagal memperbarui resi')
@@ -43,7 +43,7 @@ export function TrackingModal({ orderId, onClose, onSuccess }: TrackingModalProp
 
   return (
     <AnimatePresence>
-      {orderId && (
+      {order && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -71,24 +71,30 @@ export function TrackingModal({ orderId, onClose, onSuccess }: TrackingModalProp
               </div>
               <div>
                 <h3 className="font-serif font-bold text-lg">Update Resi Pengiriman</h3>
-                <p className="text-sm text-muted-foreground">Order ID: {orderId}</p>
+                <p className="text-sm text-muted-foreground">Order: {order.orderNumber}</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1.5">Kurir Pengiriman</label>
-                <select 
-                  value={courierName}
-                  onChange={(e) => setCourierName(e.target.value)}
-                  className="w-full bg-background border border-border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-tan-500"
-                >
-                  <option value="JNE">JNE</option>
-                  <option value="J&T">J&T Express</option>
-                  <option value="SICEPAT">SiCepat</option>
-                  <option value="ANTERAJA">AnterAja</option>
-                  <option value="GOSEND">GoSend</option>
-                </select>
+                {order.courierName ? (
+                  <div className="w-full bg-muted/50 border border-border rounded-xl px-4 py-2 text-sm font-semibold text-foreground">
+                    {order.courierName}
+                  </div>
+                ) : (
+                  <select 
+                    value={courierName}
+                    onChange={(e) => setCourierName(e.target.value)}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-tan-500"
+                  >
+                    <option value="JNE">JNE</option>
+                    <option value="J&T">J&T Express</option>
+                    <option value="SICEPAT">SiCepat</option>
+                    <option value="ANTERAJA">AnterAja</option>
+                    <option value="GOSEND">GoSend</option>
+                  </select>
+                )}
               </div>
               
               <div>
