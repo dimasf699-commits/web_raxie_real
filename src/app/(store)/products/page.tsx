@@ -5,6 +5,8 @@ import { FilterSidebar } from '@/components/store/FilterSidebar'
 import { InfiniteProductGrid } from '@/components/store/InfiniteProductGrid'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Koleksi Produk | Raxie',
   description: 'Jelajahi koleksi dompet dan aksesoris kulit premium dari Raxie.',
