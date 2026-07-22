@@ -190,10 +190,11 @@ export default function HomePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        const t = Date.now()
         const [bestRes, newRes, catRes] = await Promise.all([
-          fetch('/api/products?sort=best-seller&limit=4'),
-          fetch('/api/products?sort=newest&limit=4'),
-          fetch('/api/categories')
+          fetch(`/api/products?sort=best-seller&limit=4&t=${t}`),
+          fetch(`/api/products?sort=newest&limit=4&t=${t}`),
+          fetch(`/api/categories?t=${t}`)
         ])
         const bestData = await bestRes.json()
         const newData = await newRes.json()
