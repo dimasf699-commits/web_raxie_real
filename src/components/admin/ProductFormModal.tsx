@@ -38,6 +38,8 @@ export function ProductFormModal({ isOpen, product, onClose, onSuccess }: Produc
     }).catch(() => {})
   }, [])
 
+  const generateSKU = () => 'RX-' + Math.floor(Math.random() * 100000).toString().padStart(5, '0')
+
   // Populate form if editing
   useEffect(() => {
     if (product) {
@@ -62,7 +64,7 @@ export function ProductFormModal({ isOpen, product, onClose, onSuccess }: Produc
             sku: v.sku, name: v.name, color: v.color ?? '',
             size: v.size ?? '', price: String(v.price), stock: String(v.stock),
           }))
-        : [{ ...emptyVariant }]
+        : [{ ...emptyVariant, sku: generateSKU() }]
       )
     } else {
       setForm({
@@ -71,7 +73,7 @@ export function ProductFormModal({ isOpen, product, onClose, onSuccess }: Produc
         material: '', weight: '', tags: '',
         isFeatured: false, isNew: true, isBestSeller: false,
       })
-      setVariants([{ ...emptyVariant }])
+      setVariants([{ ...emptyVariant, sku: generateSKU() }])
       setImageUrls([''])
     }
   }, [product, isOpen])
@@ -80,9 +82,15 @@ export function ProductFormModal({ isOpen, product, onClose, onSuccess }: Produc
     const { name, value, type } = e.target
     const checked = (e.target as HTMLInputElement).checked
     setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+    
     // Auto-generate slug from name
     if (name === 'name') {
       setForm(f => ({ ...f, name: value, slug: value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') }))
+    }
+    
+    // Auto-sync basePrice to all variants
+    if (name === 'basePrice') {
+      setVariants(vs => vs.map(v => ({ ...v, price: value })))
     }
   }
 
@@ -339,7 +347,7 @@ export function ProductFormModal({ isOpen, product, onClose, onSuccess }: Produc
                     </div>
                   </div>
                 ))}
-                <button type="button" onClick={() => setVariants(vs => [...vs, { ...emptyVariant }])}
+                <button type="button" onClick={() => setVariants(vs => [...vs, { ...emptyVariant, sku: generateSKU(), price: form.basePrice }])}
                   className="text-sm text-tan-600 hover:underline flex items-center gap-1">
                   <Plus className="w-4 h-4" /> Tambah Varian
                 </button>
