@@ -139,6 +139,14 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2 font-serif font-bold text-2xl tracking-tight text-foreground hover:text-tan-400 transition-colors"
           >
+            <motion.div
+              animate={{ scale: isScrolled ? 0.9 : 1 }}
+              transition={{ duration: 0.3 }}
+              className="relative w-8 h-8 md:w-10 md:h-10 rounded overflow-hidden"
+            >
+              {/* Ganti '/logo.png' dengan nama file logo Anda di folder public */}
+              <Image src="https://i.imgur.com/LBsFsZC.png" alt="Raxie Logo" fill className="object-contain" />
+            </motion.div>
             <motion.span
               animate={{ fontSize: isScrolled ? '1.35rem' : '1.5rem' }}
               transition={{ duration: 0.3 }}
@@ -477,7 +485,12 @@ export function Navbar() {
               className="fixed top-0 right-0 bottom-0 z-50 w-[300px] bg-card shadow-2xl lg:hidden flex flex-col"
             >
               <div className="flex items-center justify-between p-5 border-b border-border">
-                <span className="font-serif font-bold text-xl">Raxie</span>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-8 h-8 rounded overflow-hidden">
+                    <Image src="https://i.imgur.com/LBsFsZC.png" alt="Raxie Logo" fill className="object-contain" />
+                  </div>
+                  <span className="font-serif font-bold text-xl">Raxie</span>
+                </div>
                 <Button
                   variant="ghost"
                   size="icon-sm"
