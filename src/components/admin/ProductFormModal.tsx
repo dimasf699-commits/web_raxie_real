@@ -231,29 +231,68 @@ export function ProductFormModal({ isOpen, product, onClose, onSuccess }: Produc
 
               {/* Images */}
               <div className="space-y-3">
-                <h4 className="font-semibold text-sm text-slate-500 uppercase tracking-wider">Gambar Produk</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-sm text-slate-500 uppercase tracking-wider">Gambar Produk</h4>
+                  {isSubmitting && <span className="text-xs text-tan-600 animate-pulse">Memproses gambar...</span>}
+                </div>
                 <div className="flex flex-wrap gap-4">
-                  {imageUrls.map((url, i) => (
-                    <div key={i} className="relative group">
-                      <ImageUploader 
-                        currentImage={url}
-                        onUploadSuccess={(newUrl) => setImageUrls(us => us.map((u, j) => j === i ? newUrl : u))}
-                        onUploadError={(err) => toast.error(err)}
-                      />
-                      {imageUrls.length > 1 && (
+                  {imageUrls.map((url, i) => {
+                    if (!url) return null; // Don't render empty slots anymore
+                    return (
+                      <div key={i} className="relative group">
+                        <ImageUploader 
+                          currentImage={url}
+                          onUploadSuccess={(newUrl) => setImageUrls(us => us.map((u, j) => j === i ? newUrl : u))}
+                          onUploadError={(err) => toast.error(err)}
+                        />
                         <button type="button" onClick={() => setImageUrls(us => us.filter((_, j) => j !== i))}
                           className="absolute -top-2 -right-2 p-1.5 bg-white border border-red-200 text-red-500 rounded-full shadow-sm hover:bg-red-50 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                           <Trash className="w-3.5 h-3.5" />
                         </button>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    )
+                  })}
+                  
+                  {/* Multiple Upload Button */}
                   <div className="flex items-center justify-center">
-                    <button type="button" onClick={() => setImageUrls(us => [...us, ''])}
-                      className="aspect-square w-32 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors text-slate-400 hover:text-tan-600">
-                      <Plus className="w-6 h-6 mb-2" />
-                      <span className="text-xs font-medium">Tambah</span>
-                    </button>
+                    <label className={`aspect-square w-32 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:bg-muted/50 transition-colors text-slate-400 hover:text-tan-600 ${isSubmitting ? 'opacity-50 pointer-events-none' : ''}`}>
+                      {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin mb-2" /> : <Plus className="w-6 h-6 mb-2" />}
+                      <span className="text-xs font-medium">{isSubmitting ? 'Tunggu...' : 'Pilih Foto'}</span>
+                      <input 
+                        type="file" 
+                        multiple 
+                        accept="image/*" 
+                        className="hidden" 
+                        disabled={isSubmitting}
+                        onChange={async (e) => {
+                          const files = Array.from(e.target.files || [])
+                          if (!files.length) return
+                          
+                          setIsSubmitting(true)
+                          try {
+                            const promises = files.map(async (file) => {
+                              const fd = new FormData()
+                              fd.append('file', file)
+                              const res = await fetch('/api/upload', { method: 'POST', body: fd })
+                              if (!res.ok) throw new Error('Upload failed')
+                              const data = await res.json()
+                              return data.url as string
+                            })
+                            const urls = await Promise.all(promises)
+                            setImageUrls(prev => {
+                              const valid = prev.filter(u => u !== '')
+                              return [...valid, ...urls]
+                            })
+                            toast.success(`${urls.length} foto berhasil ditambahkan`)
+                          } catch (err) {
+                            toast.error('Gagal mengunggah foto. Coba lagi.')
+                          } finally {
+                            setIsSubmitting(false)
+                            e.target.value = ''
+                          }
+                        }} 
+                      />
+                    </label>
                   </div>
                 </div>
               </div>
