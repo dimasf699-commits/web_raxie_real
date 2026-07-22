@@ -44,7 +44,7 @@ const heroSlides = [
     badge: 'Koleksi 2024',
     bg: 'from-charcoal-900 via-charcoal-800 to-charcoal-900',
     accentColor: 'text-tan-400',
-    image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=1400&q=90',
+    image: 'https://i.imgur.com/5oEmCUr.png',
   },
   {
     id: 2,
@@ -55,7 +55,7 @@ const heroSlides = [
     badge: 'Best Seller',
     bg: 'from-tan-900 via-tan-800 to-charcoal-900',
     accentColor: 'text-tan-300',
-    image: 'https://images.unsplash.com/photo-1592921870789-04563d55041c?w=1400&q=90',
+    image: 'https://i.imgur.com/U6nvXHK.jpeg',
   },
   {
     id: 3,
@@ -66,7 +66,7 @@ const heroSlides = [
     badge: 'Gift Ready',
     bg: 'from-charcoal-900 via-charcoal-900 to-tan-900',
     accentColor: 'text-ivory-300',
-    image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=1400&q=90',
+    image: 'https://i.imgur.com/QzcD1Ez.jpeg',
   },
 ]
 
@@ -324,9 +324,8 @@ export default function HomePage() {
               <button
                 key={i}
                 onClick={() => { setIsAutoPlay(false); setHeroIndex(i) }}
-                className={`transition-all duration-300 rounded-full ${
-                  i === heroIndex ? 'w-8 bg-tan-400 h-2' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
-                }`}
+                className={`transition-all duration-300 rounded-full ${i === heroIndex ? 'w-8 bg-tan-400 h-2' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
+                  }`}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
@@ -603,7 +602,7 @@ export default function HomePage() {
                 Kata Pelanggan Kami
               </h2>
               <div className="flex items-center justify-center gap-1 mt-3">
-                {[1,2,3,4,5].map((s) => (
+                {[1, 2, 3, 4, 5].map((s) => (
                   <Star key={s} className="h-5 w-5 fill-amber-400 text-amber-400" />
                 ))}
                 <span className="ml-2 text-muted-foreground text-sm">4.9/5 dari 10.000+ ulasan</span>
