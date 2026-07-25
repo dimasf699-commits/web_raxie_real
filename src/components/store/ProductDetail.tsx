@@ -14,7 +14,8 @@ import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { useCompareStore } from '@/store/compare.store'
 import { toast } from '@/components/ui/Toaster'
-import { fbEvent, gaEvent } from '@/components/analytics/MetaPixel' // Assume we exported both from there for simplicity, actually gaEvent is in GoogleAnalytics
+import { fbEvent } from '@/components/analytics/MetaPixel'
+import { gaEvent } from '@/components/analytics/GoogleAnalytics'
 
 // Since we have separate files, let's just use window directly to avoid complex imports
 const trackAddToCart = (productName: string, price: number) => {

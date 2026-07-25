@@ -11,7 +11,8 @@ import { Button } from '@/components/ui/Button'
 import { toast } from '@/components/ui/Toaster'
 import { cn, formatPrice } from '@/lib/utils'
 import Script from 'next/script'
-import { fbEvent, gaEvent } from '@/components/analytics/MetaPixel'
+import { fbEvent } from '@/components/analytics/MetaPixel'
+import { gaEvent } from '@/components/analytics/GoogleAnalytics'
 
 // Helper for Purchase Event
 const trackPurchase = (orderNumber: string, value: number, items: any[]) => {
