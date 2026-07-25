@@ -72,15 +72,22 @@ export async function POST(req: NextRequest) {
     if (data.paymentMethod === 'cc') paymentEnum = 'CREDIT_CARD'
     if (data.paymentMethod === 'bca' || data.paymentMethod === 'mandiri') paymentEnum = 'VIRTUAL_ACCOUNT'
 
+    // Verify if user actually exists in DB (handles stale JWT session tokens if DB was reset)
+    let validUserId = null
+    if (session?.user?.id) {
+      const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } })
+      if (dbUser) validUserId = dbUser.id
+    }
+
     // Create Order and reduce stock in a single transaction
     const order = await prisma.$transaction(async (tx) => {
       const newOrder = await tx.order.create({
         data: {
           orderNumber: generateOrderNumber(),
-          userId: session?.user?.id || null,
-          guestEmail: !session ? data.shipping.email : null,
-          guestName: !session ? data.shipping.name : null,
-          guestPhone: !session ? data.shipping.phone : null,
+          userId: validUserId,
+          guestEmail: !validUserId ? data.shipping.email : null,
+          guestName: !validUserId ? data.shipping.name : null,
+          guestPhone: !validUserId ? data.shipping.phone : null,
           shippingName: data.shipping.name,
           shippingPhone: data.shipping.phone,
           shippingStreet: data.shipping.detail,
