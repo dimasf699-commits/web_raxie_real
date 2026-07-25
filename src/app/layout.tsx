@@ -86,6 +86,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
 }
 
+import { Suspense } from 'react'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 
@@ -105,8 +106,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <MetaPixel />
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <MetaPixel />
+        </Suspense>
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
