@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { sendOrderEmail } from '@/lib/email'
+import { rateLimit } from '@/lib/redis'
 
 const orderSchema = z.object({
   items: z.array(z.object({
@@ -39,6 +40,18 @@ function generateOrderNumber() {
 export async function POST(req: NextRequest) {
   try {
     const session = await auth()
+    
+    // Rate Limiting: 5 orders per minute per user/IP
+    const identifier = session?.user?.id || req.ip || 'anonymous'
+    const limit = await rateLimit(`order_create:${identifier}`, 5, 60)
+    
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak permintaan. Silakan coba lagi nanti.' },
+        { status: 429, headers: { 'X-RateLimit-Reset': limit.reset.toString() } }
+      )
+    }
+
     const body = await req.json()
     const parsed = orderSchema.safeParse(body)
 
@@ -135,7 +148,18 @@ export async function POST(req: NextRequest) {
       console.log('[MIDTRANS] Using key prefix:', midtransServerKey.substring(0, 20), '| isProduction:', isProduction)
       const authString = Buffer.from(midtransServerKey + ':').toString('base64')
       
-      const payload = {
+      let enabled_payments: string[] | undefined = undefined;
+      if (data.paymentMethod === 'qris') {
+        enabled_payments = ['gopay', 'other_qris', 'shopeepay']
+      } else if (data.paymentMethod === 'bca') {
+        enabled_payments = ['bca_va']
+      } else if (data.paymentMethod === 'mandiri') {
+        enabled_payments = ['echannel'] // echannel is Mandiri VA in Midtrans
+      } else if (data.paymentMethod === 'cc') {
+        enabled_payments = ['credit_card']
+      }
+      
+      const payload: any = {
         transaction_details: {
           order_id: order.orderNumber,
           gross_amount: Math.round(totalAmount),
@@ -158,6 +182,10 @@ export async function POST(req: NextRequest) {
             name: 'Ongkos Kirim',
           }] : []
         )
+      }
+
+      if (enabled_payments) {
+        payload.enabled_payments = enabled_payments;
       }
 
       const snapRes = await fetch(snapApiUrl, {

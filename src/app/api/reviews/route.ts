@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import { rateLimit } from '@/lib/redis'
 
 const reviewSchema = z.object({
   productId: z.string(),
@@ -12,6 +13,17 @@ const reviewSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const session = await auth()
+    
+    // Rate Limiting: 3 reviews per minute per user/IP
+    const identifier = session?.user?.id || req.ip || 'anonymous'
+    const limit = await rateLimit(`review_create:${identifier}`, 3, 60)
+    
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Terlalu sering mengirim ulasan. Tunggu sejenak.' },
+        { status: 429, headers: { 'X-RateLimit-Reset': limit.reset.toString() } }
+      )
+    }
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Harus login untuk memberikan ulasan' }, { status: 401 })
     }

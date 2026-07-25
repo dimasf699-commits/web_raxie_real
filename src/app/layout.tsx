@@ -86,6 +86,9 @@ export const viewport: Viewport = {
   maximumScale: 5,
 }
 
+import MetaPixel from '@/components/analytics/MetaPixel'
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+
 export default function RootLayout({
   children,
 }: {
@@ -102,6 +105,8 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <MetaPixel />
+        <GoogleAnalytics />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

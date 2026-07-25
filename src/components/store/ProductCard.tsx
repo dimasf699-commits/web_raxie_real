@@ -93,7 +93,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
     e.preventDefault()
     e.stopPropagation()
     addCompare({
-      id: product.id,
+      id: product.productId,
       name: product.name,
       slug: product.slug,
       price: product.price,

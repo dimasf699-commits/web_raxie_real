@@ -110,6 +110,22 @@ export async function POST(req: NextRequest) {
           console.error('Failed to create Biteship shipment:', err)
         }
       }
+
+      // Update totalSold for each product when payment is confirmed
+      if (shouldCreateShipment) {
+        try {
+          await Promise.all(
+            order.items.map(item =>
+              prisma.product.update({
+                where: { id: item.productId },
+                data: { totalSold: { increment: item.quantity } }
+              })
+            )
+          )
+        } catch (err) {
+          console.error('Failed to update totalSold:', err)
+        }
+      }
     }
 
     return NextResponse.json({ success: true }, { status: 200 })

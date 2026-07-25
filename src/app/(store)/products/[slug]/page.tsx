@@ -115,8 +115,40 @@ export default async function ProductPage({ params }: ProductPageProps) {
     sku: p.variants[0]?.sku ?? '',
   }))
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.images[0] || 'https://raxie.id/og-image.jpg',
+    description: product.description.replace(/<[^>]*>?/gm, ''), // strip html tags for description
+    sku: product.sku,
+    brand: {
+      '@type': 'Brand',
+      name: 'Raxie',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.id'}/products/${product.slug}`,
+      priceCurrency: 'IDR',
+      price: product.price,
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    },
+    ...(product.reviewCount > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: product.avgRating,
+        reviewCount: product.reviewCount,
+      },
+    }),
+  }
+
   return (
     <div className="container-raxie py-8 md:py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Breadcrumbs
         items={[
           { label: 'Home', href: '/' },

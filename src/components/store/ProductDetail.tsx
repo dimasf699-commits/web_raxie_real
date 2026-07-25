@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Heart, Minus, Plus, Scale, Share2, ShieldCheck, ShoppingBag, Star, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -14,6 +14,27 @@ import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { useCompareStore } from '@/store/compare.store'
 import { toast } from '@/components/ui/Toaster'
+import { fbEvent, gaEvent } from '@/components/analytics/MetaPixel' // Assume we exported both from there for simplicity, actually gaEvent is in GoogleAnalytics
+
+// Since we have separate files, let's just use window directly to avoid complex imports
+const trackAddToCart = (productName: string, price: number) => {
+  if (typeof window !== 'undefined') {
+    if ((window as any).fbq) {
+      ;(window as any).fbq('track', 'AddToCart', {
+        content_name: productName,
+        value: price,
+        currency: 'IDR'
+      })
+    }
+    if ((window as any).gtag) {
+      ;(window as any).gtag('event', 'add_to_cart', {
+        currency: 'IDR',
+        value: price,
+        items: [{ item_name: productName, price: price }]
+      })
+    }
+  }
+}
 
 interface ProductDetailProps {
   product: any
@@ -29,7 +50,9 @@ const DUMMY_VARIANTS: { id: string; name: string; colorHex: string | null; stock
 
 export function ProductDetail({ product, relatedProducts }: ProductDetailProps) {
   const [qty, setQty] = useState(1)
-  const [selectedVariant, setSelectedVariant] = useState<{ id: string; name: string; colorHex: string | null; stock: number }>(DUMMY_VARIANTS[0])
+  // Use actual product variants if available, otherwise fall back to DUMMY_VARIANTS
+  const actualVariants = product.variants?.length > 0 ? product.variants : DUMMY_VARIANTS
+  const [selectedVariant, setSelectedVariant] = useState<{ id: string; name: string; colorHex: string | null; stock: number; price?: number }>(actualVariants[0])
   const [addingCart, setAddingCart] = useState(false)
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
@@ -37,10 +60,32 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
 
   const addItem = useCartStore((s) => s.addItem)
   const toggleWishlist = useWishlistStore((s) => s.toggleItem)
-  const isWishlisted = useWishlistStore((s) => s.hasItem(product.productId))
+  const isWishlisted = useWishlistStore((s) => s.hasItem(product.id))
   
   const { addItem: addCompare, items: compareItems } = useCompareStore()
-  const isCompared = compareItems.some((i) => i.id === product.productId)
+  const isCompared = compareItems.some((i) => i.id === product.id)
+
+  useEffect(() => {
+    // Track ViewContent
+    if (typeof window !== 'undefined') {
+      if ((window as any).fbq) {
+        ;(window as any).fbq('track', 'ViewContent', {
+          content_name: product.name,
+          content_ids: [product.sku || product.id],
+          content_type: 'product',
+          value: product.price,
+          currency: 'IDR'
+        })
+      }
+      if ((window as any).gtag) {
+        ;(window as any).gtag('event', 'view_item', {
+          currency: 'IDR',
+          value: product.price,
+          items: [{ item_id: product.sku || product.id, item_name: product.name, price: product.price }]
+        })
+      }
+    }
+  }, [product])
 
   const discount = product.compareAtPrice
     ? getDiscountPercent(product.compareAtPrice, product.price)
@@ -49,19 +94,25 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
   const handleAddToCart = async () => {
     setAddingCart(true)
     await new Promise((r) => setTimeout(r, 400))
+    
+    const finalPrice = selectedVariant.price ?? product.price
+    
     addItem({
       id: `${product.id}-${selectedVariant.id}`,
-      productId: product.productId,
+      productId: product.id,
       variantId: selectedVariant.id,
       name: product.name,
       variantName: selectedVariant.name,
       slug: product.slug,
-      price: product.price,
+      price: finalPrice,
       image: product.images?.[0] || '/placeholder.jpg',
       quantity: qty,
       stock: selectedVariant.stock,
       sku: `${product.sku}-${selectedVariant.name.toUpperCase()}`,
     })
+    
+    trackAddToCart(product.name, finalPrice * qty)
+    
     toast.success('Berhasil ditambahkan ke keranjang!', `${qty}x ${product.name}`)
     setAddingCart(false)
   }
@@ -81,7 +132,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
 
   const handleCompare = () => {
     addCompare({
-      id: product.productId,
+      id: product.id,
       name: product.name,
       slug: product.slug,
       price: product.price,
@@ -221,7 +272,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           {/* Variants */}
           <div className="mb-6">
             <VariantSelector
-              variants={product.variants.length > 0 ? product.variants : DUMMY_VARIANTS}
+              variants={actualVariants}
               selectedVariantId={selectedVariant.id}
               onSelect={(variant) => setSelectedVariant({
                   id: variant.id,

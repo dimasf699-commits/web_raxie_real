@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { rateLimit } from '@/lib/redis'
 
 export async function POST(req: NextRequest) {
   try {
+    const identifier = req.ip || 'anonymous'
+    const limit = await rateLimit(`voucher_validate:${identifier}`, 10, 60)
+    
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak percobaan. Silakan coba lagi nanti.' },
+        { status: 429, headers: { 'X-RateLimit-Reset': limit.reset.toString() } }
+      )
+    }
+
     const { code, cartSubtotal } = await req.json()
 
     if (!code) {

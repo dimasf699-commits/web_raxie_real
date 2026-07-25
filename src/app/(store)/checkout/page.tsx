@@ -11,6 +11,30 @@ import { Button } from '@/components/ui/Button'
 import { toast } from '@/components/ui/Toaster'
 import { cn, formatPrice } from '@/lib/utils'
 import Script from 'next/script'
+import { fbEvent, gaEvent } from '@/components/analytics/MetaPixel'
+
+// Helper for Purchase Event
+const trackPurchase = (orderNumber: string, value: number, items: any[]) => {
+  if (typeof window !== 'undefined') {
+    if ((window as any).fbq) {
+      ;(window as any).fbq('track', 'Purchase', {
+        value: value,
+        currency: 'IDR',
+        content_ids: items.map(i => i.sku || i.productId),
+        content_type: 'product',
+        order_id: orderNumber
+      })
+    }
+    if ((window as any).gtag) {
+      ;(window as any).gtag('event', 'purchase', {
+        transaction_id: orderNumber,
+        value: value,
+        currency: 'IDR',
+        items: items.map(i => ({ item_id: i.sku || i.productId, item_name: i.name, price: i.price, quantity: i.quantity }))
+      })
+    }
+  }
+}
 
 type CheckoutStep = 1 | 2 | 3
 
@@ -64,9 +88,29 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setMounted(true)
+    const currentItems = useCartStore.getState().items
     // Redirect if cart empty
-    if (useCartStore.getState().items.length === 0) {
+    if (currentItems.length === 0) {
       router.push('/cart')
+    } else {
+      // Track InitiateCheckout
+      if (typeof window !== 'undefined') {
+        const total = useCartStore.getState().totalPrice()
+        if ((window as any).fbq) {
+          ;(window as any).fbq('track', 'InitiateCheckout', {
+            value: total,
+            currency: 'IDR',
+            num_items: currentItems.length
+          })
+        }
+        if ((window as any).gtag) {
+          ;(window as any).gtag('event', 'begin_checkout', {
+            currency: 'IDR',
+            value: total,
+            items: currentItems.map(i => ({ item_id: i.sku || i.productId, item_name: i.name, price: i.price, quantity: i.quantity }))
+          })
+        }
+      }
     }
   }, [router])
 
@@ -134,10 +178,13 @@ export default function CheckoutPage() {
         throw new Error(data.error || 'Gagal memproses pesanan')
       }
 
+      const finalTotalValue = totalPrice + shippingCost;
+
       // If Midtrans Snap is ready
       if (data.snapToken && (window as any).snap) {
         (window as any).snap.pay(data.snapToken, {
           onSuccess: function (result: any) {
+            trackPurchase(data.orderNumber, finalTotalValue, cartItems)
             clearCart()
             toast.success('Pembayaran Berhasil!', 'Pesanan Anda sedang diproses.')
             router.push(`/checkout/success?order=${data.orderNumber}`)
@@ -160,6 +207,7 @@ export default function CheckoutPage() {
         })
       } else {
         // Fallback for payment methods that don't use Midtrans (if any) or if token is missing
+        trackPurchase(data.orderNumber, finalTotalValue, cartItems)
         clearCart()
         toast.success('Pesanan Dibuat', 'Silakan lanjutkan pembayaran.')
         router.push(`/checkout/success?order=${data.orderNumber}&status=pending`)
