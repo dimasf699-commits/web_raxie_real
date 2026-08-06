@@ -14,37 +14,28 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { email, productId, variantId } = await req.json()
+    const { email, productId } = await req.json()
 
     if (!email || !productId) {
       return NextResponse.json({ error: 'Email dan produk wajib diisi' }, { status: 400 })
     }
 
-    // Check if product/variant exists
-    const variant = variantId
-      ? await prisma.productVariant.findUnique({ where: { id: variantId }, select: { id: true, stock: true } })
-      : null
-
-    if (variant && variant.stock > 0) {
-      return NextResponse.json({ error: 'Stok masih tersedia, silakan langsung beli!' }, { status: 400 })
-    }
-
-    // Upsert restock alert (prevent duplicate)
-    await prisma.restockAlert.upsert({
+    // Check if alert already exists for this email & product
+    const existing = await prisma.restockAlert.findFirst({
       where: {
-        email_productId_variantId: {
-          email: email.toLowerCase(),
-          productId,
-          variantId: variantId || '',
-        }
-      },
-      update: { createdAt: new Date() }, // refresh timestamp
-      create: {
         email: email.toLowerCase(),
         productId,
-        variantId: variantId || '',
       }
     })
+
+    if (!existing) {
+      await prisma.restockAlert.create({
+        data: {
+          email: email.toLowerCase(),
+          productId,
+        }
+      })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
