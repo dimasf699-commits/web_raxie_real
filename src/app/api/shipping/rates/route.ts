@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     // Origin is hardcoded to Raxie Warehouse Area ID for now
     // NOTE: This must be replaced with the actual Area ID of the store
-    const ORIGIN_AREA_ID = process.env.STORE_AREA_ID || 'IDNP10C110DZ3338' // Example Area ID (e.g., Jakarta Selatan)
+    const ORIGIN_AREA_ID = process.env.STORE_AREA_ID || 'IDNP9IDNC122IDND450IDZ44161'
 
     const ratesData = await getBiteshipRates({
       origin_area_id: ORIGIN_AREA_ID,

@@ -71,16 +71,22 @@ export async function POST(req: NextRequest) {
                       updatedOrder.courierName.toLowerCase().includes('sicepat') ? 'sicepat' : 'jne'
           }
 
+          const destinationAreaId = (updatedOrder.shippingCity && updatedOrder.shippingCity.startsWith('ID'))
+            ? updatedOrder.shippingCity
+            : 'IDNP9IDNC122IDND450IDZ44161'
+
           const biteshipOrderPayload = {
             shipper_contact_name: "Raxie Store",
             shipper_contact_phone: "082128862433",
+            shipper_contact_email: "raxieleather@gmail.com",
             origin_area_id: STORE_AREA_ID,
+            origin_address: "Kp. Pasirkiamis, Desa Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat",
             destination_contact_name: updatedOrder.shippingName,
             destination_contact_phone: updatedOrder.shippingPhone,
             destination_contact_email: updatedOrder.guestEmail || "customer@raxie.my.id",
             destination_address: updatedOrder.shippingStreet,
             destination_postal_code: Number(updatedOrder.shippingPostalCode) || 44161,
-            destination_area_id: updatedOrder.shippingCity,
+            destination_area_id: destinationAreaId,
             destination_note: "Mohon titipkan ke satpam jika tidak ada orang",
             courier_company: company,
             courier_type: 'reg',
@@ -95,14 +101,15 @@ export async function POST(req: NextRequest) {
           }
 
           const shipment = await createBiteshipOrder(biteshipOrderPayload)
-          if (shipment && shipment.id) {
+          if (shipment && (shipment.success || shipment.id)) {
+            const waybill = shipment.courier?.waybill_id || shipment.id
             await prisma.order.update({
               where: { id: updatedOrder.id },
               data: {
                 status: 'SHIPPED',
-                shippingOrderId: shipment.id,
-                shippingWaybill: shipment.courier?.waybill_id || shipment.id,
-                trackingNumber: shipment.courier?.waybill_id || shipment.id,
+                shippingOrderId: shipment.id || shipment.order_id || null,
+                shippingWaybill: waybill,
+                trackingNumber: waybill,
                 shippedAt: new Date(),
               }
             })

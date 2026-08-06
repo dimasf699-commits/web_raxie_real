@@ -74,16 +74,22 @@ export async function POST(req: NextRequest) {
                       order.courierName.toLowerCase().includes('sicepat') ? 'sicepat' : 'jne'
           }
 
+          const destinationAreaId = (order.shippingCity && order.shippingCity.startsWith('ID'))
+            ? order.shippingCity
+            : 'IDNP9IDNC122IDND450IDZ44161'
+
           const biteshipOrderPayload = {
             shipper_contact_name: "Raxie Store",
-            shipper_contact_phone: "081234567890",
+            shipper_contact_phone: "082128862433",
+            shipper_contact_email: "raxieleather@gmail.com",
             origin_area_id: STORE_AREA_ID,
+            origin_address: "Kp. Pasirkiamis, Desa Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat",
             destination_contact_name: order.shippingName,
             destination_contact_phone: order.shippingPhone,
-            destination_contact_email: order.guestEmail || "customer@raxie.id",
+            destination_contact_email: order.guestEmail || "customer@raxie.my.id",
             destination_address: order.shippingStreet,
             destination_postal_code: Number(order.shippingPostalCode) || 44161,
-            destination_area_id: order.shippingCity, // shippingCity actually contains the areaId from checkout
+            destination_area_id: destinationAreaId,
             destination_note: "Mohon titipkan ke satpam jika tidak ada orang",
             courier_company: company,
             courier_type: type,
@@ -93,19 +99,22 @@ export async function POST(req: NextRequest) {
               description: item.variantName || item.productName,
               value: item.price,
               quantity: item.quantity,
-              weight: 500 // fallback
+              weight: 500
             }))
           }
 
           const shipment = await createBiteshipOrder(biteshipOrderPayload)
 
-          if (shipment && shipment.id) {
-            // Update order with Waybill and Shipment ID
+          if (shipment && (shipment.success || shipment.id)) {
+            const waybill = shipment.courier?.waybill_id || shipment.id
             await prisma.order.update({
               where: { id: order.id },
               data: {
-                shippingOrderId: shipment.id,
-                shippingWaybill: shipment.courier?.waybill_id || null,
+                status: 'SHIPPED',
+                shippingOrderId: shipment.id || shipment.order_id || null,
+                shippingWaybill: waybill,
+                trackingNumber: waybill,
+                shippedAt: new Date(),
               }
             })
           }
