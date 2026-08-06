@@ -39,7 +39,7 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     where: { id: params.id },
     include: {
       items: true,
-      tracking: { orderBy: { timestamp: 'desc' } },
+      trackingHistory: { orderBy: { timestamp: 'desc' } },
     },
   })
 
