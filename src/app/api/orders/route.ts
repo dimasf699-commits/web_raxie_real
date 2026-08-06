@@ -175,7 +175,7 @@ export async function POST(req: NextRequest) {
     // Send order confirmation email asynchronously
     const customerEmail = session?.user?.email || data.shipping.email
     if (customerEmail) {
-      sendOrderEmail(customerEmail, order.orderNumber, totalAmount).catch(console.error)
+      sendOrderEmail(customerEmail, order.orderNumber, order.totalAmount).catch(console.error)
     }
 
     // Midtrans Snap Token Request
@@ -206,29 +206,42 @@ export async function POST(req: NextRequest) {
 
       const appUrl = 'https://raxie.my.id'
 
+      const itemDetails: any[] = data.items.map(item => ({
+        id: item.sku,
+        price: Math.round(item.price),
+        quantity: item.quantity,
+        name: item.name.substring(0, 50),
+      }))
+
+      if (data.shippingCost > 0) {
+        itemDetails.push({
+          id: 'SHIPPING',
+          price: Math.round(data.shippingCost),
+          quantity: 1,
+          name: 'Ongkos Kirim',
+        })
+      }
+
+      if (data.discountAmount && data.discountAmount > 0) {
+        itemDetails.push({
+          id: 'DISCOUNT',
+          price: -Math.round(data.discountAmount),
+          quantity: 1,
+          name: 'Diskon Voucher',
+        })
+      }
+
       const payload: any = {
         transaction_details: {
           order_id: order.orderNumber,
-          gross_amount: Math.round(totalAmount),
+          gross_amount: Math.round(order.totalAmount),
         },
         customer_details: {
           first_name: data.shipping.name,
           email: customerEmail || 'customer@raxie.id',
           phone: data.shipping.phone,
         },
-        item_details: data.items.map(item => ({
-          id: item.sku,
-          price: Math.round(item.price),
-          quantity: item.quantity,
-          name: item.name.substring(0, 50),
-        })).concat(
-          data.shippingCost > 0 ? [{
-            id: 'SHIPPING',
-            price: Math.round(data.shippingCost),
-            quantity: 1,
-            name: 'Ongkos Kirim',
-          }] : []
-        ),
+        item_details: itemDetails,
         callbacks: {
           notification: `${appUrl}/api/webhooks/midtrans`,
           finish: `${appUrl}/account/orders`,

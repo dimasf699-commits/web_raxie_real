@@ -228,7 +228,9 @@ export default function CheckoutPage() {
         shipping: address,
         shippingCost,
         courierName: courierName || 'Reguler',
-        paymentMethod
+        paymentMethod,
+        voucherId: appliedVoucher?.id || undefined,
+        discountAmount: appliedVoucher?.discountAmount || undefined,
       }
 
       const res = await fetch('/api/orders', {
