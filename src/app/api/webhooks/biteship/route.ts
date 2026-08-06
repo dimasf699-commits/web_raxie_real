@@ -2,16 +2,25 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { OrderStatus } from '@prisma/client'
 
+export async function GET() {
+  return NextResponse.json({ ok: true, message: 'Biteship webhook endpoint active' }, { status: 200 })
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.json()
-    
+    let data: any = {}
+    try {
+      data = await req.json()
+    } catch {
+      // Empty or non-JSON body ping from Biteship validation
+      return NextResponse.json({ ok: true, message: 'Ping OK' }, { status: 200 })
+    }
+
     // Biteship webhook sends events for order status changes
     // Refer to https://biteship.com/docs/api/webhooks
-    const { event, order_id, status, courier, waybill_id } = data
+    const { event, order_id, status, courier, waybill_id } = data || {}
 
-    if (event === 'order.status.updated' && order_id) {
-      // Map Biteship status to Raxie OrderStatus
+    if ((event === 'order.status.updated' || event === 'order.waybill_id.updated') && order_id) {
       let newStatus: OrderStatus | undefined = undefined
 
       switch (status) {
@@ -35,38 +44,49 @@ export async function POST(req: NextRequest) {
           break
       }
 
-      if (newStatus) {
-        // Find order by shippingOrderId
-        const order = await prisma.order.findFirst({
-          where: { shippingOrderId: order_id }
+      // Find order by shippingOrderId or orderNumber or shippingWaybill
+      const order = await prisma.order.findFirst({
+        where: {
+          OR: [
+            { shippingOrderId: order_id },
+            { orderNumber: order_id },
+            { shippingWaybill: waybill_id },
+          ],
+        },
+      })
+
+      if (order) {
+        const updateData: any = {
+          shippingWaybill: waybill_id || order.shippingWaybill,
+          trackingNumber: waybill_id || order.trackingNumber,
+        }
+
+        if (newStatus) {
+          updateData.status = newStatus
+          if (newStatus === 'SHIPPED' && !order.shippedAt) updateData.shippedAt = new Date()
+          if (newStatus === 'DELIVERED' && !order.deliveredAt) updateData.deliveredAt = new Date()
+        }
+
+        await prisma.order.update({
+          where: { id: order.id },
+          data: updateData,
         })
 
-        if (order) {
-          await prisma.order.update({
-            where: { id: order.id },
-            data: { 
-              status: newStatus,
-              shippingWaybill: waybill_id || order.shippingWaybill,
-              ...(newStatus === 'SHIPPED' && !order.shippedAt ? { shippedAt: new Date() } : {}),
-              ...(newStatus === 'DELIVERED' && !order.deliveredAt ? { deliveredAt: new Date() } : {})
-            }
-          })
-
-          // Add tracking history
+        if (newStatus) {
           await prisma.orderTracking.create({
             data: {
               orderId: order.id,
               status: newStatus,
               description: `Status pengiriman: ${status} oleh ${courier?.company || 'Kurir'}`,
-            }
+            },
           })
         }
       }
     }
 
-    return NextResponse.json({ success: true }, { status: 200 })
+    return NextResponse.json({ success: true, ok: true }, { status: 200 })
   } catch (error) {
     console.error('[BITESHIP_WEBHOOK_ERROR]', error)
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
+    return NextResponse.json({ success: true, ok: true }, { status: 200 })
   }
 }
