@@ -21,8 +21,8 @@ const footerLinks = {
   shop: [
     { href: '/products', label: 'Semua Produk' },
     { href: '/products?category=dompet', label: 'Dompet' },
-    { href: '/products?category=aksesoris', label: 'Aksesoris' },
-    { href: '/products?isNew=true', label: 'Produk Baru' },
+    { href: '/products?category=tas', label: 'Tas' },
+    { href: '/products?category=sabuk', label: 'Sabuk' },
     { href: '/products?isBestSeller=true', label: 'Best Seller' },
   ],
   info: [

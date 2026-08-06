@@ -178,16 +178,15 @@ export default function HomePage() {
         setNewArrivals(newData.products || [])
         setFlashSale(bestData.products?.slice(0, 2) || [])
         if (catData && catData.length > 0) {
-          const catImages = [
-            'https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&q=80',
-            'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80',
-            'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80',
-            'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80',
-          ]
-          setCategories(catData.map((c: any, i: number) => ({
+          const catImageMap: Record<string, string> = {
+            dompet: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80',
+            tas: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80',
+            sabuk: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80',
+          }
+          setCategories(catData.map((c: any) => ({
             name: c.name,
             href: `/products?category=${c.slug}`,
-            image: catImages[i % catImages.length],
+            image: catImageMap[c.slug] || 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80',
             count: ''
           })))
         }
@@ -352,10 +351,10 @@ export default function HomePage() {
             </motion.div>
             <motion.div
               variants={stagger}
-              className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-6"
             >
               {categories.length === 0 ? (
-                Array.from({ length: 4 }).map((_, i) => (
+                Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="aspect-[3/4] rounded-2xl bg-muted/50 animate-pulse" />
                 ))
               ) : (

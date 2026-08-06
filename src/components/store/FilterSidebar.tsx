@@ -6,8 +6,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { cn } from '@/lib/utils'
 
 const filters = {
-  kategori: ['Dompet', 'Aksesoris', 'Bifold Wallet', 'Slim Wallet', 'Card Holder', 'Long Wallet'],
-  material: ['Full Grain Leather', 'Top Grain Leather', 'Suede', 'Vegan Leather'],
+  kategori: ['Dompet', 'Tas', 'Sabuk'],
+  material: ['PU Leather Premium'],
   warna: ['Hitam', 'Coklat Tua', 'Tan', 'Navy', 'Olive'],
   harga: [
     { label: 'Di bawah Rp 300.000', value: '0-300000' },
