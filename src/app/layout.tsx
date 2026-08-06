@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: '%s | Raxie',
   },
   description:
-    'Temukan koleksi dompet PU Leather premium Raxie. Desain modern, tahan lama, dan harga terjangkau. Pengiriman ke seluruh Indonesia.',,
+    'Temukan koleksi dompet PU Leather premium Raxie. Desain modern, tahan lama, dan harga terjangkau. Pengiriman ke seluruh Indonesia.',
   keywords: [
     'dompet pria',
     'dompet PU leather',
