@@ -29,6 +29,8 @@ const orderSchema = z.object({
   shippingCost: z.number(),
   courierName: z.string(),
   paymentMethod: z.string(),
+  voucherId: z.string().optional(),
+  discountAmount: z.number().optional(),
 })
 
 function generateOrderNumber() {
@@ -148,6 +150,7 @@ export async function POST(req: NextRequest) {
           totalAmount: verifiedTotalAmount,
           paymentMethod: paymentEnum,
           courierName: data.courierName,
+          voucherId: data.voucherId || null,
           status: 'PENDING_PAYMENT',
           items: {
             create: verifiedItems,
