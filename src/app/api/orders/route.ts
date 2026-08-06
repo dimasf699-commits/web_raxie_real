@@ -166,6 +166,8 @@ export async function POST(req: NextRequest) {
         enabled_payments = ['credit_card']
       }
       
+      const appUrl = 'https://raxie.my.id'
+
       const payload: any = {
         transaction_details: {
           order_id: order.orderNumber,
@@ -188,7 +190,13 @@ export async function POST(req: NextRequest) {
             quantity: 1,
             name: 'Ongkos Kirim',
           }] : []
-        )
+        ),
+        callbacks: {
+          notification: `${appUrl}/api/webhooks/midtrans`,
+          finish: `${appUrl}/account/orders`,
+          unfinish: `${appUrl}/checkout`,
+          error: `${appUrl}/checkout`,
+        }
       }
 
       if (enabled_payments) {
