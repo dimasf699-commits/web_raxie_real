@@ -155,17 +155,6 @@ export async function POST(req: NextRequest) {
       console.log('[MIDTRANS] Using key prefix:', midtransServerKey.substring(0, 20), '| isProduction:', isProduction)
       const authString = Buffer.from(midtransServerKey + ':').toString('base64')
       
-      let enabled_payments: string[] | undefined = undefined;
-      if (data.paymentMethod === 'qris') {
-        enabled_payments = ['gopay', 'other_qris', 'shopeepay']
-      } else if (data.paymentMethod === 'bca') {
-        enabled_payments = ['bca_va']
-      } else if (data.paymentMethod === 'mandiri') {
-        enabled_payments = ['echannel'] // echannel is Mandiri VA in Midtrans
-      } else if (data.paymentMethod === 'cc') {
-        enabled_payments = ['credit_card']
-      }
-      
       const appUrl = 'https://raxie.my.id'
 
       const payload: any = {
@@ -197,10 +186,7 @@ export async function POST(req: NextRequest) {
           unfinish: `${appUrl}/checkout`,
           error: `${appUrl}/checkout`,
         }
-      }
-
-      if (enabled_payments) {
-        payload.enabled_payments = enabled_payments;
+        // Note: enabled_payments not set = semua channel aktif di dashboard akan muncul
       }
 
       const snapRes = await fetch(snapApiUrl, {
