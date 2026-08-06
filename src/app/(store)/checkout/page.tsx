@@ -250,7 +250,16 @@ export default function CheckoutPage() {
       // If Midtrans Snap is ready
       if (data.snapToken && (window as any).snap) {
         (window as any).snap.pay(data.snapToken, {
-          onSuccess: function (result: any) {
+          onSuccess: async function (result: any) {
+            try {
+              await fetch('/api/orders/confirm-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderNumber: data.orderNumber }),
+              })
+            } catch (e) {
+              console.error(e)
+            }
             trackPurchase(data.orderNumber, finalTotalValue, cartItems)
             clearCart()
             toast.success('Pembayaran Berhasil!', 'Pesanan Anda sedang diproses.')

@@ -28,6 +28,13 @@ function CheckoutSuccessContent() {
 
     if (statusFromUrl !== 'failed' && statusFromUrl !== 'pending') {
       clearCart()
+      if (orderFromUrl) {
+        fetch('/api/orders/confirm-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderNumber: orderFromUrl }),
+        }).catch(console.error)
+      }
     }
   }, [searchParams, clearCart])
 

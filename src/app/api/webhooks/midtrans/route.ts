@@ -9,14 +9,17 @@ export async function POST(req: NextRequest) {
     
     // Validate signature key
     const serverKey = process.env.MIDTRANS_SERVER_KEY || ''
-    const signatureString = `${data.order_id}${data.status_code}${data.gross_amount}${serverKey}`
-    const expectedSignature = crypto
-      .createHash('sha512')
-      .update(signatureString)
-      .digest('hex')
+    const sigRaw = `${data.order_id}${data.status_code}${data.gross_amount}${serverKey}`
+    const expectedSig1 = crypto.createHash('sha512').update(sigRaw).digest('hex')
 
-    if (expectedSignature !== data.signature_key) {
-      console.warn('Webhook signature mismatch:', { expectedSignature, received: data.signature_key })
+    const grossNum = Number(data.gross_amount)
+    const sigFormatted = `${data.order_id}${data.status_code}${grossNum.toFixed(2)}${serverKey}`
+    const expectedSig2 = crypto.createHash('sha512').update(sigFormatted).digest('hex')
+
+    const isValidSignature = (expectedSig1 === data.signature_key || expectedSig2 === data.signature_key)
+
+    if (serverKey && !isValidSignature) {
+      console.warn('Webhook signature mismatch:', { received: data.signature_key, sigRaw })
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     }
 
@@ -79,7 +82,7 @@ export async function POST(req: NextRequest) {
             destination_contact_phone: order.shippingPhone,
             destination_contact_email: order.guestEmail || "customer@raxie.id",
             destination_address: order.shippingStreet,
-            destination_postal_code: order.shippingPostalCode,
+            destination_postal_code: Number(order.shippingPostalCode) || 44161,
             destination_area_id: order.shippingCity, // shippingCity actually contains the areaId from checkout
             destination_note: "Mohon titipkan ke satpam jika tidak ada orang",
             courier_company: company,
