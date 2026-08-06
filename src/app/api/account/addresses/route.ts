@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { label, recipientName, phone, street, district, city, province, postalCode, areaId, isDefault } = body
 
-    if (!recipientName || !phone || !street || !areaId) {
-      return NextResponse.json({ error: 'Nama penerima, nomor HP, alamat lengkap, dan kecamatan tujuan wajib diisi' }, { status: 400 })
+    if (!recipientName || !phone || !street) {
+      return NextResponse.json({ error: 'Nama penerima, nomor HP, dan alamat lengkap wajib diisi' }, { status: 400 })
     }
 
     // If setting as default, unset other default addresses for this user

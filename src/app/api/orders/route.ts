@@ -79,26 +79,55 @@ export async function POST(req: NextRequest) {
       if (dbUser) validUserId = dbUser.id
     }
 
-    // Create Order and reduce stock in a single transaction
+    // Create Order and reduce stock in a single transaction with DB-verified prices
     const order = await prisma.$transaction(async (tx) => {
-      // ── VALIDASI STOK (CEGAH OVERSELLING) ──────────────────────────────
-      const stockChecks = await Promise.all(
+      // ── VALIDASI HARGA DARI DB & CEGAH OVERSELLING ───────────────────────
+      let verifiedSubtotal = 0
+      const verifiedItems = await Promise.all(
         data.items.map(async (item) => {
           const variant = item.variantId
-            ? await tx.productVariant.findUnique({ where: { id: item.variantId }, select: { id: true, stock: true, name: true } })
-            : await tx.productVariant.findUnique({ where: { sku: item.sku }, select: { id: true, stock: true, name: true } })
+            ? await tx.productVariant.findUnique({ 
+                where: { id: item.variantId }, 
+                include: { product: true } 
+              })
+            : await tx.productVariant.findUnique({ 
+                where: { sku: item.sku }, 
+                include: { product: true } 
+              })
 
-          if (!variant) {
+          if (!variant || !variant.product) {
             throw new Error(`Produk "${item.name}" tidak ditemukan`)
           }
+
+          if (!variant.product.isActive || !variant.isActive) {
+            throw new Error(`Produk "${variant.product.name}" sedang tidak aktif`)
+          }
+
           if (variant.stock < item.quantity) {
             throw new Error(
-              `Stok "${item.name}" (${variant.name}) tidak cukup. Tersisa: ${variant.stock}, diminta: ${item.quantity}`
+              `Stok "${variant.product.name}" (${variant.name}) tidak cukup. Tersisa: ${variant.stock}, diminta: ${item.quantity}`
             )
           }
-          return variant
+
+          const dbPrice = variant.price // HARGA ASLI DARI DATABASE
+          const itemTotal = dbPrice * item.quantity
+          verifiedSubtotal += itemTotal
+
+          return {
+            productId: variant.productId,
+            variantId: variant.id,
+            productName: variant.product.name,
+            variantName: variant.name,
+            sku: variant.sku,
+            price: dbPrice,
+            quantity: item.quantity,
+            totalPrice: itemTotal,
+            image: item.image || '/placeholder.jpg',
+          }
         })
       )
+
+      const verifiedTotalAmount = Math.max(0, verifiedSubtotal + data.shippingCost - (data.discountAmount || 0))
       // ───────────────────────────────────────────────────────────────────
 
       const newOrder = await tx.order.create({
@@ -114,42 +143,25 @@ export async function POST(req: NextRequest) {
           shippingCity: data.shipping.areaName || 'Jakarta', 
           shippingProvince: '', 
           shippingPostalCode: data.shipping.postalCode || '10000', 
-          subtotal,
+          subtotal: verifiedSubtotal,
           shippingCost: data.shippingCost,
-          totalAmount,
+          totalAmount: verifiedTotalAmount,
           paymentMethod: paymentEnum,
           courierName: data.courierName,
           status: 'PENDING_PAYMENT',
           items: {
-            create: data.items.map(item => ({
-              productId: item.productId,
-              variantId: item.variantId || null,
-              productName: item.name,
-              variantName: item.variantName || null,
-              sku: item.sku,
-              price: item.price,
-              quantity: item.quantity,
-              totalPrice: item.price * item.quantity,
-              image: item.image,
-            }))
+            create: verifiedItems,
           }
         },
       })
 
       // Reduce stock for each variant concurrently
       await Promise.all(
-        data.items.map(item => {
-          if (item.variantId) {
-            return tx.productVariant.update({
-              where: { id: item.variantId },
-              data: { stock: { decrement: item.quantity } }
-            })
-          } else {
-            return tx.productVariant.update({
-              where: { sku: item.sku },
-              data: { stock: { decrement: item.quantity } }
-            })
-          }
+        verifiedItems.map(item => {
+          return tx.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { decrement: item.quantity } }
+          })
         })
       )
 

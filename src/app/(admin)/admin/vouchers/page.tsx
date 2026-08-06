@@ -42,7 +42,7 @@ export default function AdminVouchersPage() {
           value: parseFloat(form.value),
           minPurchase: form.minPurchase ? parseFloat(form.minPurchase) : 0,
           usageLimit: form.usageLimit ? parseInt(form.usageLimit) : null,
-          expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : null,
+          expiresAt: (form.expiresAt && !isNaN(Date.parse(form.expiresAt))) ? form.expiresAt : null,
         }),
       })
       if (res.ok) {
