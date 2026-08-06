@@ -24,15 +24,22 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     }
 
     const originAreaId = process.env.STORE_AREA_ID || 'IDNP9IDNC122IDND450IDZ44161'
-    const courierCode = (order.courierName || 'jne').toLowerCase().replace(/[^a-z0-9]/g, '')
+    const destinationAreaId = (order.shippingCity && order.shippingCity.startsWith('ID'))
+      ? order.shippingCity
+      : 'IDNP9IDNC122IDND450IDZ44161'
+      
+    const courierCode = order.courierName
+      ? (order.courierName.toLowerCase().includes('j&t') ? 'jnt' :
+         order.courierName.toLowerCase().includes('sicepat') ? 'sicepat' : 'jne')
+      : 'jne'
 
     const biteshipOrderPayload = {
       origin_area_id: originAreaId,
-      destination_area_id: order.shippingPostalCode,
+      destination_area_id: destinationAreaId,
       destination_address: order.shippingStreet,
       destination_postal_code: Number(order.shippingPostalCode) || 44161,
-      destination_note: order.shippingCity || 'Garut',
-      courier_company: courierCode || 'jne',
+      destination_note: 'Mohon kirim ke alamat penerima',
+      courier_company: courierCode,
       courier_type: 'reg',
       delivery_type: 'now',
       items: order.items.map((item) => ({
