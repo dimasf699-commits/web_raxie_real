@@ -102,7 +102,7 @@ export async function getBiteshipRates({
 export async function createBiteshipOrder(orderData: any) {
   if (!BITESHIP_API_KEY) {
     console.error('BITESHIP_API_KEY is missing')
-    return null
+    return { success: false, error: 'BITESHIP_API_KEY is missing' }
   }
 
   try {
@@ -115,17 +115,16 @@ export async function createBiteshipOrder(orderData: any) {
       body: JSON.stringify(orderData)
     })
 
+    const data = await res.json()
     if (!res.ok) {
-      const errText = await res.text()
-      console.error('Biteship order creation failed:', errText)
-      throw new Error(`Failed to create Biteship order: ${res.statusText}`)
+      console.error('Biteship order creation failed:', data)
+      return { success: false, error: data.error || data.message || `Biteship API Error (${res.status})` }
     }
 
-    const data = await res.json()
-    return data
-  } catch (error) {
+    return { success: true, ...data }
+  } catch (error: any) {
     console.error('[BITESHIP_CREATE_ORDER_ERROR]', error)
-    return null
+    return { success: false, error: error.message || 'Biteship connection error' }
   }
 }
 
