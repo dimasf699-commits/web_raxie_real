@@ -57,6 +57,40 @@ export default function AdminOrdersPage() {
     return () => clearTimeout(t)
   }, [fetchOrders])
 
+  const handleStatusChange = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/admin/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      if (res.ok) {
+        toast.success(`Status pesanan berhasil diperbarui`)
+        fetchOrders()
+      } else {
+        toast.error('Gagal mengubah status')
+      }
+    } catch {
+      toast.error('Terjadi kesalahan')
+    }
+  }
+
+  const handleBiteshipTrigger = async (id: string, orderNumber: string) => {
+    try {
+      toast.info(`Memanggil kurir Biteship untuk ${orderNumber}...`)
+      const res = await fetch(`/api/admin/orders/${id}/biteship`, { method: 'POST' })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        toast.success(`Resi Biteship Berhasil Dibuat: ${data.waybill}`)
+        fetchOrders()
+      } else {
+        toast.error(data.error || 'Gagal memanggil Biteship')
+      }
+    } catch {
+      toast.error('Terjadi kesalahan koneksi ke Biteship')
+    }
+  }
+
   const handleDelete = async (id: string, orderNumber: string) => {
     if (!confirm(`Hapus pesanan ${orderNumber}? Tindakan ini tidak bisa dibatalkan.`)) return
     try {
@@ -183,14 +217,39 @@ export default function AdminOrdersPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          {!['SHIPPED', 'DELIVERED', 'COMPLETED', 'CANCELLED'].includes(order.status) && (
+                          <select
+                            value={order.status}
+                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                            className="text-xs border border-slate-200 dark:border-border rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-muted font-medium focus:outline-none cursor-pointer"
+                          >
+                            <option value="PENDING_PAYMENT">Menunggu Bayar</option>
+                            <option value="PAYMENT_CONFIRMED">Bayar Terkonfirmasi</option>
+                            <option value="PROCESSING">Diproses</option>
+                            <option value="PACKED">Dikemas</option>
+                            <option value="SHIPPED">Dikirim</option>
+                            <option value="DELIVERED">Terkirim</option>
+                            <option value="COMPLETED">Selesai</option>
+                            <option value="CANCELLED">Dibatalkan</option>
+                          </select>
+
+                          {!order.shippingWaybill && (
                             <button
-                              onClick={() => setTrackingOrder(order)}
-                              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-indigo-600 border border-indigo-200 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors font-medium"
+                              onClick={() => handleBiteshipTrigger(order.id, order.orderNumber)}
+                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-purple-700 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors font-medium shrink-0"
+                              title="Panggil Kurir Biteship Otomatis"
                             >
-                              <Truck className="w-3.5 h-3.5" /> Kirim
+                              <Truck className="w-3.5 h-3.5 text-purple-600" /> Auto Biteship
                             </button>
                           )}
+
+                          <button
+                            onClick={() => setTrackingOrder(order)}
+                            className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-slate-700 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 transition-colors font-medium shrink-0"
+                            title="Input Resi Manual"
+                          >
+                            Resi Manual
+                          </button>
+
                           <button
                             onClick={() => handleDelete(order.id, order.orderNumber)}
                             className="text-xs text-red-600 hover:text-red-700 font-medium px-2 py-1.5"

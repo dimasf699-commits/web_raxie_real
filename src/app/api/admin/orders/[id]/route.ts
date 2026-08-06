@@ -21,7 +21,10 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       if (status === 'COMPLETED') data.completedAt = new Date()
       if (status === 'CANCELLED') data.cancelledAt = new Date()
     }
-    if (trackingNumber) data.trackingNumber = trackingNumber
+    if (trackingNumber) {
+      data.trackingNumber = trackingNumber
+      data.shippingWaybill = trackingNumber
+    }
     if (courierCode) data.courierCode = courierCode
     if (courierName) data.courierName = courierName
     if (courierService) data.courierService = courierService

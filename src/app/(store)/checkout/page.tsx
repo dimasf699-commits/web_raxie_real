@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, CircleCheck, ShieldCheck, MapPin, Truck, CreditCard } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CircleCheck, ShieldCheck, MapPin, Truck, CreditCard, Tag } from 'lucide-react'
 import { useCartStore } from '@/store/cart.store'
 import { Button } from '@/components/ui/Button'
 import { toast } from '@/components/ui/Toaster'
@@ -62,6 +62,70 @@ export default function CheckoutPage() {
   const [areaResults, setAreaResults] = useState<any[]>([])
   const [isSearchingArea, setIsSearchingArea] = useState(false)
   const [showAreaDropdown, setShowAreaDropdown] = useState(false)
+
+  // Saved Addresses State
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([])
+  const [selectedSavedId, setSelectedSavedId] = useState<string>('')
+  const [saveAddressOption, setSaveAddressOption] = useState<boolean>(false)
+
+  // Voucher State
+  const [voucherCode, setVoucherCode] = useState('')
+  const [appliedVoucher, setAppliedVoucher] = useState<{ id: string; code: string; name: string; discountAmount: number } | null>(null)
+  const [isValidatingVoucher, setIsValidatingVoucher] = useState(false)
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode) return
+    setIsValidatingVoucher(true)
+    try {
+      const res = await fetch('/api/vouchers/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: voucherCode, cartSubtotal: totalPrice }),
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setAppliedVoucher(data.voucher)
+        toast.success('Voucher Berhasil Dipasang!', `Potongan ${formatPrice(data.voucher.discountAmount)}`)
+      } else {
+        toast.error('Voucher Gagal', data.error || 'Voucher tidak valid')
+      }
+    } catch {
+      toast.error('Gagal memproses voucher')
+    } finally {
+      setIsValidatingVoucher(false)
+    }
+  }
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher(null)
+    setVoucherCode('')
+  }
+
+  useEffect(() => {
+    fetch('/api/account/addresses')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.addresses && data.addresses.length > 0) {
+          setSavedAddresses(data.addresses)
+          const def = data.addresses.find((a: any) => a.isDefault) || data.addresses[0]
+          if (def) {
+            setSelectedSavedId(def.id)
+            const areaLabel = `${def.district ? def.district + ', ' : ''}${def.city}, ${def.province}`
+            setAddress((prev) => ({
+              ...prev,
+              name: def.recipientName,
+              phone: def.phone,
+              detail: def.street,
+              areaId: def.areaId || '',
+              postalCode: def.postalCode || '',
+              areaName: areaLabel,
+            }))
+            setSearchArea(areaLabel)
+          }
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   // Debounced search for Biteship Areas
   useEffect(() => {
@@ -266,6 +330,43 @@ export default function CheckoutPage() {
                 className="space-y-6"
               >
                 <h2 className="font-serif text-2xl font-bold text-foreground">Informasi Kontak & Pengiriman</h2>
+
+                {savedAddresses.length > 0 && (
+                  <div className="p-4 bg-tan-50/50 dark:bg-tan-950/20 border border-tan-200 dark:border-tan-800 rounded-xl space-y-2">
+                    <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-tan-600" />
+                      Pilih Alamat Tersimpan:
+                    </label>
+                    <select
+                      value={selectedSavedId}
+                      onChange={(e) => {
+                        const id = e.target.value
+                        setSelectedSavedId(id)
+                        const selected = savedAddresses.find((a) => a.id === id)
+                        if (selected) {
+                          const areaLabel = `${selected.district ? selected.district + ', ' : ''}${selected.city}, ${selected.province}`
+                          setAddress((prev) => ({
+                            ...prev,
+                            name: selected.recipientName,
+                            phone: selected.phone,
+                            detail: selected.street,
+                            areaId: selected.areaId || '',
+                            postalCode: selected.postalCode || '',
+                            areaName: areaLabel,
+                          }))
+                          setSearchArea(areaLabel)
+                        }
+                      }}
+                      className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-tan-500"
+                    >
+                      {savedAddresses.map((a) => (
+                        <option key={a.id} value={a.id}>
+                          [{a.label}] {a.recipientName} - {a.street.substring(0, 40)}... ({a.city})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Nama Lengkap</label>
@@ -498,6 +599,36 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Voucher Section */}
+            <div className="py-3 border-t border-border space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-tan-500" />
+                Voucher / Kode Promo
+              </label>
+              {appliedVoucher ? (
+                <div className="flex items-center justify-between p-2.5 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-xl text-xs">
+                  <div>
+                    <span className="font-bold text-green-700 dark:text-green-300">{appliedVoucher.code}</span>
+                    <p className="text-[10px] text-green-600 dark:text-green-400">Hemat {formatPrice(appliedVoucher.discountAmount)}</p>
+                  </div>
+                  <button onClick={handleRemoveVoucher} className="text-xs text-red-500 hover:underline">Hapus</button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={voucherCode}
+                    onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                    placeholder="Contoh: RAXIE20"
+                    className="flex-1 bg-background border border-border rounded-xl px-3 py-2 text-xs uppercase font-mono"
+                  />
+                  <Button size="sm" variant="outline" onClick={handleApplyVoucher} disabled={!voucherCode || isValidatingVoucher}>
+                    {isValidatingVoucher ? '...' : 'Gunakan'}
+                  </Button>
+                </div>
+              )}
+            </div>
+
             <div className="space-y-3 text-sm border-t border-border pt-4 mb-4">
               <div className="flex justify-between text-muted-foreground">
                 <span>Subtotal produk</span>
@@ -509,12 +640,18 @@ export default function CheckoutPage() {
                   {shippingCost > 0 ? formatPrice(shippingCost) : '-'}
                 </span>
               </div>
+              {appliedVoucher && (
+                <div className="flex justify-between text-green-600 dark:text-green-400 font-semibold">
+                  <span>Diskon Voucher ({appliedVoucher.code})</span>
+                  <span>-{formatPrice(appliedVoucher.discountAmount)}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-between items-end border-t border-border pt-4">
               <span className="font-bold text-foreground">Total Keseluruhan</span>
               <span className="font-bold text-2xl text-tan-600 dark:text-tan-400">
-                {formatPrice(totalPrice + shippingCost)}
+                {formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}
               </span>
             </div>
           </div>

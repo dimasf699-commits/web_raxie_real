@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import Script from 'next/script'
 import { Button } from '@/components/ui/Button'
-import { formatPrice } from '@/lib/utils'
+import { formatPrice, cn } from '@/lib/utils'
 import { PayNowButton } from '@/components/store/PayNowButton'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -32,14 +32,45 @@ const courierTrackingLinks: Record<string, string> = {
   GOSEND: 'https://driver.gojek.com/go-send',
 }
 
-export default async function OrdersPage() {
+const tabs = [
+  { key: 'ALL', label: 'Semua Pesanan', href: '/account/orders' },
+  { key: 'PENDING_PAYMENT', label: 'Belum Bayar', href: '/account/orders?status=PENDING_PAYMENT' },
+  { key: 'PROCESSING', label: 'Diproses', href: '/account/orders?status=PROCESSING' },
+  { key: 'SHIPPED', label: 'Dikirim', href: '/account/orders?status=SHIPPED' },
+  { key: 'COMPLETED', label: 'Selesai', href: '/account/orders?status=COMPLETED' },
+]
+
+interface OrdersPageProps {
+  searchParams?: {
+    status?: string
+  }
+}
+
+export default async function OrdersPage({ searchParams }: OrdersPageProps) {
   const session = await auth()
   if (!session?.user?.id) {
     redirect('/login')
   }
 
+  const activeStatus = searchParams?.status || 'ALL'
+
+  // Build prisma filter clause
+  let whereStatus: any = undefined
+  if (activeStatus === 'PENDING_PAYMENT') {
+    whereStatus = 'PENDING_PAYMENT'
+  } else if (activeStatus === 'PROCESSING') {
+    whereStatus = { in: ['PROCESSING', 'PAYMENT_CONFIRMED', 'PACKED'] }
+  } else if (activeStatus === 'SHIPPED') {
+    whereStatus = { in: ['SHIPPED', 'DELIVERED'] }
+  } else if (activeStatus === 'COMPLETED') {
+    whereStatus = 'COMPLETED'
+  }
+
   const orders = await prisma.order.findMany({
-    where: { userId: session.user.id },
+    where: {
+      userId: session.user.id,
+      ...(whereStatus ? { status: whereStatus } : {})
+    },
     orderBy: { createdAt: 'desc' },
     include: { items: true }
   })
@@ -57,20 +88,38 @@ export default async function OrdersPage() {
         <h1 className="font-serif text-2xl font-bold text-foreground">Pesanan Saya</h1>
       </div>
 
+      {/* Filter Tabs */}
       <div className="flex gap-2 pb-2 overflow-x-auto custom-scrollbar">
-        <button className="px-4 py-2 bg-tan-500 text-white rounded-full text-sm font-medium whitespace-nowrap">Semua Pesanan</button>
-        <button className="px-4 py-2 border border-border text-muted-foreground hover:bg-muted rounded-full text-sm font-medium whitespace-nowrap">Belum Bayar</button>
-        <button className="px-4 py-2 border border-border text-muted-foreground hover:bg-muted rounded-full text-sm font-medium whitespace-nowrap">Diproses</button>
-        <button className="px-4 py-2 border border-border text-muted-foreground hover:bg-muted rounded-full text-sm font-medium whitespace-nowrap">Dikirim</button>
-        <button className="px-4 py-2 border border-border text-muted-foreground hover:bg-muted rounded-full text-sm font-medium whitespace-nowrap">Selesai</button>
+        {tabs.map((tab) => {
+          const isActive = activeStatus === tab.key
+          return (
+            <Link
+              key={tab.key}
+              href={tab.href}
+              className={cn(
+                'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors',
+                isActive
+                  ? 'bg-tan-500 text-white shadow-sm'
+                  : 'border border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              {tab.label}
+            </Link>
+          )
+        })}
       </div>
 
+      {/* Orders List */}
       <div className="space-y-4">
         {orders.length === 0 ? (
           <div className="text-center py-12 bg-card rounded-xl border border-border">
             <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="font-semibold text-lg mb-1">Belum ada pesanan</h3>
-            <p className="text-muted-foreground text-sm mb-4">Anda belum pernah melakukan pemesanan.</p>
+            <p className="text-muted-foreground text-sm mb-4">
+              {activeStatus === 'ALL'
+                ? 'Anda belum pernah melakukan pemesanan.'
+                : 'Tidak ada pesanan di kategori ini.'}
+            </p>
             <Link href="/products">
               <Button>Mulai Belanja</Button>
             </Link>
@@ -144,7 +193,9 @@ export default async function OrdersPage() {
                 )}
 
                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border">
-                  <Button variant="outline" size="sm">Detail Pesanan</Button>
+                  <Link href={`/account/orders/${order.id}`}>
+                    <Button variant="outline" size="sm">Detail &amp; Invoice</Button>
+                  </Link>
                   
                   {order.status === 'PENDING_PAYMENT' && order.midtransToken && (
                     <PayNowButton snapToken={order.midtransToken} />

@@ -100,7 +100,15 @@ function AnimatedSection({
 }
 
 function CountdownTimer({ endsAt }: { endsAt: Date }) {
-  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 })
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const diff = endsAt.getTime() - Date.now()
+    if (diff <= 0) return { h: 168, m: 0, s: 0 }
+    return {
+      h: Math.floor(diff / 3600000),
+      m: Math.floor((diff % 3600000) / 60000),
+      s: Math.floor((diff % 60000) / 1000),
+    }
+  })
 
   useEffect(() => {
     function calc() {
@@ -151,6 +159,12 @@ function CountdownTimer({ endsAt }: { endsAt: Date }) {
 
 // ─── Main Homepage ──────────────────────────────────────────────────────────────
 
+const DEFAULT_HOMEPAGE_CATEGORIES = [
+  { name: 'Dompet', href: '/products?category=dompet', image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80' },
+  { name: 'Tas', href: '/products?category=tas', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80' },
+  { name: 'Sabuk', href: '/products?category=sabuk', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80' },
+]
+
 export default function HomePage() {
   const [isAutoPlay, setIsAutoPlay] = useState(true)
   const [heroIndex, setHeroIndex] = useState(0)
@@ -160,7 +174,7 @@ export default function HomePage() {
   const [newArrivals, setNewArrivals] = useState<any[]>([])
   const [flashSale, setFlashSale] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [categories, setCategories] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>(DEFAULT_HOMEPAGE_CATEGORIES)
 
   useEffect(() => {
     const fetchProducts = async () => {
