@@ -4,26 +4,28 @@ import { QueryProvider } from '@/components/providers/QueryProvider'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { Toaster } from '@/components/ui/Toaster'
 import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
+import { CookieConsent } from '@/components/ui/CookieConsent'
 import './globals.css'
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.id'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.my.id'),
   title: {
     default: 'Raxie — Premium Leather Wallets & Accessories',
     template: '%s | Raxie',
   },
   description:
-    'Discover Raxie\'s collection of handcrafted premium leather wallets, cardholders, and accessories. Timeless craftsmanship, modern design.',
+    'Temukan koleksi dompet PU Leather premium Raxie. Desain modern, tahan lama, dan harga terjangkau. Pengiriman ke seluruh Indonesia.',,
   keywords: [
-    'dompet kulit premium',
-    'wallet kulit asli',
-    'aksesoris kulit',
-    'leather wallet Indonesia',
+    'dompet pria',
+    'dompet PU leather',
+    'dompet kulit sintetis premium',
+    'wallet kulit murah',
+    'aksesoris pria Indonesia',
     'Raxie',
-    'handcrafted leather',
+    'dompet bifold',
     'cardholder',
-    'bifold wallet',
     'slim wallet',
+    'dompet vegan leather',
   ],
   authors: [{ name: 'Raxie' }],
   creator: 'Raxie',
@@ -36,11 +38,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    url: 'https://raxie.id',
+    url: 'https://raxie.my.id',
     siteName: 'Raxie',
-    title: 'Raxie — Premium Leather Wallets & Accessories',
+    title: 'Raxie — Dompet PU Leather Premium',
     description:
-      'Handcrafted premium leather wallets and accessories. Timeless craftsmanship, modern design.',
+      'Koleksi dompet PU Leather premium Raxie. Desain modern, tahan lama, harga terjangkau.',
     images: [
       {
         url: '/og-image.jpg',
@@ -122,7 +124,8 @@ export default function RootLayout({
             <QueryProvider>
               {children}
               <Toaster />
-              <WhatsAppButton phoneNumber="081546894549" />
+              <WhatsAppButton phoneNumber="082128862433" />
+              <CookieConsent />
             </QueryProvider>
           </AuthProvider>
         </ThemeProvider>

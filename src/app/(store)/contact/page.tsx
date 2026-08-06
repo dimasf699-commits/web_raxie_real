@@ -19,15 +19,15 @@ export default function ContactPage() {
             <div className="space-y-4">
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center"><Phone className="w-5 h-5" /></div>
-                <span>+62 812 3456 7890</span>
+                <a href="https://wa.me/6282128862433" target="_blank" rel="noopener noreferrer" className="hover:underline">0821-2886-2433 (WhatsApp)</a>
               </div>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center"><Mail className="w-5 h-5" /></div>
-                <span>hello@raxie.com</span>
+                <a href="mailto:raxieleather@gmail.com" className="hover:underline">raxieleather@gmail.com</a>
               </div>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center"><MapPin className="w-5 h-5" /></div>
-                <span>Jl. Pahlawan No. 123, Bandung, Jawa Barat</span>
+                <span>Kp. Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat</span>
               </div>
             </div>
           </div>

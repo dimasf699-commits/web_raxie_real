@@ -49,7 +49,7 @@ const heroSlides = [
   {
     id: 2,
     title: 'Slim. Elegan.\nTahan Lama.',
-    subtitle: 'Koleksi bifold wallet kami menggunakan full-grain leather pilihan dari Italia.',
+    subtitle: 'Koleksi bifold wallet kami menggunakan PU Leather premium — tahan lama, tahan air, tampil elegan.',
     cta: 'Lihat Bifold',
     href: '/products?category=bifold',
     badge: 'Best Seller',
@@ -73,32 +73,7 @@ const heroSlides = [
 
 
 
-const testimonials = [
-  {
-    name: 'Aldi Firmansyah',
-    location: 'Jakarta',
-    rating: 5,
-    text: 'Kualitasnya luar biasa! Sudah 2 tahun dipakai setiap hari dan masih seperti baru. Worth every penny.',
-    product: 'Classic Bifold Wallet',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
-  },
-  {
-    name: 'Sinta Dewi',
-    location: 'Surabaya',
-    rating: 5,
-    text: 'Packaging-nya premium banget, cocok buat hadiah. Suami saya seneng sekali. Pasti beli lagi!',
-    product: 'Heritage Trifold',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80',
-  },
-  {
-    name: 'Rizky Pratama',
-    location: 'Bandung',
-    rating: 5,
-    text: 'Slim card holder-nya tipis tapi muat banyak kartu. Kulit-nya makin indah seiring waktu, love it!',
-    product: 'Slim Card Holder',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80',
-  },
-]
+
 
 // ─── Components ────────────────────────────────────────────────────────────────
 
@@ -225,7 +200,7 @@ export default function HomePage() {
     fetchProducts()
   }, [])
 
-  const flashSaleEnds = new Date(Date.now() + 8 * 3600000 + 23 * 60000)
+  const flashSaleEnds = new Date(Date.now() + 7 * 24 * 3600000) // 7 hari dari sekarang
 
   // Auto-play hero carousel
   useEffect(() => {
@@ -349,9 +324,9 @@ export default function HomePage() {
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             {[
               { icon: Truck, text: 'Gratis Ongkir min. Rp 500.000' },
-              { icon: ShieldCheck, text: 'Garansi Keaslian Produk' },
+              { icon: ShieldCheck, text: 'Garansi Cacat Produk 30 Hari' },
               { icon: RotateCcw, text: 'Retur 30 Hari' },
-              { icon: Star, text: '10.000+ Pelanggan Puas' },
+              { icon: Sparkles, text: 'Koleksi Baru 2026' },
             ].map((item) => (
               <div key={item.text} className="flex items-center gap-2 text-white">
                 <item.icon className="h-4 w-4 opacity-80" />
@@ -571,10 +546,9 @@ export default function HomePage() {
                 <em className="text-tan-400">Dirancang untuk Selamanya</em>
               </motion.h2>
               <motion.p variants={fadeUp} className="mt-5 text-muted-foreground leading-relaxed">
-                Raxie lahir dari kecintaan mendalam terhadap kerajinan kulit tradisional.
-                Setiap produk kami dijahit dengan tangan oleh pengrajin berpengalaman,
-                menggunakan bahan full-grain leather pilihan yang justru semakin indah
-                seiring berjalannya waktu.
+                Raxie hadir dengan produk aksesori <strong>PU Leather premium</strong> —
+                material modern yang tahan air, mudah dibersihkan, dan tampil elegan
+                setiap hari.
               </motion.p>
               <motion.p variants={fadeUp} className="mt-3 text-muted-foreground leading-relaxed">
                 Kami percaya bahwa aksesori yang baik bukan hanya tentang penampilan —
@@ -592,53 +566,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── Testimonials ────────────────────────────────────────────────────── */}
+      {/* ─── Why Choose Raxie ─────────────────────────────────────────────── */}
       <section className="py-20 bg-ivory-100 dark:bg-charcoal-900">
         <div className="container-raxie">
           <AnimatedSection>
             <motion.div variants={fadeUp} className="text-center mb-12">
-              <Badge variant="brand" className="mb-3">Ulasan</Badge>
+              <Badge variant="brand" className="mb-3">Kenapa Raxie?</Badge>
               <h2 className="font-serif text-4xl font-bold text-foreground">
-                Kata Pelanggan Kami
+                Alasan Memilih Kami
               </h2>
-              <div className="flex items-center justify-center gap-1 mt-3">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className="h-5 w-5 fill-amber-400 text-amber-400" />
-                ))}
-                <span className="ml-2 text-muted-foreground text-sm">4.9/5 dari 10.000+ ulasan</span>
-              </div>
+              <p className="mt-3 text-muted-foreground max-w-md mx-auto">
+                Kami percaya pada kejujuran produk dan kepuasan nyata.
+              </p>
             </motion.div>
 
-            <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {testimonials.map((t) => (
+            <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { icon: ShieldCheck, title: 'Garansi 30 Hari', desc: 'Jaminan penggantian jika ada cacat produksi dalam 30 hari setelah terima.' },
+                { icon: RotateCcw, title: 'Retur Mudah', desc: 'Produk tidak sesuai deskripsi? Kami proses retur tanpa drama.' },
+                { icon: Truck, title: 'Kirim ke Seluruh Indonesia', desc: 'Tersedia berbagai pilihan ekspedisi dengan estimasi pengiriman yang akurat.' },
+                { icon: Star, title: 'PU Leather Premium', desc: 'Material tahan air, mudah dibersihkan, tampilan rapi dan konsisten di setiap produk.' },
+              ].map((item) => (
                 <motion.div
-                  key={t.name}
+                  key={item.title}
                   variants={fadeUp}
-                  className="bg-card rounded-2xl p-6 border border-border hover:border-tan-400/30 transition-colors duration-300 hover:shadow-lg"
+                  className="bg-card rounded-2xl p-6 border border-border hover:border-tan-400/30 transition-colors duration-300 hover:shadow-md"
                 >
-                  <div className="flex items-center gap-1 mb-4">
-                    {Array.from({ length: t.rating }).map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    ))}
+                  <div className="w-12 h-12 bg-tan-50 dark:bg-tan-900/20 rounded-xl flex items-center justify-center mb-4">
+                    <item.icon className="h-6 w-6 text-tan-500" />
                   </div>
-                  <p className="text-foreground/80 text-sm leading-relaxed italic">
-                    &ldquo;{t.text}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-3 mt-5">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                      <Image
-                        src={t.avatar}
-                        alt={t.name}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm text-foreground">{t.name}</div>
-                      <div className="text-xs text-muted-foreground">{t.location} · {t.product}</div>
-                    </div>
-                  </div>
+                  <h3 className="font-serif font-bold text-lg text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </motion.div>

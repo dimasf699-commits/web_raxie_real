@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin/', '/account/', '/checkout/'],
+      disallow: ['/admin/', '/account/', '/checkout/', '/api/'],
     },
-    sitemap: 'https://raxie.id/sitemap.xml',
+    sitemap: 'https://raxie.my.id/sitemap.xml',
   }
 }

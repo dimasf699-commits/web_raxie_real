@@ -81,6 +81,26 @@ export async function POST(req: NextRequest) {
 
     // Create Order and reduce stock in a single transaction
     const order = await prisma.$transaction(async (tx) => {
+      // ── VALIDASI STOK (CEGAH OVERSELLING) ──────────────────────────────
+      const stockChecks = await Promise.all(
+        data.items.map(async (item) => {
+          const variant = item.variantId
+            ? await tx.productVariant.findUnique({ where: { id: item.variantId }, select: { id: true, stock: true, name: true } })
+            : await tx.productVariant.findUnique({ where: { sku: item.sku }, select: { id: true, stock: true, name: true } })
+
+          if (!variant) {
+            throw new Error(`Produk "${item.name}" tidak ditemukan`)
+          }
+          if (variant.stock < item.quantity) {
+            throw new Error(
+              `Stok "${item.name}" (${variant.name}) tidak cukup. Tersisa: ${variant.stock}, diminta: ${item.quantity}`
+            )
+          }
+          return variant
+        })
+      )
+      // ───────────────────────────────────────────────────────────────────
+
       const newOrder = await tx.order.create({
         data: {
           orderNumber: generateOrderNumber(),
@@ -135,6 +155,7 @@ export async function POST(req: NextRequest) {
 
       return newOrder
     })
+
 
     // Send order confirmation email asynchronously
     const customerEmail = session?.user?.email || data.shipping.email

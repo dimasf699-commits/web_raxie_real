@@ -16,6 +16,7 @@ import { useCompareStore } from '@/store/compare.store'
 import { toast } from '@/components/ui/Toaster'
 import { fbEvent } from '@/components/analytics/MetaPixel'
 import { gaEvent } from '@/components/analytics/GoogleAnalytics'
+import { RestockAlertButton } from '@/components/store/RestockAlertButton'
 
 // Since we have separate files, let's just use window directly to avoid complex imports
 const trackAddToCart = (productName: string, price: number) => {
@@ -265,7 +266,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               <span className="w-24 text-muted-foreground shrink-0 mt-0.5">Jaminan Raxie</span>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-5 w-5 text-green-500 shrink-0" />
-                <span className="font-medium text-foreground">100% Kulit Asli & Garansi Retur 7 Hari</span>
+                <span className="font-medium text-foreground">Garansi Cacat Produk 30 Hari & Retur 30 Hari</span>
               </div>
             </div>
           </div>
@@ -322,19 +323,22 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                 Masukkan Keranjang
               </Button>
 
-              <Button
+               <Button
                 variant="brand"
                 size="lg"
                 className="flex-1 text-sm font-medium h-12 rounded-xl"
                 onClick={() => {
                   handleAddToCart();
-                  // A real implementation would redirect to checkout
-                  // router.push('/checkout');
                 }}
                 disabled={addingCart || selectedVariant.stock === 0}
               >
                 Beli Sekarang
               </Button>
+
+              {/* Restock Alert when stock is 0 */}
+              {selectedVariant.stock === 0 && (
+                <RestockAlertButton productId={product.id} variantId={selectedVariant.id} />
+              )}
 
               {/* Wishlist & Compare Toggle */}
               <div className="flex gap-2 shrink-0">
@@ -380,18 +384,17 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           <div className="pt-8">
             <TabsContent value="deskripsi" className="prose prose-stone dark:prose-invert max-w-3xl">
               <p>
-                Dirancang untuk pria modern yang menghargai minimalisme tanpa mengorbankan fungsionalitas. 
-                Terbuat dari full-grain cowhide leather berkualitas tinggi yang akan membentuk patina unik 
-                seiring waktu, menjadikannya semakin personal dan berkarakter.
+                Terbuat dari <strong>PU Leather premium</strong> yang tahan lama, tahan air,
+                dan mudah dibersihkan. Desain minimalis yang fungsional untuk kebutuhan sehari-hari.
               </p>
               <ul>
                 <li>Kapasitas: 6-8 kartu</li>
-                <li>Kompartemen uang tunai tersembunyi</li>
-                <li>Jahitan tangan yang presisi dengan benang nylon tahan lama</li>
-                <li>Tepi yang dipoles halus</li>
+                <li>Kompartemen uang tunai</li>
+                <li>Material PU Leather premium, tahan air</li>
+                <li>Jahitan rapi dan kuat</li>
               </ul>
               <p>
-                Setiap produk dilengkapi dengan garansi 1 tahun untuk cacat produksi dan hardware.
+                Setiap produk dilengkapi dengan garansi 30 hari untuk cacat produksi.
               </p>
             </TabsContent>
             
@@ -399,7 +402,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
                 <div className="flex flex-col py-3 border-b border-border">
                   <span className="text-sm text-muted-foreground">Material</span>
-                  <span className="font-medium mt-1">Full Grain Cowhide Leather</span>
+                  <span className="font-medium mt-1">PU Leather Premium</span>
                 </div>
                 <div className="flex flex-col py-3 border-b border-border">
                   <span className="text-sm text-muted-foreground">Dimensi</span>
@@ -411,7 +414,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                 </div>
                 <div className="flex flex-col py-3 border-b border-border">
                   <span className="text-sm text-muted-foreground">Asal Pembuatan</span>
-                  <span className="font-medium mt-1">Bandung, Indonesia</span>
+                  <span className="font-medium mt-1">Garut, Jawa Barat</span>
                 </div>
               </div>
             </TabsContent>

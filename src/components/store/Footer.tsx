@@ -139,22 +139,24 @@ export function Footer() {
             {/* Contact */}
             <div className="mt-6 space-y-2">
               <a
-                href="mailto:hello@raxie.id"
+                href="mailto:raxieleather@gmail.com"
                 className="flex items-center gap-2 text-sm text-charcoal-400 hover:text-tan-400 transition-colors"
               >
                 <Mail className="h-4 w-4" />
-                hello@raxie.id
+                raxieleather@gmail.com
               </a>
               <a
-                href="tel:+6281234567890"
+                href="https://wa.me/6282128862433"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-charcoal-400 hover:text-tan-400 transition-colors"
               >
                 <Phone className="h-4 w-4" />
-                +62 812-3456-7890
+                +62 821-2886-2433
               </a>
               <div className="flex items-center gap-2 text-sm text-charcoal-400">
                 <MapPin className="h-4 w-4 flex-shrink-0" />
-                Jl. Kemang Raya No. 12, Jakarta Selatan
+                Kab. Garut, Jawa Barat, Indonesia
               </div>
             </div>
 
