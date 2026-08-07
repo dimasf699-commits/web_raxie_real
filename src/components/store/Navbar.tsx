@@ -124,7 +124,7 @@ export function Navbar() {
     <>
       {/* Main Navbar */}
       <header
-        className="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 text-white shadow-lg"
+        className="fixed top-0 left-0 right-0 z-40 bg-slate-950 text-white border-b border-slate-800 shadow-lg"
       >
         <AnnouncementBar />
         <div className="container-raxie h-14 md:h-16 flex items-center justify-between">
