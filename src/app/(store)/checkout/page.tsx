@@ -580,7 +580,7 @@ export default function CheckoutPage() {
                   disabled={!paymentMethod || isProcessing}
                   className="w-full py-6 text-lg font-bold mt-4"
                 >
-                  {isProcessing ? 'Memproses Pesanan...' : `Bayar ${formatPrice(totalPrice + shippingCost)}`}
+                  {isProcessing ? 'Memproses Pesanan...' : `Bayar ${formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}`}
                 </Button>
               </motion.div>
             )}
