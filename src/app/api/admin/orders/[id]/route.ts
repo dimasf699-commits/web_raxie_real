@@ -3,6 +3,33 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { sendShippingEmail } from '@/lib/email'
 
+export async function GET(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const session = await auth()
+    if (!session || (session.user as any)?.role !== 'ADMIN') {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: params.id },
+      include: {
+        user: { select: { name: true, email: true, phone: true } },
+        items: true,
+        trackingHistory: true,
+      },
+    })
+
+    if (!order) {
+      return NextResponse.json({ message: 'Order not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ order })
+  } catch (error) {
+    console.error('Admin order GET error:', error)
+    return NextResponse.json({ message: 'Server error' }, { status: 500 })
+  }
+}
+
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   try {
     const session = await auth()
