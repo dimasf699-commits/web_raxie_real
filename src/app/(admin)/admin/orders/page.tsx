@@ -322,14 +322,25 @@ export default function AdminOrdersPage() {
                           </select>
 
                           {order.shippingWaybill ? (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setTrackingOrder(order)}
-                              className="text-xs text-cyan-700 border-cyan-300 hover:bg-cyan-50 gap-1.5"
-                            >
-                              <Truck className="w-3.5 h-3.5" /> Lacak
-                            </Button>
+                            <>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => window.open(`/account/orders/${order.id}`, '_blank')}
+                                className="text-xs text-amber-700 border-amber-300 hover:bg-amber-50 gap-1.5 font-bold"
+                                title="Cetak Resi & Invoice"
+                              >
+                                <Printer className="w-3.5 h-3.5" /> Cetak
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setTrackingOrder(order)}
+                                className="text-xs text-cyan-700 border-cyan-300 hover:bg-cyan-50 gap-1.5"
+                              >
+                                <Truck className="w-3.5 h-3.5" /> Lacak
+                              </Button>
+                            </>
                           ) : (
                             <Button
                               size="sm"

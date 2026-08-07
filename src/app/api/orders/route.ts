@@ -136,9 +136,9 @@ export async function POST(req: NextRequest) {
         data: {
           orderNumber: generateOrderNumber(),
           userId: validUserId,
-          guestEmail: !validUserId ? data.shipping.email : null,
-          guestName: !validUserId ? data.shipping.name : null,
-          guestPhone: !validUserId ? data.shipping.phone : null,
+          guestEmail: data.shipping.email,
+          guestName: data.shipping.name,
+          guestPhone: data.shipping.phone,
           shippingName: data.shipping.name,
           shippingPhone: data.shipping.phone,
           shippingStreet: data.shipping.detail,

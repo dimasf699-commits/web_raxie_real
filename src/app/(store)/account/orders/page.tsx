@@ -66,9 +66,14 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
     whereStatus = 'COMPLETED'
   }
 
+  const userEmail = session?.user?.email
+
   const orders = await prisma.order.findMany({
     where: {
-      userId: session.user.id,
+      OR: [
+        { userId: session.user.id },
+        ...(userEmail ? [{ guestEmail: userEmail }] : []),
+      ],
       ...(whereStatus ? { status: whereStatus } : {})
     },
     orderBy: { createdAt: 'desc' },
