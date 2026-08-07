@@ -635,38 +635,54 @@ model BlogPost {
 
 // ─── Live Chat System ────────────────────────────────────────────────────────
 
-model ChatSession {
-  id              String        @id @default(cuid())
+model ChatConversation {
+  id              String           @id @default(cuid())
   userId          String?
   guestId         String?
-  customerName    String        @default("Pelanggan Raxie")
+  customerName    String
   customerEmail   String?
   customerPhone   String?
-  status          String        @default("ACTIVE") // ACTIVE, CLOSED
-  unreadAdmin     Int           @default(0)
-  unreadUser      Int           @default(0)
-  isTypingUser    Boolean       @default(false)
-  isTypingAdmin   Boolean       @default(false)
+  status          String           @default("Waiting") // Waiting, Admin Reply, Customer Reply, Resolved, Closed
+  unreadAdmin     Int              @default(0)
+  unreadUser      Int              @default(0)
+  isTypingUser    Boolean          @default(false)
+  isTypingAdmin   Boolean          @default(false)
   messages        ChatMessage[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
-  @@map("chat_sessions")
+  @@index([status])
+  @@index([updatedAt])
+  @@map("chat_conversations")
 }
 
 model ChatMessage {
-  id             String      @id @default(cuid())
-  sessionId      String
-  session        ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sender         String      // USER or ADMIN
-  senderName     String      @default("Pelanggan")
-  message        String      @db.Text
-  type           String      @default("TEXT") // TEXT, IMAGE, FILE
-  attachmentUrl  String?
-  attachmentType String?     // image/jpeg, application/pdf, etc.
-  attachmentName String?
-  isRead         Boolean     @default(false)
-  createdAt      DateTime    @default(now())
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         String           // USER or ADMIN
+  senderName     String
+  message        String           @db.Text
+  status         String           @default("Sent") // Sending, Sent, Delivered, Read
+  isRead         Boolean          @default(false)
+  attachments    ChatAttachment[]
+  createdAt      DateTime         @default(now())
 
+  @@index([conversationId])
   @@map("chat_messages")
+}
+
+model ChatAttachment {
+  id         String      @id @default(cuid())
+  messageId  String
+  message    ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  fileUrl    String
+  fileName   String
+  fileType   String      // IMAGE, PDF, FILE
+  mimeType   String
+  fileSize   Int         @default(0)
+  createdAt  DateTime    @default(now())
+
+  @@index([messageId])
+  @@map("chat_attachments")
 }
