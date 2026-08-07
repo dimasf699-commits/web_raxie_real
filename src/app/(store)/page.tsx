@@ -229,7 +229,7 @@ export default function HomePage() {
   return (
     <div className="overflow-x-hidden">
       {/* ─── Hero Carousel ──────────────────────────────────────────────────── */}
-      <section className="relative h-[85vh] min-h-[560px] overflow-hidden -mt-[96px] md:-mt-[104px] pt-[96px] md:pt-[104px]">
+      <section className="relative h-[85vh] min-h-[560px] overflow-hidden m-0 p-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide.id}
