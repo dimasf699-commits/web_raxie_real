@@ -124,10 +124,7 @@ export function Navbar() {
       {/* Main Navbar */}
       <motion.header
         className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-          isScrolled
-            ? 'bg-background/95 backdrop-blur-xl shadow-sm border-b border-border'
-            : 'bg-transparent'
+          'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 text-white shadow-lg'
         )}
         initial={false}
         animate={{ height: isScrolled ? 56 : 64 }}
@@ -137,7 +134,7 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-serif font-bold text-2xl tracking-tight text-foreground hover:text-tan-400 transition-colors"
+            className="flex items-center gap-2 font-serif font-bold text-2xl tracking-tight text-white hover:text-amber-400 transition-colors"
           >
             <motion.div
               animate={{ scale: isScrolled ? 0.9 : 1 }}
@@ -168,10 +165,10 @@ export function Navbar() {
                   href={link.href}
                   className={cn(
                     'flex items-center gap-0.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                    'hover:text-tan-400 hover:bg-tan-50 dark:hover:bg-tan-900/10',
+                    'hover:text-amber-400 hover:bg-slate-900',
                     pathname === link.href || pathname.startsWith(link.href + '?')
-                      ? 'text-tan-500'
-                      : 'text-foreground/80'
+                      ? 'text-amber-400 font-semibold'
+                      : 'text-slate-300'
                   )}
                 >
                   {link.label}
