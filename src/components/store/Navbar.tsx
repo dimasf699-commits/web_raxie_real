@@ -216,7 +216,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-foreground/70 hover:text-foreground"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -227,7 +227,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Toggle tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-foreground/70 hover:text-foreground hidden sm:flex"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 hidden sm:flex"
             >
               <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -239,7 +239,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Wishlist"
               asChild
-              className="text-foreground/70 hover:text-foreground relative hidden sm:flex"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative hidden sm:flex"
             >
               <Link href="/wishlist">
                 <Heart className="h-5 w-5" />
@@ -261,7 +261,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-foreground/70 hover:text-foreground relative"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative"
             >
               <ShoppingBag className="h-5 w-5" />
               <AnimatePresence>
@@ -271,7 +271,7 @@ export function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-tan-400 text-white text-[10px] font-bold flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold flex items-center justify-center"
                   >
                     {cartItems > 9 ? '9+' : cartItems}
                   </motion.span>
@@ -285,7 +285,7 @@ export function Navbar() {
                 <>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-tan-400 flex items-center justify-center bg-tan-100 text-tan-700 font-bold text-sm hover:border-tan-500 transition-colors"
+                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-amber-400 flex items-center justify-center bg-slate-900 text-amber-400 font-bold text-sm hover:border-amber-300 transition-colors"
                     aria-label="Menu akun"
                   >
                     {session.user?.image ? (
@@ -302,21 +302,39 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        onMouseLeave={() => setShowUserMenu(false)}
-                        className="absolute right-0 top-full mt-2 w-52 rounded-xl bg-card border border-border shadow-xl overflow-hidden py-2 z-50"
+                        className="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 shadow-2xl overflow-hidden py-1 z-50"
                       >
-                        <div className="px-4 py-2 border-b border-border mb-1">
-                          <p className="font-semibold text-sm text-foreground truncate">{session.user?.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{session.user?.email}</p>
+                        <div className="px-4 py-3 border-b border-slate-800">
+                          <p className="text-sm font-semibold text-white truncate">{session.user?.name}</p>
+                          <p className="text-xs text-slate-400 truncate">{session.user?.email}</p>
                         </div>
-                        <Link href="/account" onClick={() => setShowUserMenu(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground/80 hover:text-tan-500 hover:bg-tan-50 dark:hover:bg-tan-900/10 transition-colors">
-                          <User className="w-4 h-4" /> Dasbor Saya
+
+                        {(session.user as any)?.role === 'ADMIN' && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setShowUserMenu(false)}
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 font-semibold hover:bg-slate-800 transition-colors"
+                          >
+                            ⚡ Dashboard Admin
+                          </Link>
+                        )}
+
+                        <Link
+                          href="/account"
+                          onClick={() => setShowUserMenu(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                        >
+                          <User className="w-4 h-4" /> Profil & Pesanan
                         </Link>
-                        <Link href="/account/orders" onClick={() => setShowUserMenu(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm text-foreground/80 hover:text-tan-500 hover:bg-tan-50 dark:hover:bg-tan-900/10 transition-colors">
-                          <ShoppingBag className="w-4 h-4" /> Pesanan Saya
-                        </Link>
-                        <div className="border-t border-border mt-1 pt-1">
-                          <button onClick={() => signOut({ callbackUrl: '/' })} className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+
+                        <div className="border-t border-slate-800 my-1">
+                          <button
+                            onClick={() => {
+                              setShowUserMenu(false)
+                              signOut({ callbackUrl: '/' })
+                            }}
+                            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-slate-800 transition-colors"
+                          >
                             <LogOut className="w-4 h-4" /> Keluar
                           </button>
                         </div>
@@ -330,7 +348,7 @@ export function Navbar() {
                   size="icon-sm"
                   aria-label="Login"
                   asChild
-                  className="text-foreground/70 hover:text-foreground"
+                  className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
                 >
                   <Link href="/login">
                     <User className="h-5 w-5" />
@@ -345,7 +363,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Menu"
               onClick={() => setIsMobileOpen(true)}
-              className="text-foreground/70 hover:text-foreground lg:hidden"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </Button>

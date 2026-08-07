@@ -41,7 +41,7 @@ const heroSlides = [
     subtitle: 'Dompet kulit premium buatan tangan. Dibuat untuk bertahan seumur hidup.',
     cta: 'Jelajahi Koleksi',
     href: '/products',
-    badge: 'Koleksi 2024',
+    badge: 'Koleksi 2026',
     bg: 'from-charcoal-900 via-charcoal-800 to-charcoal-900',
     accentColor: 'text-tan-400',
     image: 'https://i.imgur.com/5oEmCUr.png',
@@ -336,10 +336,10 @@ export default function HomePage() {
         <div className="container-raxie">
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
             {[
-              { icon: Truck, text: 'Gratis Ongkir min. Rp 500.000' },
+              { icon: Truck, text: 'Resi & Pengiriman Otomatis JNE/J&T' },
               { icon: ShieldCheck, text: 'Garansi Cacat Produk 30 Hari' },
-              { icon: RotateCcw, text: 'Retur 30 Hari' },
-              { icon: Sparkles, text: 'Koleksi Baru 2026' },
+              { icon: RotateCcw, text: 'Retur & Tukar 30 Hari' },
+              { icon: Sparkles, text: 'Koleksi PU Leather 2026' },
             ].map((item) => (
               <div key={item.text} className="flex items-center gap-2 text-white">
                 <item.icon className="h-4 w-4 opacity-80" />
@@ -576,6 +576,75 @@ export default function HomePage() {
               </motion.div>
             </AnimatedSection>
           </div>
+        </div>
+      {/* ─── Customer Testimonials ────────────────────────────────────────── */}
+      <section className="py-20 bg-slate-900 text-white">
+        <div className="container-raxie">
+          <AnimatedSection>
+            <motion.div variants={fadeUp} className="text-center mb-12">
+              <Badge variant="brand" className="mb-3 bg-amber-500/20 text-amber-300 border-amber-500/30">
+                Ulasan Pembeli
+              </Badge>
+              <h2 className="font-serif text-4xl font-bold text-white">
+                Apa Kata Mereka Tentang Raxie?
+              </h2>
+              <p className="mt-3 text-slate-400 max-w-md mx-auto text-sm">
+                Kepuasan pelanggan adalah prioritas nomor satu kami.
+              </p>
+            </motion.div>
+
+            <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  name: 'Ahmad R.',
+                  city: 'Jakarta Selatan',
+                  review: 'Dompet bifold Raxie-nya empuk dan jahitan super rapi. Terasa sangat premium padahal harganya terjangkau. Resi JNE langsung terbit otomatis!',
+                  rating: 5,
+                  product: 'Dompet Bifold RX008',
+                },
+                {
+                  name: 'Budi S.',
+                  city: 'Bandung',
+                  review: 'Tas selempang PU Leather-nya tahan air, sangat cocok buat aktivitas harian kuliah & kerja. Pengiriman dari Garut cuma 1 hari sampai.',
+                  rating: 5,
+                  product: 'Tas Selempang Leather RX004',
+                },
+                {
+                  name: 'Dian P.',
+                  city: 'Surabaya',
+                  review: 'Beli sabuk dan dompet untuk kado ulang tahun pasangan. Packaging-nya eksklusif banget dan bahan sintetisnya halus seperti kulit asli.',
+                  rating: 5,
+                  product: 'Sabuk & Dompet Gift Set',
+                },
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  variants={fadeUp}
+                  className="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 shadow-xl flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center gap-1 text-amber-400 mb-3">
+                      {Array.from({ length: item.rating }).map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-amber-400" />
+                      ))}
+                    </div>
+                    <p className="text-slate-300 text-sm leading-relaxed italic mb-4">
+                      "{item.review}"
+                    </p>
+                  </div>
+                  <div className="border-t border-slate-700/60 pt-4 flex justify-between items-center text-xs">
+                    <div>
+                      <p className="font-bold text-white">{item.name}</p>
+                      <p className="text-slate-400">{item.city}</p>
+                    </div>
+                    <span className="text-[10px] font-semibold bg-slate-900 text-amber-300 px-2 py-1 rounded border border-slate-700">
+                      {item.product}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </AnimatedSection>
         </div>
       </section>
 
