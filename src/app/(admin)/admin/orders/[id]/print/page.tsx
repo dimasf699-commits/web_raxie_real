@@ -42,7 +42,35 @@ export default function OrderPrintPage() {
   const waybill = order.shippingWaybill || order.trackingNumber || '-'
 
   return (
-    <div className="min-h-screen bg-slate-100 p-4 sm:p-8 print:p-0 print:bg-white">
+    <div className="min-h-screen bg-slate-100 p-4 sm:p-8 print:p-0 print:bg-white print:m-0 print:w-full">
+      <style>{`
+        @page {
+          size: 100mm 150mm;
+          margin: 0;
+        }
+        @media print {
+          aside, nav, header, footer, [class*="sidebar"], [class*="Sidebar"] {
+            display: none !important;
+          }
+          body, main {
+            background: white !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100mm !important;
+          }
+          .printable-card {
+            width: 100mm !important;
+            max-width: 100mm !important;
+            box-sizing: border-box !important;
+            border: 2px solid #000 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 8mm !important;
+          }
+        }
+      `}</style>
+
       {/* Control Bar (Hidden when printing) */}
       <div className="max-w-3xl mx-auto mb-6 flex items-center justify-between print:hidden">
         <button
@@ -60,7 +88,7 @@ export default function OrderPrintPage() {
       </div>
 
       {/* Printable Label & Invoice Card */}
-      <div className="max-w-3xl mx-auto bg-white border border-slate-300 rounded-2xl shadow-lg print:shadow-none print:border-2 print:border-black print:rounded-none p-6 sm:p-8 text-slate-800">
+      <div className="printable-card max-w-3xl mx-auto bg-white border border-slate-300 rounded-2xl shadow-lg print:shadow-none print:border-2 print:border-black print:rounded-none p-6 sm:p-8 text-slate-800">
         
         {/* Header */}
         <div className="flex justify-between items-start border-b-2 border-slate-900 pb-6 mb-6">
