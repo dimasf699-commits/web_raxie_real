@@ -11,6 +11,56 @@ function sanitizeHtml(str: string): string {
     .replace(/'/g, '&#039;')
 }
 
+async function ensureTablesExist() {
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS public.chat_sessions (
+        id TEXT PRIMARY KEY,
+        "userId" TEXT,
+        "guestId" TEXT,
+        "customerName" TEXT NOT NULL DEFAULT 'Pelanggan Raxie',
+        "customerEmail" TEXT,
+        "customerPhone" TEXT,
+        status TEXT NOT NULL DEFAULT 'Waiting',
+        "unreadAdmin" INTEGER NOT NULL DEFAULT 0,
+        "unreadUser" INTEGER NOT NULL DEFAULT 0,
+        "isTypingUser" BOOLEAN NOT NULL DEFAULT false,
+        "isTypingAdmin" BOOLEAN NOT NULL DEFAULT false,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `)
+
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS public.chat_messages (
+        id TEXT PRIMARY KEY,
+        "sessionId" TEXT NOT NULL REFERENCES public.chat_sessions(id) ON DELETE CASCADE,
+        sender TEXT NOT NULL,
+        "senderName" TEXT NOT NULL DEFAULT 'Pelanggan',
+        message TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'Sent',
+        "isRead" BOOLEAN NOT NULL DEFAULT false,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `)
+
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS public.chat_attachments (
+        id TEXT PRIMARY KEY,
+        "messageId" TEXT NOT NULL REFERENCES public.chat_messages(id) ON DELETE CASCADE,
+        "fileUrl" TEXT NOT NULL,
+        "fileName" TEXT NOT NULL,
+        "fileType" TEXT NOT NULL,
+        "mimeType" TEXT NOT NULL,
+        "fileSize" INTEGER NOT NULL DEFAULT 0,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `)
+  } catch (err) {
+    console.error('[ENSURE_TABLES_ERROR]', err)
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}))
@@ -49,6 +99,9 @@ export async function POST(req: NextRequest) {
     const cleanName = sanitizeHtml(customerName.trim())
     const cleanEmail = customerEmail && typeof customerEmail === 'string' && customerEmail.trim() ? sanitizeHtml(customerEmail.trim()) : null
     const cleanPhone = customerPhone && typeof customerPhone === 'string' && customerPhone.trim() ? sanitizeHtml(customerPhone.trim()) : null
+
+    // Ensure database tables exist automatically
+    await ensureTablesExist()
 
     // Check existing conversation ID if passed
     if (conversationId && typeof conversationId === 'string' && conversationId.trim()) {
@@ -98,6 +151,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ conversation: newConv })
   } catch (error: any) {
     console.error('[CONVERSATIONS_POST_ERROR]', error)
+    // Retry creating tables once if failed
+    try {
+      await ensureTablesExist()
+    } catch (e) {
+      console.error('[ENSURE_TABLES_RETRY_ERROR]', e)
+    }
+
     return NextResponse.json(
       { error: error?.message || 'Terjadi kesalahan pada server saat membuat percakapan.' },
       { status: 500 }
@@ -107,6 +167,8 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
+    await ensureTablesExist()
+
     const session = await auth()
     if (!session || (session.user as any)?.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
