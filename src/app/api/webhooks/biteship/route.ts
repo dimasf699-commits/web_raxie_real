@@ -16,14 +16,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, message: 'Ping OK' }, { status: 200 })
     }
 
-    // Biteship webhook sends events for order status changes
-    // Refer to https://biteship.com/docs/api/webhooks
-    const { event, order_id, status, courier, waybill_id } = data || {}
+    // Biteship webhook payload structure
+    const { order_id, status, courier, waybill_id, id } = data || {}
+    const targetOrderId = order_id || id || data.courier?.waybill_id
 
-    if ((event === 'order.status.updated' || event === 'order.waybill_id.updated') && order_id) {
+    if (targetOrderId) {
       let newStatus: OrderStatus | undefined = undefined
 
-      switch (status) {
+      switch (status?.toLowerCase()) {
         case 'allocated':
         case 'picking_up':
           newStatus = 'PROCESSING'
@@ -48,9 +48,10 @@ export async function POST(req: NextRequest) {
       const order = await prisma.order.findFirst({
         where: {
           OR: [
-            { shippingOrderId: order_id },
-            { orderNumber: order_id },
-            { shippingWaybill: waybill_id },
+            { shippingOrderId: targetOrderId },
+            { orderNumber: targetOrderId },
+            { shippingWaybill: waybill_id || targetOrderId },
+            { trackingNumber: waybill_id || targetOrderId },
           ],
         },
       })
