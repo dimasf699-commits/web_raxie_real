@@ -637,12 +637,16 @@ model BlogPost {
 
 model ChatSession {
   id              String        @id @default(cuid())
+  userId          String?
+  guestId         String?
   customerName    String        @default("Pelanggan Raxie")
   customerEmail   String?
   customerPhone   String?
-  status          String        @default("ACTIVE")
+  status          String        @default("ACTIVE") // ACTIVE, CLOSED
   unreadAdmin     Int           @default(0)
   unreadUser      Int           @default(0)
+  isTypingUser    Boolean       @default(false)
+  isTypingAdmin   Boolean       @default(false)
   messages        ChatMessage[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -651,14 +655,18 @@ model ChatSession {
 }
 
 model ChatMessage {
-  id         String      @id @default(cuid())
-  sessionId  String
-  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sender     String      // USER or ADMIN
-  senderName String      @default("Pelanggan")
-  message    String      @db.Text
-  isRead     Boolean     @default(false)
-  createdAt  DateTime    @default(now())
+  id             String      @id @default(cuid())
+  sessionId      String
+  session        ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sender         String      // USER or ADMIN
+  senderName     String      @default("Pelanggan")
+  message        String      @db.Text
+  type           String      @default("TEXT") // TEXT, IMAGE, FILE
+  attachmentUrl  String?
+  attachmentType String?     // image/jpeg, application/pdf, etc.
+  attachmentName String?
+  isRead         Boolean     @default(false)
+  createdAt      DateTime    @default(now())
 
   @@map("chat_messages")
 }
