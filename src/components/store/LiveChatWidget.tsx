@@ -94,12 +94,13 @@ export function LiveChatWidget() {
     }
   }, [session])
 
-  // Realtime Auto-poll every 2.5s
+  // Realtime Ultra-Fast Auto-poll (1s when open, 3s when closed)
   useEffect(() => {
     if (!conversationId || !isInitialized) return
+    const pollSpeed = isOpen ? 1000 : 3000
     const interval = setInterval(() => {
       fetchConversation(conversationId)
-    }, 2500)
+    }, pollSpeed)
     return () => clearInterval(interval)
   }, [conversationId, isInitialized, isOpen])
 

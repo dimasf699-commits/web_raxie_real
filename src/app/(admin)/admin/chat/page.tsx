@@ -60,10 +60,10 @@ export default function AdminChatPage() {
     }
   }
 
-  // Poll conversations every 2.5 seconds
+  // Ultra-fast Realtime Poll conversations every 1.2 seconds
   useEffect(() => {
     fetchConversations()
-    const interval = setInterval(fetchConversations, 2500)
+    const interval = setInterval(fetchConversations, 1200)
     return () => clearInterval(interval)
   }, [search, filter, statusFilter, selectedConvId])
 

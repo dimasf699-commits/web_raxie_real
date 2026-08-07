@@ -11,7 +11,10 @@ function sanitizeHtml(str: string): string {
     .replace(/'/g, '&#039;')
 }
 
+let tablesEnsured = false
+
 async function ensureTablesExist() {
+  if (tablesEnsured) return
   try {
     await prisma.$executeRawUnsafe(`
       CREATE TABLE IF NOT EXISTS public.chat_sessions (
@@ -56,6 +59,7 @@ async function ensureTablesExist() {
         "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
       );
     `)
+    tablesEnsured = true
   } catch (err) {
     console.error('[ENSURE_TABLES_ERROR]', err)
   }
