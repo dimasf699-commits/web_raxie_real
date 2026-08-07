@@ -114,9 +114,36 @@ export default function AdminOrdersPage() {
           <h1 className="font-serif text-2xl font-bold text-slate-800 dark:text-foreground">Daftar Pesanan</h1>
           <p className="text-sm text-slate-500 mt-1">Total <strong>{total}</strong> pesanan ditemukan</p>
         </div>
-        <Button variant="outline" className="gap-2 shrink-0 border-slate-200">
-          <Download className="w-4 h-4" /> Export CSV
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button
+            variant="outline"
+            onClick={async () => {
+              if (confirm('Apakah Anda yakin ingin MENGHAPUS SELURUH PESANAN TES? Data pesanan palsu saat testing akan dibersihkan 100%.')) {
+                try {
+                  const res = await fetch('/api/admin/reset-test-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target: 'ORDERS' }),
+                  })
+                  if (res.ok) {
+                    toast.success('Seluruh pesanan tes berhasil dibersihkan!')
+                    fetchOrders()
+                  } else {
+                    toast.error('Gagal membersihkan pesanan tes')
+                  }
+                } catch {
+                  toast.error('Terjadi kesalahan koneksi')
+                }
+              }
+            }}
+            className="gap-2 border-rose-300 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-semibold"
+          >
+            🗑️ Reset Pesanan Tes
+          </Button>
+          <Button variant="outline" className="gap-2 border-slate-200 text-xs font-semibold">
+            <Download className="w-4 h-4" /> Export CSV
+          </Button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl shadow-sm overflow-hidden">
