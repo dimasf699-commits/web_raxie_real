@@ -326,9 +326,9 @@ export default function AdminOrdersPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => window.open(`/account/orders/${order.id}`, '_blank')}
+                                onClick={() => window.open(`/admin/orders/${order.id}/print`, '_blank')}
                                 className="text-xs text-amber-700 border-amber-300 hover:bg-amber-50 gap-1.5 font-bold"
-                                title="Cetak Resi & Invoice"
+                                title="Cetak Label Resi Pengiriman"
                               >
                                 <Printer className="w-3.5 h-3.5" /> Cetak
                               </Button>
