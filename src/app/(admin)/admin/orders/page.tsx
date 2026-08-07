@@ -364,11 +364,9 @@ export default function AdminOrdersPage() {
       {/* Modal Lacak Resi */}
       {trackingOrder && (
         <TrackingModal
-          orderId={trackingOrder.id}
-          orderNumber={trackingOrder.orderNumber}
-          waybill={trackingOrder.shippingWaybill}
-          courier={trackingOrder.courierName || 'jne'}
+          order={trackingOrder}
           onClose={() => setTrackingOrder(null)}
+          onSuccess={fetchOrders}
         />
       )}
     </div>
