@@ -4,13 +4,14 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { LayoutDashboard, PackageSearch, ShoppingCart, Users, Tag, Settings, LogOut } from 'lucide-react'
+import { LayoutDashboard, PackageSearch, ShoppingCart, Users, Tag, Settings, LogOut, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const adminNav = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/orders', label: 'Pesanan', icon: ShoppingCart },
   { href: '/admin/products', label: 'Produk', icon: PackageSearch },
+  { href: '/admin/chat', label: 'Live Chat CS', icon: MessageSquare },
   { href: '/admin/customers', label: 'Pelanggan', icon: Users },
   { href: '/admin/vouchers', label: 'Voucher', icon: Tag },
   { href: '/admin/settings', label: 'Pengaturan', icon: Settings },

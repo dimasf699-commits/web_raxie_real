@@ -92,6 +92,8 @@ import { Suspense } from 'react'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 
+import { LiveChatWidget } from '@/components/store/LiveChatWidget'
+
 export default function RootLayout({
   children,
 }: {
@@ -125,6 +127,7 @@ export default function RootLayout({
               {children}
               <Toaster />
               <WhatsAppButton phoneNumber="082128862433" />
+              <LiveChatWidget />
               <CookieConsent />
             </QueryProvider>
           </AuthProvider>

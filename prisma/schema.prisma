@@ -632,3 +632,33 @@ model BlogPost {
 
   @@map("blog_posts")
 }
+
+// ─── Live Chat System ────────────────────────────────────────────────────────
+
+model ChatSession {
+  id              String        @id @default(cuid())
+  customerName    String        @default("Pelanggan Raxie")
+  customerEmail   String?
+  customerPhone   String?
+  status          String        @default("ACTIVE")
+  unreadAdmin     Int           @default(0)
+  unreadUser      Int           @default(0)
+  messages        ChatMessage[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id         String      @id @default(cuid())
+  sessionId  String
+  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sender     String      // USER or ADMIN
+  senderName String      @default("Pelanggan")
+  message    String      @db.Text
+  isRead     Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+
+  @@map("chat_messages")
+}
