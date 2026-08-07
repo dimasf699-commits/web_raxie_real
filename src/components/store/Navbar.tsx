@@ -26,6 +26,7 @@ import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { cn } from '@/lib/utils'
 import { AnnouncementBar } from '@/components/store/AnnouncementBar'
+import { Button } from '@/components/ui/Button'
 
 const defaultNavLinks = [
   { href: '/products', label: 'Semua Koleksi' },
