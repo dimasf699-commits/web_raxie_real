@@ -577,6 +577,8 @@ export default function HomePage() {
             </AnimatedSection>
           </div>
         </div>
+      </section>
+
       {/* ─── Customer Testimonials ────────────────────────────────────────── */}
       <section className="py-20 bg-slate-900 text-white">
         <div className="container-raxie">
