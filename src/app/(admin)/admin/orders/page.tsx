@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, Filter, Download, Truck, Loader2, Package, Printer } from 'lucide-react'
+import { Search, Filter, Download, Truck, Loader2, Package, Printer, Trash2, CheckSquare, Square } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { formatPrice } from '@/lib/utils'
 import { TrackingModal } from '@/components/admin/TrackingModal'
@@ -37,6 +37,10 @@ export default function AdminOrdersPage() {
   const [search, setSearch] = useState('')
   const [trackingOrder, setTrackingOrder] = useState<any>(null)
 
+  // Checkbox Selection State
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false)
+
   const fetchOrders = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -53,9 +57,50 @@ export default function AdminOrdersPage() {
   }, [activeTab, search])
 
   useEffect(() => {
-    const t = setTimeout(fetchOrders, 300)
-    return () => clearTimeout(t)
+    fetchOrders()
   }, [fetchOrders])
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === orders.length && orders.length > 0) {
+      setSelectedIds([])
+    } else {
+      setSelectedIds(orders.map((o) => o.id))
+    }
+  }
+
+  const toggleSelectOrder = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    )
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return
+    if (!confirm(`Apakah Anda yakin ingin MENGHAPUS ${selectedIds.length} PESANAN TERPILIH sekaligus?`)) {
+      return
+    }
+
+    setIsDeletingBulk(true)
+    try {
+      const res = await fetch('/api/admin/orders/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(data.message || 'Pesanan terpilih berhasil dihapus!')
+        setSelectedIds([])
+        fetchOrders()
+      } else {
+        toast.error(data.error || 'Gagal menghapus pesanan terpilih')
+      }
+    } catch {
+      toast.error('Terjadi kesalahan koneksi')
+    } finally {
+      setIsDeletingBulk(false)
+    }
+  }
 
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
@@ -65,17 +110,17 @@ export default function AdminOrdersPage() {
         body: JSON.stringify({ status: newStatus }),
       })
       if (res.ok) {
-        toast.success(`Status pesanan berhasil diperbarui`)
+        toast.success('Status pesanan berhasil diperbarui')
         fetchOrders()
       } else {
-        toast.error('Gagal mengubah status')
+        toast.error('Gagal memperbarui status')
       }
     } catch {
       toast.error('Terjadi kesalahan')
     }
   }
 
-  const handleBiteshipTrigger = async (id: string, orderNumber: string) => {
+  const handleCallBiteship = async (id: string, orderNumber: string) => {
     try {
       toast.info(`Memanggil kurir Biteship untuk ${orderNumber}...`)
       const res = await fetch(`/api/admin/orders/${id}/biteship`, { method: 'POST' })
@@ -107,6 +152,8 @@ export default function AdminOrdersPage() {
     }
   }
 
+  const isAllSelected = orders.length > 0 && selectedIds.length === orders.length
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -114,37 +161,36 @@ export default function AdminOrdersPage() {
           <h1 className="font-serif text-2xl font-bold text-slate-800 dark:text-foreground">Daftar Pesanan</h1>
           <p className="text-sm text-slate-500 mt-1">Total <strong>{total}</strong> pesanan ditemukan</p>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Button
-            variant="outline"
-            onClick={async () => {
-              if (confirm('Apakah Anda yakin ingin MENGHAPUS SELURUH PESANAN TES? Data pesanan palsu saat testing akan dibersihkan 100%.')) {
-                try {
-                  const res = await fetch('/api/admin/reset-test-data', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ target: 'ORDERS' }),
-                  })
-                  if (res.ok) {
-                    toast.success('Seluruh pesanan tes berhasil dibersihkan!')
-                    fetchOrders()
-                  } else {
-                    toast.error('Gagal membersihkan pesanan tes')
-                  }
-                } catch {
-                  toast.error('Terjadi kesalahan koneksi')
-                }
-              }
-            }}
-            className="gap-2 border-rose-300 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-xs font-semibold"
-          >
-            🗑️ Reset Pesanan Tes
-          </Button>
-          <Button variant="outline" className="gap-2 border-slate-200 text-xs font-semibold">
-            <Download className="w-4 h-4" /> Export CSV
-          </Button>
-        </div>
+        <Button variant="outline" className="gap-2 shrink-0 border-slate-200 text-xs font-semibold">
+          <Download className="w-4 h-4" /> Export CSV
+        </Button>
       </div>
+
+      {/* Floating Bulk Action Bar */}
+      {selectedIds.length > 0 && (
+        <div className="bg-slate-900 text-white px-5 py-3.5 rounded-2xl flex items-center justify-between shadow-xl animate-in fade-in border border-slate-800">
+          <div className="flex items-center gap-3 text-xs font-bold">
+            <span className="bg-amber-500 text-slate-950 px-2.5 py-1 rounded-lg font-extrabold">{selectedIds.length}</span>
+            <span>Pesanan Terpilih</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSelectedIds([])}
+              className="px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+            >
+              Batal Pilih
+            </button>
+            <button
+              onClick={handleBulkDelete}
+              disabled={isDeletingBulk}
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white font-extrabold text-xs rounded-xl shadow-lg flex items-center gap-1.5 transition-all"
+            >
+              {isDeletingBulk ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+              Hapus ({selectedIds.length}) Pesanan
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl shadow-sm overflow-hidden">
         {/* Toolbar */}
@@ -153,7 +199,7 @@ export default function AdminOrdersPage() {
             {tabs.map(tab => (
               <button
                 key={tab.value}
-                onClick={() => { setActiveTab(tab.value); setSearch('') }}
+                onClick={() => { setActiveTab(tab.value); setSearch(''); setSelectedIds([]) }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   activeTab === tab.value
                     ? 'bg-slate-800 text-white'
@@ -195,7 +241,16 @@ export default function AdminOrdersPage() {
             <table className="w-full text-left text-sm whitespace-nowrap">
               <thead className="bg-slate-50 dark:bg-muted/50 text-slate-500 uppercase tracking-wider text-xs">
                 <tr>
-                  <th className="px-6 py-4 font-semibold">ID Pesanan</th>
+                  <th className="w-12 px-4 py-4 text-center">
+                    <input
+                      type="checkbox"
+                      checked={isAllSelected}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-amber-500 cursor-pointer"
+                      title="Pilih Semua Pesanan"
+                    />
+                  </th>
+                  <th className="px-4 py-4 font-semibold">ID Pesanan</th>
                   <th className="px-6 py-4 font-semibold">Pelanggan</th>
                   <th className="px-6 py-4 font-semibold">Tanggal</th>
                   <th className="px-6 py-4 font-semibold">Total</th>
@@ -206,12 +261,24 @@ export default function AdminOrdersPage() {
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-border">
                 {orders.map((order) => {
+                  const isChecked = selectedIds.includes(order.id)
                   const statusInfo = statusMap[order.status] ?? { label: order.status, color: 'bg-gray-100 text-gray-700' }
                   const customerName = order.user?.name ?? order.guestName ?? 'Tamu'
                   const customerEmail = order.user?.email ?? order.guestEmail ?? '-'
                   return (
-                    <tr key={order.id} className="hover:bg-slate-50/50 dark:hover:bg-muted/30 transition-colors">
-                      <td className="px-6 py-4">
+                    <tr
+                      key={order.id}
+                      className={`transition-colors ${isChecked ? 'bg-amber-500/10 dark:bg-amber-500/20' : 'hover:bg-slate-50/50 dark:hover:bg-muted/30'}`}
+                    >
+                      <td className="px-4 py-4 text-center">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => toggleSelectOrder(order.id)}
+                          className="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-amber-500 cursor-pointer"
+                        />
+                      </td>
+                      <td className="px-4 py-4">
                         <p className="font-semibold text-slate-800 dark:text-foreground">{order.orderNumber}</p>
                       </td>
                       <td className="px-6 py-4">
@@ -249,50 +316,40 @@ export default function AdminOrdersPage() {
                             onChange={(e) => handleStatusChange(order.id, e.target.value)}
                             className="text-xs border border-slate-200 dark:border-border rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-muted font-medium focus:outline-none cursor-pointer"
                           >
-                            <option value="PENDING_PAYMENT">Menunggu Bayar</option>
-                            <option value="PAYMENT_CONFIRMED">Bayar Terkonfirmasi</option>
-                            <option value="PROCESSING">Diproses</option>
-                            <option value="PACKED">Dikemas</option>
-                            <option value="SHIPPED">Dikirim</option>
-                            <option value="DELIVERED">Terkirim</option>
-                            <option value="COMPLETED">Selesai</option>
-                            <option value="CANCELLED">Dibatalkan</option>
+                            {Object.entries(statusMap).map(([val, { label }]) => (
+                              <option key={val} value={val}>{label}</option>
+                            ))}
                           </select>
 
-                          {!order.shippingWaybill && (
-                            <button
-                              onClick={() => handleBiteshipTrigger(order.id, order.orderNumber)}
-                              className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-purple-700 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 transition-colors font-medium shrink-0"
-                              title="Panggil Kurir Biteship Otomatis"
+                          {order.shippingWaybill ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setTrackingOrder(order)}
+                              className="text-xs text-cyan-700 border-cyan-300 hover:bg-cyan-50 gap-1.5"
                             >
-                              <Truck className="w-3.5 h-3.5 text-purple-600" /> Auto Biteship
-                            </button>
+                              <Truck className="w-3.5 h-3.5" /> Lacak
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleCallBiteship(order.id, order.orderNumber)}
+                              className="text-xs text-indigo-700 border-indigo-300 hover:bg-indigo-50 gap-1.5"
+                            >
+                              <Truck className="w-3.5 h-3.5" /> Pickup
+                            </Button>
                           )}
 
-                          <button
-                            onClick={() => setTrackingOrder(order)}
-                            className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-slate-700 bg-slate-100 border border-slate-200 rounded-lg hover:bg-slate-200 transition-colors font-medium shrink-0"
-                            title="Input Resi Manual"
-                          >
-                            Resi Manual
-                          </button>
-
-                          <a
-                            href={`/admin/orders/${order.id}/print`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors font-medium shrink-0"
-                            title="Cetak Resi & Label Pengiriman"
-                          >
-                            <Printer className="w-3.5 h-3.5 text-blue-600" /> Cetak
-                          </a>
-
-                          <button
+                          <Button
+                            size="sm"
+                            variant="ghost"
                             onClick={() => handleDelete(order.id, order.orderNumber)}
-                            className="text-xs text-red-600 hover:text-red-700 font-medium px-2 py-1.5"
+                            className="text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/20"
+                            title="Hapus Pesanan"
                           >
                             Hapus
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -304,11 +361,16 @@ export default function AdminOrdersPage() {
         )}
       </div>
 
-      <TrackingModal
-        order={trackingOrder}
-        onClose={() => setTrackingOrder(null)}
-        onSuccess={fetchOrders}
-      />
+      {/* Modal Lacak Resi */}
+      {trackingOrder && (
+        <TrackingModal
+          orderId={trackingOrder.id}
+          orderNumber={trackingOrder.orderNumber}
+          waybill={trackingOrder.shippingWaybill}
+          courier={trackingOrder.courierName || 'jne'}
+          onClose={() => setTrackingOrder(null)}
+        />
+      )}
     </div>
   )
 }
