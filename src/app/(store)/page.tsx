@@ -193,9 +193,9 @@ export default function HomePage() {
         setFlashSale(bestData.products?.slice(0, 2) || [])
         if (catData && catData.length > 0) {
           const catImageMap: Record<string, string> = {
-            dompet: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80',
-            tas: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80',
-            sabuk: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=600&q=80',
+            dompet: 'https://i.imgur.com/X1YcH8c.jpeg',
+            tas: 'https://i.imgur.com/Y6g6vrp.jpeg',
+            sabuk: 'https://i.imgur.com/kF5yKip.jpeg',
           }
           setCategories(catData.map((c: any) => ({
             name: c.name,
@@ -475,8 +475,8 @@ export default function HomePage() {
                     className="grid grid-cols-2 gap-4 flex-1 max-w-md"
                   >
                     {isLoading ? null : flashSale.map((p) => (
-                      <motion.div key={p.id} variants={fadeUp} className="bg-white/5 dark:bg-black/20 rounded-2xl p-3 border border-white/10">
-                        <ProductCard product={p} />
+                      <motion.div key={p.id} variants={fadeUp} className="bg-slate-800/80 rounded-2xl p-3 border border-slate-700/60 shadow-xl">
+                        <ProductCard product={p} isDarkBg={true} />
                       </motion.div>
                     ))}
                   </motion.div>

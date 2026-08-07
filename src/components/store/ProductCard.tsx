@@ -36,9 +36,10 @@ interface ProductCardProduct {
 interface ProductCardProps {
   product: ProductCardProduct
   onQuickView?: (productId: string) => void
+  isDarkBg?: boolean
 }
 
-export function ProductCard({ product, onQuickView }: ProductCardProps) {
+export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const addItem = useCartStore((s) => s.addItem)
   const toggleItem = useWishlistStore((s) => s.toggleItem)
@@ -233,7 +234,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
         {/* Product Info */}
         <div className="mt-3 px-1">
-          <h3 className="font-medium text-sm text-foreground group-hover:text-tan-500 transition-colors line-clamp-2 leading-snug">
+          <h3 className={`font-semibold text-sm transition-colors line-clamp-2 leading-snug ${isDarkBg ? 'text-white hover:text-amber-400' : 'text-slate-900 dark:text-slate-100 hover:text-amber-600'}`}>
             {product.name}
           </h3>
 
@@ -241,10 +242,10 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           {product.reviewCount > 0 && (
             <div className="flex items-center gap-1 mt-1">
               <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-              <span className="text-xs font-medium text-foreground/70">
+              <span className={`text-xs font-medium ${isDarkBg ? 'text-slate-300' : 'text-slate-700 dark:text-slate-300'}`}>
                 {product.avgRating.toFixed(1)}
               </span>
-              <span className="text-xs text-muted-foreground">
+              <span className={`text-xs ${isDarkBg ? 'text-slate-400' : 'text-slate-500'}`}>
                 ({product.reviewCount})
               </span>
             </div>
@@ -252,11 +253,11 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mt-1.5">
-            <span className="font-bold text-foreground">
+            <span className={`font-bold ${isDarkBg ? 'text-amber-400 text-base' : 'text-slate-900 dark:text-slate-100'}`}>
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
-              <span className="text-xs text-muted-foreground line-through">
+              <span className={`text-xs line-through ${isDarkBg ? 'text-slate-400' : 'text-slate-400'}`}>
                 {formatPrice(product.compareAtPrice)}
               </span>
             )}
