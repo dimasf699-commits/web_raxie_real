@@ -536,8 +536,8 @@ export default function HomePage() {
               <motion.div variants={fadeUp} className="relative">
                 <div className="relative rounded-3xl overflow-hidden aspect-[4/3]">
                   <Image
-                    src="https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=800&q=80"
-                    alt="Pengrajin Raxie"
+                    src="https://i.imgur.com/Fm42C0F.png"
+                    alt="Pengrajin Leather Raxie"
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 50vw"
