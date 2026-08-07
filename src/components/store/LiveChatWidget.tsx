@@ -359,7 +359,7 @@ export function LiveChatWidget() {
           setIsOpen(!isOpen)
           setUnreadCount(0)
         }}
-        className="fixed bottom-20 right-20 sm:bottom-6 sm:right-24 z-40 flex items-center gap-2.5 bg-slate-950 hover:bg-slate-900 text-amber-400 border border-amber-500/40 px-4 py-3.5 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 group"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 bg-slate-950 hover:bg-slate-900 text-amber-400 border border-amber-500/40 px-4 py-3.5 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 group"
         aria-label="Live Chat CS Raxie"
       >
         <div className="relative">

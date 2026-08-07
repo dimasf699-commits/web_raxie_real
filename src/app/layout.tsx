@@ -3,7 +3,6 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { Toaster } from '@/components/ui/Toaster'
-import { WhatsAppButton } from '@/components/ui/WhatsAppButton'
 import { CookieConsent } from '@/components/ui/CookieConsent'
 import './globals.css'
 
@@ -126,7 +125,6 @@ export default function RootLayout({
             <QueryProvider>
               {children}
               <Toaster />
-              <WhatsAppButton phoneNumber="082128862433" />
               <LiveChatWidget />
               <CookieConsent />
             </QueryProvider>
