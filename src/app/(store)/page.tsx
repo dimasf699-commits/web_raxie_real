@@ -160,9 +160,9 @@ function CountdownTimer({ endsAt }: { endsAt: Date }) {
 // ─── Main Homepage ──────────────────────────────────────────────────────────────
 
 const DEFAULT_HOMEPAGE_CATEGORIES = [
-  { name: 'Dompet', href: '/products?category=dompet', image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80' },
-  { name: 'Tas', href: '/products?category=tas', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80' },
-  { name: 'Sabuk', href: '/products?category=sabuk', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80' },
+  { name: 'Dompet', href: '/products?category=dompet', image: 'https://i.imgur.com/X1YcH8c.jpeg' },
+  { name: 'Tas', href: '/products?category=tas', image: 'https://i.imgur.com/Y6g6vrp.jpeg' },
+  { name: 'Sabuk', href: '/products?category=sabuk', image: 'https://i.imgur.com/kF5yKip.jpeg' },
 ]
 
 export default function HomePage() {
@@ -195,7 +195,7 @@ export default function HomePage() {
           const catImageMap: Record<string, string> = {
             dompet: 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80',
             tas: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80',
-            sabuk: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80',
+            sabuk: 'https://images.unsplash.com/photo-1624222247344-550fb60583dc?w=600&q=80',
           }
           setCategories(catData.map((c: any) => ({
             name: c.name,
