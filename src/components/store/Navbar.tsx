@@ -25,7 +25,7 @@ import { formatPrice } from '@/lib/utils'
 import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/Button'
+import { AnnouncementBar } from '@/components/store/AnnouncementBar'
 
 const defaultNavLinks = [
   { href: '/products', label: 'Semua Koleksi' },
@@ -122,15 +122,11 @@ export function Navbar() {
   return (
     <>
       {/* Main Navbar */}
-      <motion.header
-        className={cn(
-          'fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 text-white shadow-lg'
-        )}
-        initial={false}
-        animate={{ height: isScrolled ? 56 : 64 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+      <header
+        className="fixed top-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800 text-white shadow-lg"
       >
-        <div className="container-raxie h-full flex items-center justify-between">
+        <AnnouncementBar />
+        <div className="container-raxie h-14 md:h-16 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
@@ -369,7 +365,7 @@ export function Navbar() {
             </Button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Search Overlay */}
       <AnimatePresence>
