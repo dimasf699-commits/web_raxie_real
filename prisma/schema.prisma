@@ -653,15 +653,15 @@ model ChatConversation {
 
   @@index([status])
   @@index([updatedAt])
-  @@map("chat_conversations")
+  @@map("chat_sessions")
 }
 
 model ChatMessage {
   id             String           @id @default(cuid())
-  conversationId String
+  conversationId String           @map("sessionId")
   conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   sender         String           // USER or ADMIN
-  senderName     String
+  senderName     String           @default("Pelanggan")
   message        String           @db.Text
   status         String           @default("Sent") // Sending, Sent, Delivered, Read
   isRead         Boolean          @default(false)
