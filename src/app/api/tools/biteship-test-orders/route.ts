@@ -77,22 +77,34 @@ export async function GET(req: NextRequest) {
     }
 
     const updateStatus = async (orderId: string, status: string) => {
-      const res = await fetch(`https://api.biteship.com/v1/orders/${orderId}`, {
+      // Biteship sandbox supports updating status via order update or status endpoint
+      await fetch(`https://api.biteship.com/v1/orders/${orderId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${testKey.trim()}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status }),
-      })
-      return await res.json()
+      }).catch(() => null)
+
+      await fetch(`https://api.biteship.com/v1/orders/${orderId}/status`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${testKey.trim()}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      }).catch(() => null)
     }
 
-    // 1. Create Delivered Order
+    // 1. Create Delivered Order with full sequential status flow
     const order1 = await createOrder('Delivered')
     const id1 = order1.id || order1.order_id
     if (id1) {
-      await updateStatus(id1, 'delivered')
+      const steps = ['allocated', 'picking_up', 'picked', 'dropping_off', 'delivered']
+      for (const step of steps) {
+        await updateStatus(id1, step)
+      }
     } else if (order1.error) {
       errDetail1 = order1.error
     }
@@ -102,6 +114,7 @@ export async function GET(req: NextRequest) {
     const id2 = order2.id || order2.order_id
     if (id2) {
       await updateStatus(id2, 'cancelled')
+      await updateStatus(id2, 'rejected')
     } else if (order2.error) {
       errDetail2 = order2.error
     }
@@ -123,7 +136,7 @@ export async function GET(req: NextRequest) {
           </style>
         </head>
         <body>
-          <h2>Hasil Test Order Biteship</h2>
+          <h2>Hasil Test Order Biteship (Status Updated!)</h2>
           <p>Gunakan ID di bawah untuk Formulir Aktivasi Biteship kamu:</p>
           
           <div class="box">

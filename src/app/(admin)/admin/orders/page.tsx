@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, Filter, Download, Truck, Loader2, Package } from 'lucide-react'
+import { Search, Filter, Download, Truck, Loader2, Package, Printer } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { formatPrice } from '@/lib/utils'
 import { TrackingModal } from '@/components/admin/TrackingModal'
@@ -249,6 +249,16 @@ export default function AdminOrdersPage() {
                           >
                             Resi Manual
                           </button>
+
+                          <a
+                            href={`/admin/orders/${order.id}/print`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors font-medium shrink-0"
+                            title="Cetak Resi & Label Pengiriman"
+                          >
+                            <Printer className="w-3.5 h-3.5 text-blue-600" /> Cetak
+                          </a>
 
                           <button
                             onClick={() => handleDelete(order.id, order.orderNumber)}
