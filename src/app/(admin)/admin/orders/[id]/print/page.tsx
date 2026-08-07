@@ -62,11 +62,11 @@ export default function OrderPrintPage() {
             display: none !important;
           }
           .thermal-label {
-            width: 100mm !important;
-            height: 150mm !important;
+            width: 95mm !important;
+            max-width: 95mm !important;
             box-sizing: border-box !important;
-            margin: 0 !important;
-            padding: 4mm !important;
+            margin: 0 auto !important;
+            padding: 3mm !important;
             border: 2px solid #000 !important;
             border-radius: 0 !important;
             box-shadow: none !important;
@@ -91,8 +91,8 @@ export default function OrderPrintPage() {
         </button>
       </div>
 
-      {/* Printable Thermal Label 100x150mm */}
-      <div className="thermal-label max-w-[100mm] mx-auto bg-white text-black font-sans border-2 border-black p-3 rounded-xl shadow-2xl box-border leading-tight">
+      {/* Printable Thermal Label 95mm centered on 100mm paper */}
+      <div className="thermal-label max-w-[95mm] mx-auto bg-white text-black font-sans border-2 border-black p-3 rounded-xl shadow-2xl box-border leading-tight overflow-hidden">
         
         {/* Header Logo & Courier */}
         <div className="flex justify-between items-center border-b-2 border-black pb-2 mb-2">
@@ -100,7 +100,7 @@ export default function OrderPrintPage() {
             <h1 className="text-xl font-black tracking-tighter">RAXIE.</h1>
             <p className="text-[9px] font-bold text-slate-700">OFFICIAL STORE</p>
           </div>
-          <div className="bg-black text-white px-3 py-1 rounded text-center">
+          <div className="bg-black text-white px-2.5 py-1 rounded text-center">
             <span className="text-xs font-black uppercase tracking-wider block">
               {order.courierName || 'JNE REG'}
             </span>
@@ -111,8 +111,8 @@ export default function OrderPrintPage() {
         {/* Resi Barcode Box */}
         <div className="border-2 border-black p-2 text-center rounded-md mb-2 bg-slate-50">
           <p className="text-[9px] font-bold tracking-wider text-slate-600 uppercase">NOMOR RESI / WAYBILL</p>
-          <p className="text-lg font-mono font-black tracking-widest my-0.5">{waybill}</p>
-          <p className="text-[10px] font-mono text-slate-800">Invoice: #{order.orderNumber}</p>
+          <p className="text-base font-mono font-black tracking-widest my-0.5 break-all">{waybill}</p>
+          <p className="text-[9.5px] font-mono text-slate-800">Invoice: #{order.orderNumber}</p>
         </div>
 
         {/* Address Grid */}
@@ -122,7 +122,7 @@ export default function OrderPrintPage() {
             <p className="text-[9px] font-black uppercase tracking-wider text-slate-700">PENERIMA:</p>
             <p className="text-xs font-black text-black">{customerName}</p>
             <p className="text-xs font-bold text-slate-900 mt-0.5">📞 {customerPhone}</p>
-            <p className="text-[10px] font-semibold text-slate-800 mt-1 leading-snug">
+            <p className="text-[9.5px] font-semibold text-slate-800 mt-1 leading-snug">
               {order.shippingStreet}
             </p>
             <p className="text-[9px] font-bold text-slate-700 mt-0.5">
@@ -131,9 +131,9 @@ export default function OrderPrintPage() {
           </div>
 
           {/* Sender */}
-          <div className="text-[9px] text-slate-800 px-1">
+          <div className="text-[8.5px] text-slate-800 px-1">
             <p className="font-bold">PENGIRIM: <span className="font-black text-black">RAXIE STORE (0821-2886-2433)</span></p>
-            <p className="text-[8.5px] text-slate-600">Kp. Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat</p>
+            <p className="text-[8px] text-slate-600">Kp. Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat</p>
           </div>
         </div>
 
@@ -142,10 +142,10 @@ export default function OrderPrintPage() {
           <p className="text-[9px] font-black uppercase tracking-wider mb-1">ISI PAKET / RINCIAN BARANG:</p>
           <div className="space-y-1">
             {order.items?.map((item: any, idx: number) => (
-              <div key={item.id || idx} className="flex justify-between items-start text-[9.5px] border-b border-dashed border-slate-300 pb-1">
-                <span className="font-bold pr-2 leading-tight">
+              <div key={item.id || idx} className="flex justify-between items-start text-[9px] border-b border-dashed border-slate-300 pb-1">
+                <span className="font-bold pr-2 leading-tight truncate max-w-[75%]">
                   {item.productName}
-                  {item.variantName && <span className="font-normal text-slate-600 block text-[8.5px]">Varian: {item.variantName}</span>}
+                  {item.variantName && <span className="font-normal text-slate-600 block text-[8px]">Varian: {item.variantName}</span>}
                 </span>
                 <span className="font-black whitespace-nowrap">{item.quantity} pcs</span>
               </div>
@@ -154,9 +154,9 @@ export default function OrderPrintPage() {
         </div>
 
         {/* Footer info */}
-        <div className="flex justify-between items-center text-[9px] font-bold text-slate-700 pt-1">
+        <div className="flex justify-between items-center text-[8.5px] font-bold text-slate-700 pt-1">
           <span>Tgl: {new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-          <span className="font-black text-black">LUNAS ({order.paymentMethod || 'ONLINE'})</span>
+          <span className="font-black text-black">LUNAS ({order.paymentMethod?.replace('_', ' ') || 'ONLINE'})</span>
         </div>
 
       </div>
