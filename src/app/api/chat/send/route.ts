@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-// Simple in-memory rate limiter: max 10 requests per 10 seconds per session
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
 
 function isRateLimited(key: string): boolean {
@@ -18,7 +17,6 @@ function isRateLimited(key: string): boolean {
   return false
 }
 
-// XSS Sanitizer
 function sanitizeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -33,6 +31,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const {
       sessionId,
+      conversationId,
       sender,
       senderName,
       message,
@@ -42,11 +41,13 @@ export async function POST(req: NextRequest) {
       attachmentName,
     } = body
 
-    if (!sessionId) {
-      return NextResponse.json({ error: 'Session ID diperlukan' }, { status: 400 })
+    const activeId = conversationId || sessionId
+
+    if (!activeId) {
+      return NextResponse.json({ error: 'ID percakapan diperlukan' }, { status: 400 })
     }
 
-    if (isRateLimited(sessionId)) {
+    if (isRateLimited(activeId)) {
       return NextResponse.json(
         { error: 'Batas pengiriman pesan terlampaui (maksimal 10 pesan dalam 10 detik).' },
         { status: 429 }
@@ -58,22 +59,30 @@ export async function POST(req: NextRequest) {
 
     const newMessage = await prisma.chatMessage.create({
       data: {
-        sessionId,
+        conversationId: activeId,
         sender: sender || 'USER',
-        senderName: senderName || (isUser ? 'Pelanggan' : 'CS Raxie Admin'),
+        senderName: senderName || (isUser ? 'Pelanggan' : 'CS Raxie Official'),
         message: cleanMessage,
-        type: type || 'TEXT',
-        attachmentUrl: attachmentUrl || null,
-        attachmentType: attachmentType || null,
-        attachmentName: attachmentName || null,
+        status: 'Sent',
         isRead: false,
+        attachments: attachmentUrl ? {
+          create: [{
+            fileUrl: attachmentUrl,
+            fileName: attachmentName || 'Attachment',
+            fileType: type === 'IMAGE' ? 'IMAGE' : 'FILE',
+            mimeType: attachmentType || 'image/jpeg',
+          }]
+        } : undefined
       },
+      include: {
+        attachments: true
+      }
     })
 
-    // Update session timestamp and unread counters
-    await prisma.chatSession.update({
-      where: { id: sessionId },
+    await prisma.chatConversation.update({
+      where: { id: activeId },
       data: {
+        status: isUser ? 'Customer Reply' : 'Admin Reply',
         updatedAt: new Date(),
         unreadAdmin: isUser ? { increment: 1 } : 0,
         unreadUser: !isUser ? { increment: 1 } : 0,

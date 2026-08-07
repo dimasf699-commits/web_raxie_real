@@ -8,20 +8,21 @@ export async function GET(
   try {
     const roomId = params.room
 
-    const session = await prisma.chatSession.findUnique({
+    const conversation = await prisma.chatConversation.findUnique({
       where: { id: roomId },
       include: {
         messages: {
           orderBy: { createdAt: 'asc' },
+          include: { attachments: true },
         },
       },
     })
 
-    if (!session) {
+    if (!conversation) {
       return NextResponse.json({ error: 'Chat room tidak ditemukan' }, { status: 404 })
     }
 
-    return NextResponse.json({ session })
+    return NextResponse.json({ conversation, session: conversation })
   } catch (error) {
     console.error('[CHAT_ROOM_GET_ERROR]', error)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

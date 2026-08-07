@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const search = searchParams.get('search') || ''
     const filter = searchParams.get('filter') || 'all' // all, unread, today
-    const status = searchParams.get('status') || 'ALL' // ALL, ACTIVE, CLOSED
+    const status = searchParams.get('status') || 'ALL' // ALL, Waiting, Admin Reply, Customer Reply, Resolved, Closed
 
     const where: any = {}
 
@@ -36,17 +36,18 @@ export async function GET(req: NextRequest) {
       ]
     }
 
-    const sessions = await prisma.chatSession.findMany({
+    const conversations = await prisma.chatConversation.findMany({
       where,
       orderBy: { updatedAt: 'desc' },
       include: {
         messages: {
           orderBy: { createdAt: 'asc' },
+          include: { attachments: true },
         },
       },
     })
 
-    return NextResponse.json({ sessions })
+    return NextResponse.json({ conversations, sessions: conversations })
   } catch (error) {
     console.error('[CHAT_LIST_ERROR]', error)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

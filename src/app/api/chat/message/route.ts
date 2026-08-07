@@ -4,9 +4,10 @@ import { prisma } from '@/lib/prisma'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { sessionId, sender, senderName, message } = body
+    const { sessionId, conversationId, sender, senderName, message } = body
+    const activeId = conversationId || sessionId
 
-    if (!sessionId || !message || !message.trim()) {
+    if (!activeId || !message || !message.trim()) {
       return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 })
     }
 
@@ -14,17 +15,18 @@ export async function POST(req: NextRequest) {
 
     const newMessage = await prisma.chatMessage.create({
       data: {
-        sessionId,
+        conversationId: activeId,
         sender: sender || 'USER',
-        senderName: senderName || (isUser ? 'Pelanggan' : 'CS Raxie'),
+        senderName: senderName || (isUser ? 'Pelanggan' : 'CS Raxie Official'),
         message: message.trim(),
+        status: 'Sent',
       },
     })
 
-    // Update unread count and session timestamp
-    await prisma.chatSession.update({
-      where: { id: sessionId },
+    await prisma.chatConversation.update({
+      where: { id: activeId },
       data: {
+        status: isUser ? 'Customer Reply' : 'Admin Reply',
         updatedAt: new Date(),
         unreadAdmin: isUser ? { increment: 1 } : 0,
         unreadUser: !isUser ? { increment: 1 } : 0,
