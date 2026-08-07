@@ -539,9 +539,9 @@ export function LiveChatWidget() {
                           isSending ? (
                             <span className="text-amber-400 animate-pulse">Sending...</span>
                           ) : isRead ? (
-                            <CheckCheck className="w-3.5 h-3.5 text-blue-400" title="Read" />
+                            <span title="Read"><CheckCheck className="w-3.5 h-3.5 text-blue-400" /></span>
                           ) : (
-                            <Check className="w-3.5 h-3.5 text-slate-400" title="Sent" />
+                            <span title="Sent"><Check className="w-3.5 h-3.5 text-slate-400" /></span>
                           )
                         )}
                       </span>

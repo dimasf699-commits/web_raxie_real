@@ -420,7 +420,11 @@ export default function AdminChatPage() {
                     <span className="text-[9px] text-slate-400 mt-1 px-1 flex items-center gap-1">
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       {isAdmin && (
-                        isRead ? <CheckCheck className="w-3.5 h-3.5 text-blue-500" title="Dibaca" /> : <Check className="w-3.5 h-3.5 text-slate-400" title="Terkirim" />
+                        isRead ? (
+                          <span title="Dibaca"><CheckCheck className="w-3.5 h-3.5 text-blue-500" /></span>
+                        ) : (
+                          <span title="Terkirim"><Check className="w-3.5 h-3.5 text-slate-400" /></span>
+                        )
                       )}
                     </span>
                   </div>
