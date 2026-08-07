@@ -34,6 +34,9 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       : 'jne'
 
     const biteshipOrderPayload = {
+      origin_contact_name: "Raxie Store",
+      origin_contact_phone: "082128862433",
+      origin_contact_email: "raxieleather@gmail.com",
       shipper_contact_name: "Raxie Store",
       shipper_contact_phone: "082128862433",
       shipper_contact_email: "raxieleather@gmail.com",

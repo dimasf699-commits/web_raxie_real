@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
       <!DOCTYPE html>
       <html>
         <head>
+          <meta charset="utf-8" />
           <title>Biteship Test Order Generator</title>
           <style>
             body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto; background: #0f172a; color: #f8fafc; }
@@ -51,6 +52,9 @@ export async function GET(req: NextRequest) {
           shipper_contact_name: 'Raxie Store',
           shipper_contact_phone: '082128862433',
           shipper_contact_email: 'raxieleather@gmail.com',
+          origin_contact_name: 'Raxie Store',
+          origin_contact_phone: '082128862433',
+          origin_contact_email: 'raxieleather@gmail.com',
           origin_area_id: 'IDNP9IDNC122IDND450IDZ44161',
           origin_address: 'Kp. Pasirkiamis, Garut',
           destination_contact_name: `Test Customer ${nameSuffix}`,
