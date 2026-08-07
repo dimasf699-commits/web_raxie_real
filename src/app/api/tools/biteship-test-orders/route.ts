@@ -32,16 +32,19 @@ export async function GET(req: NextRequest) {
         </body>
       </html>
       `,
-      { headers: { 'Content-Type': 'text/html' } }
+      { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
     )
   }
 
   try {
+    let errDetail1 = ''
+    let errDetail2 = ''
+
     const createOrder = async (nameSuffix: string) => {
       const res = await fetch('https://api.biteship.com/v1/orders', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${testKey}`,
+          Authorization: `Bearer ${testKey.trim()}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -63,6 +66,9 @@ export async function GET(req: NextRequest) {
         }),
       })
       const data = await res.json()
+      if (!res.ok) {
+        return { error: data.error || data.message || JSON.stringify(data) }
+      }
       return data
     }
 
@@ -70,7 +76,7 @@ export async function GET(req: NextRequest) {
       const res = await fetch(`https://api.biteship.com/v1/orders/${orderId}`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${testKey}`,
+          Authorization: `Bearer ${testKey.trim()}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ status }),
@@ -83,6 +89,8 @@ export async function GET(req: NextRequest) {
     const id1 = order1.id || order1.order_id
     if (id1) {
       await updateStatus(id1, 'delivered')
+    } else if (order1.error) {
+      errDetail1 = order1.error
     }
 
     // 2. Create Cancelled Order
@@ -90,6 +98,8 @@ export async function GET(req: NextRequest) {
     const id2 = order2.id || order2.order_id
     if (id2) {
       await updateStatus(id2, 'cancelled')
+    } else if (order2.error) {
+      errDetail2 = order2.error
     }
 
     return new Response(
@@ -97,34 +107,36 @@ export async function GET(req: NextRequest) {
       <!DOCTYPE html>
       <html>
         <head>
+          <meta charset="utf-8" />
           <title>Hasil Test Order Biteship</title>
           <style>
             body { font-family: system-ui, sans-serif; padding: 2rem; max-width: 650px; margin: 0 auto; background: #0f172a; color: #f8fafc; }
             .box { background: #1e293b; padding: 1.25rem; border-radius: 0.75rem; margin-bottom: 1rem; border: 1px solid #334155; }
             .label { font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; font-weight: bold; }
-            .code { font-family: monospace; font-size: 1.1rem; font-weight: bold; color: #38bdf8; background: #0f172a; padding: 0.5rem 0.75rem; border-radius: 0.5rem; margin-top: 0.5rem; word-break: break-all; }
+            .code { font-family: monospace; font-size: 1rem; font-weight: bold; color: #38bdf8; background: #0f172a; padding: 0.5rem 0.75rem; border-radius: 0.5rem; margin-top: 0.5rem; word-break: break-all; }
             .btn { background: #22c55e; color: #fff; padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; font-weight: bold; cursor: pointer; margin-top: 0.5rem; }
+            .err { color: #f87171; }
           </style>
         </head>
         <body>
-          <h2>🎉 2 ID Test Order Berhasil Dibuat!</h2>
-          <p>Salin kedua ID di bawah ini dan tempel ke Formulir Aktivasi Biteship kamu:</p>
+          <h2>Hasil Test Order Biteship</h2>
+          <p>Gunakan ID di bawah untuk Formulir Aktivasi Biteship kamu:</p>
           
           <div class="box">
             <div class="label">1. ID Pesanan Test Status "DELIVERED":</div>
-            <div class="code" id="id1">${id1 || 'Gagal buat order 1'}</div>
-            <button class="btn" onclick="navigator.clipboard.writeText('${id1}'); alert('ID Delivered Disalin!')">📋 Salin ID Delivered</button>
+            <div class="code ${id1 ? '' : 'err'}">${id1 || 'Error: ' + errDetail1}</div>
+            ${id1 ? `<button class="btn" onclick="navigator.clipboard.writeText('${id1}'); alert('ID Delivered Disalin!')">📋 Salin ID Delivered</button>` : ''}
           </div>
 
           <div class="box">
             <div class="label">2. ID Pesanan Test Status "CANCELLED":</div>
-            <div class="code" id="id2">${id2 || 'Gagal buat order 2'}</div>
-            <button class="btn" onclick="navigator.clipboard.writeText('${id2}'); alert('ID Cancelled Disalin!')">📋 Salin ID Cancelled</button>
+            <div class="code ${id2 ? '' : 'err'}">${id2 || 'Error: ' + errDetail2}</div>
+            ${id2 ? `<button class="btn" onclick="navigator.clipboard.writeText('${id2}'); alert('ID Cancelled Disalin!')">📋 Salin ID Cancelled</button>` : ''}
           </div>
         </body>
       </html>
       `,
-      { headers: { 'Content-Type': 'text/html' } }
+      { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
     )
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 })
