@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
 import {
   MessageSquare,
   X,
@@ -34,6 +35,7 @@ interface PendingAttachment {
 }
 
 export function LiveChatWidget() {
+  const pathname = usePathname()
   const { data: session } = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
@@ -166,7 +168,7 @@ export function LiveChatWidget() {
     setSending(true)
     try {
       const guestId = localStorage.getItem('raxie_guest_uuid')
-      const res = await fetch('/api/chat/conversations', {
+      let res = await fetch('/api/chat/conversations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -178,6 +180,24 @@ export function LiveChatWidget() {
           userId: (session?.user as any)?.id || null,
         }),
       })
+
+      // Retry without stale conversationId if failed
+      if (!res.ok && conversationId) {
+        localStorage.removeItem('raxie_chat_conv_id')
+        setConversationId(null)
+        res = await fetch('/api/chat/conversations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            customerName: name.trim(),
+            customerEmail: email.trim() || null,
+            customerPhone: phone.trim() || null,
+            guestId,
+            userId: (session?.user as any)?.id || null,
+          }),
+        })
+      }
+
       const data = await res.json()
 
       if (!res.ok) {
@@ -327,6 +347,9 @@ export function LiveChatWidget() {
       setMessages([])
     }
   }
+
+  // Don't render floating customer chat widget inside Admin Panel
+  if (pathname?.startsWith('/admin')) return null
 
   return (
     <>

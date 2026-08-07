@@ -13,11 +13,11 @@ function sanitizeHtml(str: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const body = await req.json().catch(() => ({}))
     const { conversationId, customerName, customerEmail, customerPhone, guestId, userId } = body
 
     // Validation 1: Customer Name is mandatory
-    if (!customerName || !customerName.trim()) {
+    if (!customerName || typeof customerName !== 'string' || !customerName.trim()) {
       return NextResponse.json(
         { error: 'Nama Lengkap wajib diisi.', field: 'customerName' },
         { status: 400 }
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validation 2: Email format if provided
-    if (customerEmail && customerEmail.trim()) {
+    if (customerEmail && typeof customerEmail === 'string' && customerEmail.trim()) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (!emailRegex.test(customerEmail.trim())) {
         return NextResponse.json(
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validation 3: Phone format if provided
-    if (customerPhone && customerPhone.trim()) {
+    if (customerPhone && typeof customerPhone === 'string' && customerPhone.trim()) {
       const phoneClean = customerPhone.replace(/\D/g, '')
       if (phoneClean.length < 8 || phoneClean.length > 15) {
         return NextResponse.json(
@@ -47,29 +47,34 @@ export async function POST(req: NextRequest) {
     }
 
     const cleanName = sanitizeHtml(customerName.trim())
-    const cleanEmail = customerEmail ? sanitizeHtml(customerEmail.trim()) : null
-    const cleanPhone = customerPhone ? sanitizeHtml(customerPhone.trim()) : null
+    const cleanEmail = customerEmail && typeof customerEmail === 'string' && customerEmail.trim() ? sanitizeHtml(customerEmail.trim()) : null
+    const cleanPhone = customerPhone && typeof customerPhone === 'string' && customerPhone.trim() ? sanitizeHtml(customerPhone.trim()) : null
 
-    if (conversationId) {
-      const existing = await prisma.chatConversation.findUnique({
-        where: { id: conversationId },
-        include: {
-          messages: {
-            orderBy: { createdAt: 'asc' },
-            include: { attachments: true },
+    // Check existing conversation ID if passed
+    if (conversationId && typeof conversationId === 'string' && conversationId.trim()) {
+      try {
+        const existing = await prisma.chatConversation.findUnique({
+          where: { id: conversationId.trim() },
+          include: {
+            messages: {
+              orderBy: { createdAt: 'asc' },
+              include: { attachments: true },
+            },
           },
-        },
-      })
-      if (existing) {
-        return NextResponse.json({ conversation: existing })
+        })
+        if (existing) {
+          return NextResponse.json({ conversation: existing })
+        }
+      } catch (err) {
+        console.warn('[CONVERSATION_LOOKUP_WARN]', err)
       }
     }
 
-    // Create new conversation
+    // Create new conversation safely
     const newConv = await prisma.chatConversation.create({
       data: {
-        userId: userId || null,
-        guestId: guestId || null,
+        userId: typeof userId === 'string' ? userId : null,
+        guestId: typeof guestId === 'string' ? guestId : null,
         customerName: cleanName,
         customerEmail: cleanEmail,
         customerPhone: cleanPhone,
@@ -91,9 +96,12 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ conversation: newConv })
-  } catch (error) {
+  } catch (error: any) {
     console.error('[CONVERSATIONS_POST_ERROR]', error)
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
+    return NextResponse.json(
+      { error: error?.message || 'Terjadi kesalahan pada server saat membuat percakapan.' },
+      { status: 500 }
+    )
   }
 }
 
@@ -106,8 +114,8 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url)
     const search = searchParams.get('search') || ''
-    const filter = searchParams.get('filter') || 'all' // all, unread, today
-    const status = searchParams.get('status') || 'ALL' // ALL, Waiting, Admin Reply, Customer Reply, Resolved, Closed
+    const filter = searchParams.get('filter') || 'all'
+    const status = searchParams.get('status') || 'ALL'
 
     const where: any = {}
 
@@ -143,8 +151,8 @@ export async function GET(req: NextRequest) {
     })
 
     return NextResponse.json({ conversations })
-  } catch (error) {
+  } catch (error: any) {
     console.error('[CONVERSATIONS_GET_ERROR]', error)
-    return NextResponse.json({ error: 'Terjadi kesalahan server' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || 'Terjadi kesalahan server' }, { status: 500 })
   }
 }
