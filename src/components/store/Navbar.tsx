@@ -29,9 +29,19 @@ import { AnnouncementBar } from '@/components/store/AnnouncementBar'
 import { Button } from '@/components/ui/Button'
 
 const defaultNavLinks = [
-  { href: '/products', label: 'Semua Koleksi' },
-  { href: '/blog', label: 'Journal' },
-  { href: '/about', label: 'Tentang' },
+  { href: '/', label: 'BERANDA' },
+  { 
+    href: '/products', 
+    label: 'KOLEKSI',
+    children: [
+      { href: '/products?category=dompet', label: 'Dompet' },
+      { href: '/products?category=tas', label: 'Tas' },
+      { href: '/products?category=sabuk', label: 'Belt' },
+    ]
+  },
+  { href: '/about', label: 'TENTANG KAMI' },
+  { href: '/blog', label: 'JOURNAL' },
+  { href: '/contact', label: 'KONTAK' },
 ]
 
 export function Navbar() {
@@ -51,27 +61,6 @@ export function Navbar() {
 
   useEffect(() => {
     setIsMounted(true)
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch('/api/categories')
-        const cats = await res.json()
-        if (cats && cats.length > 0) {
-          const categoryLinks = cats
-            .filter((c: any) => c.slug !== 'aksesoris' && c.name.toLowerCase() !== 'aksesoris')
-            .map((c: any) => ({
-              href: `/products?category=${c.slug}`,
-              label: c.name
-            }))
-          setNavLinks([
-            { href: '/products', label: 'Semua Koleksi' },
-            ...categoryLinks,
-            { href: '/blog', label: 'Journal' },
-            { href: '/about', label: 'Tentang' }
-          ])
-        }
-      } catch (error) {}
-    }
-    fetchCategories()
   }, [])
   const searchRef = useRef<HTMLInputElement>(null)
   const cartItems = useCartStore((s) => s.totalItems())
@@ -126,28 +115,20 @@ export function Navbar() {
     <>
       {/* Main Navbar */}
       <header
-        className="sticky top-0 left-0 right-0 z-50 bg-slate-950 text-white border-b border-slate-800 shadow-lg"
+        className="sticky top-0 left-0 right-0 z-50 bg-[#0B0A08] text-white border-b border-neutral-900 shadow-xl"
       >
-        <div className="container-raxie h-14 md:h-16 flex items-center justify-between">
+        <div className="container-raxie h-16 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-serif font-bold text-2xl tracking-tight text-white hover:text-amber-400 transition-colors"
+            className="flex items-center gap-2.5 font-serif font-bold text-xl md:text-2xl tracking-[0.2em] text-[#C19A6B] hover:text-[#D97706] transition-colors"
           >
-            <motion.div
-              animate={{ scale: isScrolled ? 0.9 : 1 }}
-              transition={{ duration: 0.3 }}
-              className="relative w-8 h-8 md:w-10 md:h-10 rounded overflow-hidden"
-            >
-              {/* Ganti '/logo.png' dengan nama file logo Anda di folder public */}
-              <Image src="https://i.imgur.com/LBsFsZC.png" alt="Raxie Logo" fill className="object-contain" />
-            </motion.div>
-            <motion.span
-              animate={{ fontSize: isScrolled ? '1.35rem' : '1.5rem' }}
-              transition={{ duration: 0.3 }}
-            >
-              Raxie
-            </motion.span>
+            <div className="relative w-8 h-8 flex items-center justify-center border border-[#C19A6B]/40 rounded rotate-45 bg-black/40">
+              <span className="text-xs font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
+            </div>
+            <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
+              RAXIE
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -162,11 +143,11 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   className={cn(
-                    'flex items-center gap-0.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                    'hover:text-amber-400 hover:bg-slate-900',
-                    pathname === link.href || pathname.startsWith(link.href + '?')
-                      ? 'text-amber-400 font-semibold'
-                      : 'text-slate-300'
+                    'flex items-center gap-1 px-3 py-1.5 text-[12px] font-bold tracking-[0.15em] uppercase transition-colors',
+                    'hover:text-[#C19A6B]',
+                    pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
+                      ? 'text-[#C19A6B] border-b border-[#C19A6B]'
+                      : 'text-neutral-300'
                   )}
                 >
                   {link.label}

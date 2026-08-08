@@ -1,253 +1,109 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import {
-  Instagram,
-  Facebook,
-  Twitter,
-  Youtube,
-  MapPin,
-  Phone,
-  Mail,
-  ArrowRight,
-} from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { useState } from 'react'
+import { Instagram, Send } from 'lucide-react'
 import { toast } from '@/components/ui/Toaster'
-
-const footerLinks = {
-  shop: [
-    { href: '/products', label: 'Semua Produk' },
-    { href: '/products?category=dompet', label: 'Dompet' },
-    { href: '/products?category=tas', label: 'Tas' },
-    { href: '/products?category=sabuk', label: 'Sabuk' },
-    { href: '/products?isBestSeller=true', label: 'Best Seller' },
-  ],
-  info: [
-    { href: '/about', label: 'Tentang Raxie' },
-    { href: '/blog', label: 'Journal / Blog' },
-    { href: '/faq', label: 'FAQ' },
-    { href: '/contact', label: 'Hubungi Kami' },
-    { href: '/store-locator', label: 'Toko Kami' },
-  ],
-  policy: [
-    { href: '/shipping-policy', label: 'Kebijakan Pengiriman' },
-    { href: '/return-policy', label: 'Kebijakan Retur' },
-    { href: '/privacy-policy', label: 'Kebijakan Privasi' },
-    { href: '/terms', label: 'Syarat & Ketentuan' },
-    { href: '/size-guide', label: 'Panduan Ukuran' },
-  ],
-}
-
-const socialLinks = [
-  { icon: Instagram, href: 'https://instagram.com/raxie.id', label: 'Instagram' },
-  { icon: Facebook, href: 'https://facebook.com/raxie.id', label: 'Facebook' },
-  { icon: Twitter, href: 'https://twitter.com/raxieid', label: 'Twitter / X' },
-  { icon: Youtube, href: 'https://youtube.com/@raxie', label: 'YouTube' },
-]
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-}
 
 export function Footer() {
   const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
 
-  async function handleSubscribe(e: React.FormEvent) {
+  function handleSubscribe(e: React.FormEvent) {
     e.preventDefault()
     if (!email) return
-    setLoading(true)
-    await new Promise((r) => setTimeout(r, 800)) // Simulate API
-    toast.success('Berhasil berlangganan!', 'Terima kasih telah bergabung dengan newsletter Raxie.')
+    toast.success('Terima kasih!', 'Anda telah berlangganan newsletter RAXIE.')
     setEmail('')
-    setLoading(false)
   }
 
   return (
-    <footer className="bg-charcoal-900 text-ivory-200 mt-24">
-      {/* Newsletter Banner */}
-      <div className="bg-tan-400">
-        <div className="container-raxie py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h2 className="font-serif text-2xl md:text-3xl font-semibold text-white">
-                Jadi yang pertama tahu koleksi baru
-              </h2>
-              <p className="mt-1 text-tan-100 text-sm">
-                Daftarkan email & dapatkan diskon 10% untuk pembelian pertama.
-              </p>
+    <footer className="bg-[#070707] text-white border-t border-neutral-900 pt-16 pb-8">
+      <div className="container-raxie">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-900">
+          {/* Col 1: Brand Info */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2.5 font-serif font-bold text-xl tracking-[0.2em] text-[#C19A6B]">
+              <div className="w-7 h-7 flex items-center justify-center border border-[#C19A6B]/40 rounded rotate-45 bg-black/40">
+                <span className="text-[10px] font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
+              </div>
+              <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
+                RAXIE
+              </span>
             </div>
-            <form
-              onSubmit={handleSubscribe}
-              className="flex w-full md:w-auto gap-2"
-            >
+            <p className="text-xs text-neutral-400 leading-relaxed max-w-xs">
+              RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit premium dengan desain elegan dan kualitas terbaik.
+            </p>            <div className="flex items-center gap-3 pt-2">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
+                🎵
+              </a>
+              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
+                🛍️
+              </a>
+              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
+                💬
+              </a>
+            </div>
+          </div>
+
+          {/* Col 2: INFORMASI */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">INFORMASI</h3>
+            <ul className="space-y-2 text-xs text-neutral-400">
+              <li><Link href="/about" className="hover:text-[#C19A6B] transition-colors">Tentang Kami</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-[#C19A6B] transition-colors">Kebijakan Privasi</Link></li>
+              <li><Link href="/terms" className="hover:text-[#C19A6B] transition-colors">Syarat & Ketentuan</Link></li>
+              <li><Link href="/return-policy" className="hover:text-[#C19A6B] transition-colors">Pengembalian Barang</Link></li>
+              <li><Link href="/faq" className="hover:text-[#C19A6B] transition-colors">FAQ</Link></li>
+            </ul>
+          </div>
+
+          {/* Col 3: KATEGORI */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">KATEGORI</h3>
+            <ul className="space-y-2 text-xs text-neutral-400">
+              <li><Link href="/products?category=dompet" className="hover:text-[#C19A6B] transition-colors">Dompet</Link></li>
+              <li><Link href="/products?category=tas" className="hover:text-[#C19A6B] transition-colors">Tas</Link></li>
+              <li><Link href="/products?category=sabuk" className="hover:text-[#C19A6B] transition-colors">Belt</Link></li>
+              <li><Link href="/products" className="hover:text-[#C19A6B] transition-colors">Semua Produk</Link></li>
+            </ul>
+          </div>
+
+          {/* Col 4: NEWSLETTER */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">NEWSLETTER</h3>
+            <p className="text-xs text-neutral-400">
+              Dapatkan info terbaru dan promo eksklusif dari RAXIE.
+            </p>
+            <form onSubmit={handleSubscribe} className="flex gap-2">
               <input
                 type="email"
+                placeholder="Masukkan email Anda"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="alamat@email.com"
-                required
-                className="flex-1 md:w-72 px-4 py-2.5 rounded-lg bg-white/15 border border-white/30 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 text-sm"
+                className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
               />
-              <Button
+              <button
                 type="submit"
-                loading={loading}
-                className="bg-charcoal-900 text-ivory-100 hover:bg-charcoal-800 border-0"
+                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black rounded-lg px-3 py-2 flex items-center justify-center shrink-0 transition-colors"
+                aria-label="Submit newsletter"
               >
-                Daftar
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+                <Send className="h-3.5 w-3.5" />
+              </button>
             </form>
           </div>
         </div>
-      </div>
 
-      {/* Main Footer */}
-      <div className="container-raxie py-16">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10"
-        >
-          {/* Brand */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <Link href="/" className="inline-block">
-              <span className="font-serif font-bold text-3xl text-ivory-100">
-                Raxie
-              </span>
-            </Link>
-            <p className="mt-4 text-charcoal-400 text-sm leading-relaxed max-w-xs">
-              Dompet & aksesoris kulit premium buatan tangan. Setiap produk
-              dibuat dengan material pilihan dan keahlian pengrajin terbaik
-              Indonesia.
-            </p>
-
-            {/* Contact */}
-            <div className="mt-6 space-y-2">
-              <a
-                href="mailto:raxieleather@gmail.com"
-                className="flex items-center gap-2 text-sm text-charcoal-400 hover:text-tan-400 transition-colors"
-              >
-                <Mail className="h-4 w-4" />
-                raxieleather@gmail.com
-              </a>
-              <a
-                href="https://wa.me/6282128862433"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-charcoal-400 hover:text-tan-400 transition-colors"
-              >
-                <Phone className="h-4 w-4" />
-                +62 821-2886-2433
-              </a>
-              <div className="flex items-center gap-2 text-sm text-charcoal-400">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                Kab. Garut, Jawa Barat, Indonesia
-              </div>
-            </div>
-
-            {/* Social */}
-            <div className="mt-6 flex items-center gap-3">
-              {socialLinks.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={s.label}
-                  className="w-9 h-9 rounded-lg bg-charcoal-800 flex items-center justify-center text-charcoal-400 hover:bg-tan-400 hover:text-white transition-all duration-200"
-                >
-                  <s.icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Shop */}
-          <motion.div variants={itemVariants}>
-            <h3 className="font-semibold text-ivory-100 mb-4">Belanja</h3>
-            <ul className="space-y-2.5">
-              {footerLinks.shop.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-charcoal-400 hover:text-tan-400 transition-colors underline-link"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Info */}
-          <motion.div variants={itemVariants}>
-            <h3 className="font-semibold text-ivory-100 mb-4">Informasi</h3>
-            <ul className="space-y-2.5">
-              {footerLinks.info.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-charcoal-400 hover:text-tan-400 transition-colors underline-link"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-          {/* Policy */}
-          <motion.div variants={itemVariants}>
-            <h3 className="font-semibold text-ivory-100 mb-4">Kebijakan</h3>
-            <ul className="space-y-2.5">
-              {footerLinks.policy.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-charcoal-400 hover:text-tan-400 transition-colors underline-link"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </motion.div>
-      </div>
-
-      {/* Payment Methods + Copyright */}
-      <div className="border-t border-charcoal-800">
-        <div className="container-raxie py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-charcoal-500">
-            © {new Date().getFullYear()} Raxie. Hak cipta dilindungi.
-          </p>
-          <div className="flex items-center gap-2 text-xs text-charcoal-500">
-            <span>Pembayaran aman via</span>
-            <div className="flex items-center gap-2">
-              {['VISA', 'MC', 'GoPay', 'OVO', 'QRIS'].map((p) => (
-                <span
-                  key={p}
-                  className="px-2 py-0.5 rounded bg-charcoal-800 text-charcoal-400 text-[10px] font-semibold"
-                >
-                  {p}
-                </span>
-              ))}
-            </div>
+        {/* Bottom copyright & payment icons */}
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
+          <p>© 2026 RAXIE. All Rights Reserved.</p>
+          <div className="flex items-center gap-3 font-semibold text-neutral-400 text-xs">
+            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">BCA</span>
+            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">Mandiri</span>
+            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">BRI</span>
+            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">VISA</span>
+            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">Mastercard</span>
           </div>
         </div>
       </div>

@@ -2,91 +2,31 @@ import Link from 'next/link'
 import Image from 'next/image'
 import {
   ArrowRight,
-  Star,
-  Truck,
   ShieldCheck,
-  RotateCcw,
+  Truck,
+  Zap,
+  PackageCheck,
   Sparkles,
+  Award,
+  Scissors
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
 import { ProductCard } from '@/components/store/ProductCard'
-import { HeroSlider } from '@/components/store/HeroSlider'
-import { CountdownTimer } from '@/components/store/CountdownTimer'
 import { prisma } from '@/lib/prisma'
 
-export const revalidate = 60 // ISR revalidate every 60 seconds for 0ms DB TTFB
+export const revalidate = 60 // ISR revalidate every 60 seconds
 
-// ─── Hero Data ──────────────────────────────────────────────────────────────────
-
-const heroSlides = [
-  {
-    id: 1,
-    title: 'Keahlian yang\nAbadi',
-    subtitle: 'Dompet kulit premium buatan tangan. Dibuat untuk bertahan seumur hidup.',
-    cta: 'Jelajahi Koleksi',
-    href: '/products',
-    badge: 'Koleksi 2026',
-    bg: 'from-charcoal-900 via-charcoal-800 to-charcoal-900',
-    accentColor: 'text-tan-400',
-    image: 'https://i.imgur.com/5oEmCUr.png',
-  },
-  {
-    id: 2,
-    title: 'Slim. Elegan.\nTahan Lama.',
-    subtitle: 'Koleksi bifold wallet kami menggunakan PU Leather premium — tahan lama, tahan air, tampil elegan.',
-    cta: 'Lihat Bifold',
-    href: '/products?category=bifold',
-    badge: 'Best Seller',
-    bg: 'from-tan-900 via-tan-800 to-charcoal-900',
-    accentColor: 'text-tan-300',
-    image: 'https://i.imgur.com/U6nvXHK.jpeg',
-  },
-  {
-    id: 3,
-    title: 'Hadiah yang\nTak Terlupakan',
-    subtitle: 'Packaging eksklusif siap kirim. Sempurna untuk orang-orang istimewa.',
-    cta: 'Pilih Hadiah',
-    href: '/products?tag=gift',
-    badge: 'Gift Ready',
-    bg: 'from-charcoal-900 via-charcoal-900 to-tan-900',
-    accentColor: 'text-ivory-300',
-    image: 'https://i.imgur.com/QzcD1Ez.jpeg',
-  },
-]
-
-const DEFAULT_HOMEPAGE_CATEGORIES = [
-  { name: 'Dompet', href: '/products?category=dompet', image: 'https://i.imgur.com/X1YcH8c.jpeg' },
-  { name: 'Tas', href: '/products?category=tas', image: 'https://i.imgur.com/Y6g6vrp.jpeg' },
-  { name: 'Sabuk', href: '/products?category=sabuk', image: 'https://i.imgur.com/kF5yKip.jpeg' },
+const DEFAULT_CATEGORIES = [
+  { name: 'DOMPET', href: '/products?category=dompet', image: 'https://i.imgur.com/X1YcH8c.jpeg' },
+  { name: 'TAS', href: '/products?category=tas', image: 'https://i.imgur.com/Y6g6vrp.jpeg' },
+  { name: 'BELT', href: '/products?category=sabuk', image: 'https://i.imgur.com/kF5yKip.jpeg' },
 ]
 
 async function getHomepageData() {
   try {
-    const [bestSellersRaw, newArrivalsRaw, categoriesRaw] = await Promise.all([
+    const [bestSellersRaw, categoriesRaw] = await Promise.all([
       prisma.product.findMany({
         where: { isActive: true },
         orderBy: { totalSold: 'desc' },
-        take: 4,
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          basePrice: true,
-          compareAtPrice: true,
-          avgRating: true,
-          reviewCount: true,
-          isBestSeller: true,
-          isNew: true,
-          material: true,
-          variants: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, take: 1, select: { id: true, price: true, stock: true, sku: true } },
-          images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } },
-          category: { select: { name: true } }
-        }
-      }),
-      prisma.product.findMany({
-        where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
         take: 4,
         select: {
           id: true,
@@ -141,337 +81,263 @@ async function getHomepageData() {
 
     const categories = categoriesRaw.length > 0
       ? categoriesRaw.map(c => ({
-          name: c.name,
+          name: c.name.toUpperCase(),
           href: `/products?category=${c.slug}`,
           image: catImageMap[c.slug] || 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80'
         }))
-      : DEFAULT_HOMEPAGE_CATEGORIES
+      : DEFAULT_CATEGORIES
 
     const bestSellers = format(bestSellersRaw)
-    const newArrivals = format(newArrivalsRaw)
-    const flashSale = bestSellers.slice(0, 2)
 
-    return { bestSellers, newArrivals, flashSale, categories }
+    return { bestSellers, categories }
   } catch (e) {
     console.error('[HOMEPAGE_DATA_ERROR]', e)
-    return { bestSellers: [], newArrivals: [], flashSale: [], categories: DEFAULT_HOMEPAGE_CATEGORIES }
+    return { bestSellers: [], categories: DEFAULT_CATEGORIES }
   }
 }
 
 export default async function HomePage() {
-  const { bestSellers, newArrivals, flashSale, categories } = await getHomepageData()
-  const flashSaleEnds = new Date(Date.now() + 7 * 24 * 3600000) // 7 hari dari sekarang
+  const { bestSellers, categories } = await getHomepageData()
 
   return (
-    <div className="overflow-x-hidden">
-      {/* ─── Hero Carousel ──────────────────────────────────────────────────── */}
-      <section className="py-6 container-raxie">
-        <HeroSlider slides={heroSlides} />
-      </section>
+    <div className="bg-black text-white min-h-screen overflow-x-hidden font-sans">
+      
+      {/* ─── 1. HERO SECTION ──────────────────────────────────────────────── */}
+      <section className="relative bg-[#070707] py-16 md:py-24 border-b border-neutral-900 overflow-hidden">
+        <div className="container-raxie relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-6 text-left">
+              <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.25em] uppercase block">
+                PREMIUM QUALITY
+              </span>
+              
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-[1.1]">
+                ELEVATE YOUR <br />
+                <span className="text-[#C19A6B] font-serif">STYLE</span>
+              </h1>
 
-      {/* ─── Trust Badges ───────────────────────────────────────────────────── */}
-      <section className="bg-tan-500 text-white py-4 shadow-sm">
-        <div className="container-raxie">
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
-            {[
-              { icon: Truck, text: 'Resi & Pengiriman Otomatis JNE/J&T' },
-              { icon: ShieldCheck, text: 'Garansi Cacat Produk 30 Hari' },
-              { icon: RotateCcw, text: 'Retur & Tukar 30 Hari' },
-              { icon: Sparkles, text: 'Koleksi PU Leather 2026' },
-            ].map((item) => (
-              <div key={item.text} className="flex items-center gap-2 text-white">
-                <item.icon className="h-4 w-4 opacity-90" />
-                <span className="text-xs md:text-sm font-medium">{item.text}</span>
+              <p className="text-neutral-400 text-sm md:text-base max-w-md leading-relaxed">
+                RAXIE hadir dengan koleksi aksesoris kulit premium untuk menegaskan karakter dan gaya hidup modern Anda.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link
+                  href="/products"
+                  className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded transition-all"
+                >
+                  BELI SEKARANG
+                </Link>
+                <Link
+                  href="/products"
+                  className="border border-neutral-700 hover:border-white text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded transition-all"
+                >
+                  LIHAT KOLEKSI
+                </Link>
               </div>
-            ))}
+
+              {/* 3 Sub-Badges */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-neutral-800/80">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full border border-neutral-700 flex items-center justify-center shrink-0">
+                    <Award className="h-4 w-4 text-[#C19A6B]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white uppercase tracking-wider">PREMIUM MATERIAL</p>
+                    <p className="text-[10px] text-neutral-400">Kulit asli berkualitas tinggi</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full border border-neutral-700 flex items-center justify-center shrink-0">
+                    <Scissors className="h-4 w-4 text-[#C19A6B]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white uppercase tracking-wider">CRAFTSMANSHIP</p>
+                    <p className="text-[10px] text-neutral-400">Detail jahitan sempurna</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full border border-neutral-700 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="h-4 w-4 text-[#C19A6B]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white uppercase tracking-wider">GARANSI 1 TAHUN</p>
+                    <p className="text-[10px] text-neutral-400">Untuk setiap produk</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Product Showcase Hero Image */}
+            <div className="relative flex justify-center items-center">
+              <div className="relative w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 bg-neutral-900">
+                <Image
+                  src="https://i.imgur.com/U6nvXHK.jpeg"
+                  alt="RAXIE Premium Leather Box & Wallet"
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Categories ─────────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-20">
+      {/* ─── 2. CATEGORY CARDS ─────────────────────────────────────────────── */}
+      <section className="py-12 bg-white text-black">
         <div className="container-raxie">
-          <div className="text-center mb-12">
-            <Badge variant="new" className="mb-3">Koleksi</Badge>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Temukan Gaya Anda
-            </h2>
-            <p className="mt-3 text-muted-foreground max-w-md mx-auto text-sm md:text-base">
-              Setiap kategori dibuat dengan standar kualitas tertinggi.
-            </p>
-          </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className="group relative overflow-hidden rounded-2xl aspect-[3/4] block shadow-md hover:shadow-xl transition-shadow"
+                className="group relative bg-[#F4F1EA] rounded-xl p-6 flex items-center justify-between border border-neutral-200 hover:border-black transition-all shadow-sm hover:shadow-md"
               >
-                <Image
-                  src={cat.image}
-                  alt={cat.name}
-                  fill
-                  className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/80 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <h3 className="font-serif font-bold text-ivory-100 text-xl">
+                <div>
+                  <h3 className="font-serif font-bold text-xl tracking-wider text-black uppercase">
                     {cat.name}
                   </h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Best Sellers ────────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-muted/40 border-y border-border">
-        <div className="container-raxie">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <Badge variant="brand" className="mb-3">Terlaris</Badge>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                Best Seller
-              </h2>
-              <p className="mt-2 text-muted-foreground text-sm md:text-base">
-                Pilihan terbaik dari pelanggan kami.
-              </p>
-            </div>
-            <Button asChild variant="brand-outline" className="hidden md:flex">
-              <Link href="/products?sort=best-seller">
-                Lihat Semua <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {bestSellers.length > 0 ? (
-              bestSellers.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))
-            ) : (
-              <div className="col-span-full py-10 text-center text-muted-foreground">
-                Belum ada produk.
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Flash Sale ─────────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-20">
-        <div className="container-raxie">
-          <div className="bg-gradient-to-br from-charcoal-900 to-charcoal-800 rounded-3xl overflow-hidden shadow-2xl border border-charcoal-700">
-            <div className="p-8 md:p-12">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-                <div>
-                  <Badge variant="sale" className="mb-4 animate-pulse">
-                    FLASH SALE
-                  </Badge>
-                  <h2 className="font-serif text-3xl md:text-5xl font-bold text-ivory-100">
-                    Hemat hingga 35%
-                  </h2>
-                  <p className="mt-3 text-charcoal-300 text-sm">
-                    Berakhir dalam:
-                  </p>
-                  <div className="mt-3">
-                    <CountdownTimer endsAt={flashSaleEnds} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 max-w-lg">
-                  {flashSale.map((p) => (
-                    <div key={p.id} className="bg-slate-800/80 rounded-2xl p-3 border border-slate-700/60 shadow-xl">
-                      <ProductCard product={p} isDarkBg={true} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── New Arrivals ────────────────────────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-muted/40 border-y border-border">
-        <div className="container-raxie">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <Badge variant="new" className="mb-3">Baru</Badge>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                Produk Terbaru
-              </h2>
-            </div>
-            <Button asChild variant="brand-outline" className="hidden md:flex">
-              <Link href="/products?sort=newest">
-                Lihat Semua <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {newArrivals.length > 0 ? (
-              newArrivals.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))
-            ) : (
-              <div className="col-span-full py-10 text-center text-muted-foreground">
-                Belum ada produk.
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Brand Story ─────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-24">
-        <div className="container-raxie">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden aspect-[4/3] shadow-xl">
-                <Image
-                  src="https://i.imgur.com/Fm42C0F.png"
-                  alt="Pengrajin Leather Raxie"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <div className="absolute -bottom-6 -right-6 bg-tan-500 text-white rounded-2xl p-5 shadow-xl">
-                <div className="text-3xl font-serif font-bold">8+</div>
-                <div className="text-sm font-medium opacity-90">Tahun Keahlian</div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <Badge variant="brand" className="mb-2">Tentang Kami</Badge>
-              <h2 className="font-serif text-3xl md:text-5xl font-bold text-foreground leading-tight">
-                Dibuat dengan Tangan,<br />
-                <em className="text-tan-500">Dirancang untuk Selamanya</em>
-              </h2>
-              <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                Raxie hadir dengan produk aksesori <strong>PU Leather premium</strong> —
-                material modern yang tahan air, mudah dibersihkan, dan tampil elegan
-                setiap hari.
-              </p>
-              <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                Kami percaya bahwa aksesori yang baik bukan hanya tentang penampilan —
-                melainkan tentang cerita yang terbentuk seiring perjalanan hidupmu.
-              </p>
-              <div className="pt-4">
-                <Button asChild size="lg" variant="brand">
-                  <Link href="/about">
-                    Kisah Lengkap Kami <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Customer Testimonials ────────────────────────────────────────── */}
-      <section className="py-20 bg-charcoal-900 text-white">
-        <div className="container-raxie">
-          <div className="text-center mb-12">
-            <Badge variant="brand" className="mb-3 bg-amber-500/20 text-amber-300 border-amber-500/30">
-              Ulasan Pembeli
-            </Badge>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-white">
-              Apa Kata Mereka Tentang Raxie?
-            </h2>
-            <p className="mt-3 text-charcoal-300 max-w-md mx-auto text-sm">
-              Kepuasan pelanggan adalah prioritas nomor satu kami.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Ahmad R.',
-                city: 'Jakarta Selatan',
-                review: 'Dompet bifold Raxie-nya empuk dan jahitan super rapi. Terasa sangat premium padahal harganya terjangkau. Resi JNE langsung terbit otomatis!',
-                rating: 5,
-                product: 'Dompet Bifold RX008',
-              },
-              {
-                name: 'Budi S.',
-                city: 'Bandung',
-                review: 'Tas selempang PU Leather-nya tahan air, sangat cocok buat aktivitas harian kuliah & kerja. Pengiriman dari Garut cuma 1 hari sampai.',
-                rating: 5,
-                product: 'Tas Selempang Leather RX004',
-              },
-              {
-                name: 'Dian P.',
-                city: 'Surabaya',
-                review: 'Beli sabuk dan dompet untuk kado ulang tahun pasangan. Packaging-nya eksklusif banget dan bahan sintetisnya halus seperti kulit asli.',
-                rating: 5,
-                product: 'Sabuk & Dompet Gift Set',
-              },
-            ].map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-charcoal-800/80 border border-charcoal-700 rounded-2xl p-6 shadow-xl flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center gap-1 text-amber-400 mb-3">
-                    {Array.from({ length: item.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-charcoal-200 text-sm leading-relaxed italic mb-4">
-                    "{item.review}"
-                  </p>
-                </div>
-                <div className="border-t border-charcoal-700 pt-4 flex justify-between items-center text-xs">
-                  <div>
-                    <p className="font-bold text-white">{item.name}</p>
-                    <p className="text-charcoal-400">{item.city}</p>
-                  </div>
-                  <span className="text-[10px] font-semibold bg-charcoal-900 text-amber-300 px-2 py-1 rounded border border-charcoal-700">
-                    {item.product}
+                  <span className="inline-flex items-center text-xs font-semibold text-neutral-600 group-hover:text-black mt-2">
+                    Lihat Koleksi <ArrowRight className="h-3.5 w-3.5 ml-1 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Why Choose Raxie ─────────────────────────────────────────────── */}
-      <section className="py-20 bg-muted/40 border-t border-border">
-        <div className="container-raxie">
-          <div className="text-center mb-12">
-            <Badge variant="brand" className="mb-3">Kenapa Raxie?</Badge>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-              Alasan Memilih Kami
-            </h2>
-            <p className="mt-3 text-muted-foreground max-w-md mx-auto text-sm md:text-base">
-              Kami percaya pada kejujuran produk dan kepuasan nyata.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: ShieldCheck, title: 'Garansi 30 Hari', desc: 'Jaminan penggantian jika ada cacat produksi dalam 30 hari setelah terima.' },
-              { icon: RotateCcw, title: 'Retur Mudah', desc: 'Produk tidak sesuai deskripsi? Kami proses retur tanpa drama.' },
-              { icon: Truck, title: 'Kirim ke Seluruh Indonesia', desc: 'Tersedia berbagai pilihan ekspedisi dengan estimasi pengiriman yang akurat.' },
-              { icon: Star, title: 'PU Leather Premium', desc: 'Material tahan air, mudah dibersihkan, tampilan rapi dan konsisten di setiap produk.' },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="bg-card rounded-2xl p-6 border border-border hover:border-tan-400/30 transition-colors duration-300 hover:shadow-md"
-              >
-                <div className="w-12 h-12 bg-tan-50 dark:bg-tan-950/40 rounded-xl flex items-center justify-center mb-4 border border-tan-200 dark:border-tan-900">
-                  <item.icon className="h-6 w-6 text-tan-600 dark:text-tan-400" />
+                <div className="relative w-28 h-20 shrink-0 rounded-lg overflow-hidden">
+                  <Image
+                    src={cat.image}
+                    alt={cat.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="112px"
+                  />
                 </div>
-                <h3 className="font-serif font-bold text-lg text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
+
+      {/* ─── 3. BEST SELLERS ──────────────────────────────────────────────── */}
+      <section className="py-16 md:py-20 bg-white text-black">
+        <div className="container-raxie text-center">
+          <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1">
+            BEST SELLER
+          </span>
+          <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-wide text-black uppercase mb-12">
+            PRODUK TERLARIS
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+            {bestSellers.length > 0 ? (
+              bestSellers.map((p) => (
+                <div key={p.id} className="bg-[#121212] p-3 rounded-xl border border-neutral-800">
+                  <ProductCard product={p} isDarkBg={true} />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full py-10 text-center text-neutral-500">
+                Belum ada produk terlaris.
+              </div>
+            )}
+          </div>
+
+          <div className="mt-12">
+            <Link
+              href="/products"
+              className="inline-block border border-black text-black font-bold text-xs uppercase tracking-[0.15em] px-8 py-3 rounded hover:bg-black hover:text-white transition-colors"
+            >
+              LIHAT SEMUA PRODUK
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 4. TRUST BAR (DARK SECTION) ─────────────────────────────────── */}
+      <section className="bg-[#0B0A08] py-8 border-y border-neutral-900">
+        <div className="container-raxie">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+                <Truck className="h-5 w-5" />
+              </div>
+              <p className="font-bold text-xs uppercase tracking-wider text-white">GRATIS ONGKIR</p>
+              <p className="text-[11px] text-neutral-400">Seluruh Indonesia</p>
+            </div>
+
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+                <Zap className="h-5 w-5" />
+              </div>
+              <p className="font-bold text-xs uppercase tracking-wider text-white">PENGIRIMAN CEPAT</p>
+              <p className="text-[11px] text-neutral-400">1-2 Hari Sampai</p>
+            </div>
+
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <p className="font-bold text-xs uppercase tracking-wider text-white">PEMBAYARAN AMAN</p>
+              <p className="text-[11px] text-neutral-400">100% Secure</p>
+            </div>
+
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+                <PackageCheck className="h-5 w-5" />
+              </div>
+              <p className="font-bold text-xs uppercase tracking-wider text-white">PACKAGING PREMIUM</p>
+              <p className="text-[11px] text-neutral-400">Box Eksklusif</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 5. BRAND STORY ("TENTANG RAXIE") ─────────────────────────────── */}
+      <section className="bg-white py-16 md:py-24 text-black">
+        <div className="container-raxie">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-neutral-200 shadow-xl">
+            {/* Left Photo */}
+            <div className="relative min-h-[350px] lg:min-h-[450px]">
+              <Image
+                src="https://i.imgur.com/Fm42C0F.png"
+                alt="Tentang RAXIE Leather"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
+
+            {/* Right Story Text Box */}
+            <div className="bg-[#FAF8F5] p-8 md:p-14 flex flex-col justify-center space-y-4">
+              <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase">
+                TENTANG RAXIE
+              </span>
+              
+              <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-black leading-tight">
+                BUILT FOR STYLE, <br />
+                MADE TO LAST
+              </h2>
+
+              <p className="text-neutral-600 text-xs md:text-sm leading-relaxed">
+                RAXIE percaya bahwa setiap detail mencerminkan kualitas diri. Dibuat dari material terbaik oleh pengrajin berpengalaman untuk menghasilkan produk yang bukan hanya stylish, tapi juga tahan lama.
+              </p>
+
+              <div className="pt-4">
+                <Link
+                  href="/about"
+                  className="inline-block bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded transition-colors"
+                >
+                  SELENGKAPNYA
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
   )
 }
