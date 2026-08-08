@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Koleksi Produk | Raxie',
-  description: 'Jelajahi koleksi dompet dan aksesoris kulit premium dari Raxie.',
+  description: 'Jelajahi koleksi dompet dan aksesoris kulit sintetis PU Leather premium dari Raxie.',
 }
 
 const LIMIT = 8
@@ -120,7 +120,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               {q ? `PENCARIAN: "${q}"` : category}
             </h1>
             <p className="text-muted-foreground text-xs md:text-sm">
-              Temukan dompet dan aksesoris kulit sintetis & asli bermutu tinggi untuk melengkapi gaya elegan Anda.
+              Temukan dompet dan aksesoris PU Leather premium bermutu tinggi untuk melengkapi gaya elegan Anda.
             </p>
           </div>
         </div>

@@ -286,10 +286,10 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           <div className="pt-6 text-xs leading-relaxed text-foreground">
             <TabsContent value="deskripsi" className="space-y-4 max-w-2xl">
               <p>
-                {product.description || 'Terbuat dari material PU Leather / Kulit Asli pilihan yang tahan lama, tahan air, dan mudah dibersihkan. Didesain dengan presisi tinggi oleh pengrajin berpengalaman untuk menampung kebutuhan harian Anda dengan rapi.'}
+                {product.description || 'Terbuat dari material PU Leather Premium pilihan yang tahan lama, tahan air, dan mudah dibersihkan. Didesain dengan presisi tinggi oleh pengrajin berpengalaman untuk menampung kebutuhan harian Anda dengan rapi.'}
               </p>
               <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
-                <li>Material berkualitas tinggi</li>
+                <li>Material PU Leather Premium sintetis berkualitas tinggi</li>
                 <li>Jahitan presisi dan benang tahan lama</li>
                 <li>Desain modern & maskulin</li>
                 <li>Dilengkapi box kemasan eksklusif RAXIE</li>

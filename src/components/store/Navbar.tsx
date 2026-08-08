@@ -104,21 +104,20 @@ export function Navbar() {
 
   return (
     <>
-      {/* Main Sticky Navbar Header */}
-      <header className="sticky top-0 left-0 right-0 z-50 bg-[#FAF8F5]/95 dark:bg-[#0B0A08]/95 backdrop-blur-md text-foreground border-b border-neutral-200 dark:border-neutral-900 shadow-md transition-colors duration-300">
+      {/* Permanent Luxury Dark Sticky Navbar Header */}
+      <header className="sticky top-0 left-0 right-0 z-50 bg-[#0B0A08] text-white border-b border-neutral-900 shadow-xl">
         <AnnouncementBar />
         <div className="container-raxie h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 font-serif font-bold text-xl md:text-2xl tracking-[0.2em] text-[#C19A6B] hover:opacity-80 transition-opacity"
-          >
-            <div className="relative w-8 h-8 flex items-center justify-center border border-[#C19A6B]/50 rounded rotate-45 bg-[#C19A6B]/10">
-              <span className="text-xs font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
-            </div>
-            <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
-              RAXIE
-            </span>
+          {/* Official Image Logo */}
+          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+            <Image
+              src="https://i.imgur.com/SrBEKD5.png"
+              alt="RAXIE Logo"
+              width={140}
+              height={40}
+              className="h-8 md:h-9 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -136,8 +135,8 @@ export function Navbar() {
                     'flex items-center gap-1 px-3 py-1.5 text-[12px] font-bold tracking-[0.15em] uppercase transition-colors',
                     'hover:text-[#C19A6B]',
                     pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-                      ? 'text-[#C19A6B] border-b-2 border-[#C19A6B]'
-                      : 'text-neutral-700 dark:text-neutral-300'
+                      ? 'text-[#C19A6B] border-b border-[#C19A6B]'
+                      : 'text-neutral-300'
                   )}
                 >
                   {link.label}
@@ -159,13 +158,13 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-1 w-52 rounded-xl bg-card border border-border shadow-xl overflow-hidden py-1"
+                      className="absolute top-full left-0 mt-1 w-52 rounded-xl bg-[#121212] border border-neutral-800 shadow-xl overflow-hidden py-1"
                     >
                       {link.children.map((child: any) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="flex items-center px-4 py-2.5 text-xs font-bold text-foreground/80 hover:text-[#C19A6B] hover:bg-muted transition-colors uppercase tracking-wider"
+                          className="flex items-center px-4 py-2.5 text-xs font-bold text-neutral-300 hover:text-[#C19A6B] hover:bg-neutral-900 transition-colors uppercase tracking-wider"
                         >
                           {child.label}
                         </Link>
@@ -185,7 +184,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-foreground hover:text-[#C19A6B] hover:bg-muted"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -196,12 +195,12 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Toggle tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-foreground hover:text-[#C19A6B] hover:bg-muted hidden sm:flex"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 hidden sm:flex"
             >
               {isMounted && theme === 'dark' ? (
                 <Sun className="h-5 w-5 text-amber-400" />
               ) : (
-                <Moon className="h-5 w-5 text-neutral-800" />
+                <Moon className="h-5 w-5 text-slate-200" />
               )}
             </Button>
 
@@ -211,7 +210,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Wishlist"
               asChild
-              className="text-foreground hover:text-[#C19A6B] hover:bg-muted relative hidden sm:flex"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative hidden sm:flex"
             >
               <Link href="/wishlist">
                 <Heart className="h-5 w-5" />
@@ -233,7 +232,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-foreground hover:text-[#C19A6B] hover:bg-muted relative"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative"
             >
               <ShoppingBag className="h-5 w-5" />
               <AnimatePresence>
@@ -257,7 +256,7 @@ export function Navbar() {
                 <>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#C19A6B] flex items-center justify-center bg-card text-[#C19A6B] font-bold text-xs hover:opacity-80 transition-opacity"
+                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#C19A6B] flex items-center justify-center bg-black text-[#C19A6B] font-bold text-xs hover:border-amber-300 transition-colors"
                     aria-label="Menu akun"
                   >
                     {session.user?.image ? (
@@ -274,18 +273,18 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 rounded-xl bg-card border border-border text-card-foreground shadow-2xl overflow-hidden py-1 z-50"
+                        className="absolute right-0 mt-2 w-56 rounded-xl bg-[#121212] border border-neutral-800 text-white shadow-2xl overflow-hidden py-1 z-50"
                       >
-                        <div className="px-4 py-3 border-b border-border">
-                          <p className="text-xs font-bold text-foreground truncate uppercase">{session.user?.name}</p>
-                          <p className="text-[11px] text-muted-foreground truncate">{session.user?.email}</p>
+                        <div className="px-4 py-3 border-b border-neutral-800">
+                          <p className="text-xs font-bold text-white truncate uppercase">{session.user?.name}</p>
+                          <p className="text-[11px] text-neutral-400 truncate">{session.user?.email}</p>
                         </div>
 
                         {(session.user as any)?.role === 'ADMIN' && (
                           <Link
                             href="/admin"
                             onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#C19A6B] uppercase hover:bg-muted transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#C19A6B] uppercase hover:bg-neutral-900 transition-colors"
                           >
                             ⚡ Dashboard Admin
                           </Link>
@@ -294,18 +293,18 @@ export function Navbar() {
                         <Link
                           href="/account"
                           onClick={() => setShowUserMenu(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-foreground hover:bg-muted transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-neutral-300 hover:bg-neutral-900 hover:text-white transition-colors"
                         >
                           <User className="w-3.5 h-3.5" /> Profil & Pesanan
                         </Link>
 
-                        <div className="border-t border-border my-1">
+                        <div className="border-t border-neutral-800 my-1">
                           <button
                             onClick={() => {
                               setShowUserMenu(false)
                               signOut({ callbackUrl: '/' })
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-red-500 hover:bg-muted transition-colors"
+                            className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-red-400 hover:bg-neutral-900 transition-colors"
                           >
                             <LogOut className="w-3.5 h-3.5" /> Keluar
                           </button>
@@ -320,7 +319,7 @@ export function Navbar() {
                   size="icon-sm"
                   aria-label="Login"
                   asChild
-                  className="text-foreground hover:text-[#C19A6B] hover:bg-muted"
+                  className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
                 >
                   <Link href="/login">
                     <User className="h-5 w-5" />
@@ -335,7 +334,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Menu"
               onClick={() => setIsMobileOpen(true)}
-              className="text-foreground hover:text-[#C19A6B] hover:bg-muted lg:hidden"
+              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -350,7 +349,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
             onClick={() => setIsSearchOpen(false)}
           >
             <motion.div
@@ -358,18 +357,18 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card border-b border-border shadow-2xl relative"
+              className="bg-[#121212] border-b border-neutral-800 shadow-2xl relative"
             >
               <div className="container-raxie py-4">
                 <div className="relative flex items-center gap-3">
-                  <Search className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <Search className="h-5 w-5 text-neutral-400 flex-shrink-0" />
                   <input
                     ref={searchRef}
                     type="search"
                     placeholder="Cari dompet, tas, sabuk..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent text-foreground text-base placeholder:text-muted-foreground outline-none"
+                    className="flex-1 bg-transparent text-white text-base placeholder:text-neutral-500 outline-none"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && searchQuery) {
                         window.location.href = `/products?q=${encodeURIComponent(searchQuery)}`
@@ -381,7 +380,7 @@ export function Navbar() {
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => setIsSearchOpen(false)}
-                    className="text-foreground hover:bg-muted"
+                    className="text-white hover:bg-neutral-800"
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -395,13 +394,13 @@ export function Navbar() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="absolute top-full left-0 right-0 bg-card border-b border-border shadow-2xl overflow-hidden z-50"
+                    className="absolute top-full left-0 right-0 bg-[#121212] border-b border-neutral-800 shadow-2xl overflow-hidden z-50"
                   >
                     <div className="container-raxie max-h-[60vh] overflow-y-auto py-2">
                       {isSearching ? (
                         <div className="py-8 text-center flex flex-col items-center">
-                          <div className="w-6 h-6 border-2 border-muted border-t-[#C19A6B] rounded-full animate-spin mb-2" />
-                          <span className="text-xs text-muted-foreground">Mencari produk...</span>
+                          <div className="w-6 h-6 border-2 border-neutral-700 border-t-[#C19A6B] rounded-full animate-spin mb-2" />
+                          <span className="text-xs text-neutral-400">Mencari produk...</span>
                         </div>
                       ) : searchResults.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 py-4">
@@ -410,18 +409,18 @@ export function Navbar() {
                               key={item.id} 
                               href={`/products/${item.slug}`}
                               onClick={() => setIsSearchOpen(false)}
-                              className="flex items-center gap-4 p-3 hover:bg-muted rounded-xl transition-colors group border border-border"
+                              className="flex items-center gap-4 p-3 hover:bg-black rounded-xl transition-colors group border border-neutral-800/50"
                             >
-                              <div className="w-14 h-14 bg-muted rounded-lg overflow-hidden border border-border relative flex-shrink-0">
+                              <div className="w-14 h-14 bg-black rounded-lg overflow-hidden border border-neutral-800 relative flex-shrink-0">
                                 {item.image ? (
                                   <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform" />
                                 ) : (
-                                  <div className="w-full h-full bg-muted flex items-center justify-center text-[10px]">No Img</div>
+                                  <div className="w-full h-full bg-neutral-900 flex items-center justify-center text-[10px]">No Img</div>
                                 )}
                               </div>
                               <div>
-                                <p className="font-bold text-foreground text-xs uppercase group-hover:text-[#C19A6B] transition-colors">{item.name}</p>
-                                <p className="text-[10px] text-muted-foreground uppercase">{item.category}</p>
+                                <p className="font-bold text-white text-xs uppercase group-hover:text-[#C19A6B] transition-colors">{item.name}</p>
+                                <p className="text-[10px] text-neutral-400 uppercase">{item.category}</p>
                                 <p className="text-xs font-bold mt-1 text-[#C19A6B]">{formatPrice(item.price)}</p>
                               </div>
                             </Link>
@@ -429,12 +428,12 @@ export function Navbar() {
                         </div>
                       ) : (
                         <div className="py-12 text-center">
-                          <p className="text-xs text-muted-foreground">Tidak ditemukan hasil untuk "{searchQuery}"</p>
+                          <p className="text-xs text-neutral-400">Tidak ditemukan hasil untuk "{searchQuery}"</p>
                         </div>
                       )}
                       
                       {searchResults.length > 0 && (
-                        <div className="py-4 border-t border-border mt-2">
+                        <div className="py-4 border-t border-neutral-800 mt-2">
                           <Link 
                             href={`/products?q=${encodeURIComponent(searchQuery)}`}
                             onClick={() => setIsSearchOpen(false)}
@@ -461,7 +460,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md lg:hidden"
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md lg:hidden"
             onClick={() => setIsMobileOpen(false)}
           >
             <motion.div
@@ -470,22 +469,28 @@ export function Navbar() {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-4/5 max-w-sm h-full bg-card border-r border-border p-6 flex flex-col justify-between"
+              className="w-4/5 max-w-sm h-full bg-[#0B0A08] border-r border-neutral-800 p-6 flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between pb-6 border-b border-border">
+                <div className="flex items-center justify-between pb-6 border-b border-neutral-800">
                   <Link
                     href="/"
                     onClick={() => setIsMobileOpen(false)}
-                    className="font-serif font-bold text-xl tracking-[0.2em] text-[#C19A6B] uppercase"
+                    className="flex items-center"
                   >
-                    RAXIE
+                    <Image
+                      src="https://i.imgur.com/SrBEKD5.png"
+                      alt="RAXIE Logo"
+                      width={120}
+                      height={32}
+                      className="h-7 w-auto object-contain"
+                    />
                   </Link>
                   <Button
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => setIsMobileOpen(false)}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-neutral-400 hover:text-white"
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -499,18 +504,18 @@ export function Navbar() {
                         onClick={() => setIsMobileOpen(false)}
                         className={cn(
                           'block py-2 text-sm font-bold tracking-wider uppercase transition-colors',
-                          pathname === link.href ? 'text-[#C19A6B]' : 'text-foreground/80'
+                          pathname === link.href ? 'text-[#C19A6B]' : 'text-neutral-300'
                         )}
                       >
                         {link.label}
                       </Link>
                       {link.children && (
-                        <div className="pl-4 space-y-2 mt-1 border-l border-border">
+                        <div className="pl-4 space-y-2 mt-1 border-l border-neutral-800">
                           {link.children.map((child: any) => (
                             <Link
                               key={child.href}
                               href={child.href}
-                              className="block text-xs font-semibold text-muted-foreground hover:text-[#C19A6B]"
+                              className="block text-xs font-semibold text-neutral-400 hover:text-[#C19A6B]"
                               onClick={() => setIsMobileOpen(false)}
                             >
                               {child.label}
@@ -523,10 +528,10 @@ export function Navbar() {
                 </nav>
               </div>
 
-              <div className="pt-6 border-t border-border">
+              <div className="pt-6 border-t border-neutral-800">
                 {session ? (
                   <div className="space-y-3">
-                    <p className="text-xs font-bold text-foreground uppercase">{session.user?.name}</p>
+                    <p className="text-xs font-bold text-white uppercase">{session.user?.name}</p>
                     <Link
                       href="/account"
                       onClick={() => setIsMobileOpen(false)}
@@ -587,14 +592,14 @@ export function MobileBottomNav() {
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-xl border-t border-border pb-safe lg:hidden text-foreground">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-black/95 backdrop-blur-xl border-t border-neutral-900 pb-safe lg:hidden text-white">
       <div className="flex items-center justify-around py-2">
         {navItems.map((item, idx) =>
           item.onClick ? (
             <button
               key={idx}
               onClick={item.onClick}
-              className="flex flex-col items-center gap-0.5 px-4 py-1.5 text-muted-foreground hover:text-[#C19A6B] transition-colors"
+              className="flex flex-col items-center gap-0.5 px-4 py-1.5 text-neutral-400 hover:text-[#C19A6B] transition-colors"
             >
               {item.icon}
               <span className="text-[10px] font-bold uppercase">{item.label}</span>
@@ -604,10 +609,10 @@ export function MobileBottomNav() {
               key={idx}
               href={item.href!}
               className={cn(
-                'flex flex-col items-center gap-0.5 px-4 py-1.5 transition-colors',
+                'flex flex-col items-[#C19A6B] gap-0.5 px-4 py-1.5 transition-colors',
                 pathname === item.href
                   ? 'text-[#C19A6B]'
-                  : 'text-muted-foreground hover:text-[#C19A6B]'
+                  : 'text-neutral-400 hover:text-[#C19A6B]'
               )}
             >
               {item.icon}

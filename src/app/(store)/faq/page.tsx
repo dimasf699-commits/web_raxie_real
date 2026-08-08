@@ -26,13 +26,13 @@ export default function FAQPage() {
           <div className="space-y-4 mt-8 not-prose">
             <details className="group border border-border bg-card rounded-xl overflow-hidden">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-foreground hover:bg-muted/50 transition-colors">
-                <span>Apakah produk Raxie menggunakan kulit asli?</span>
+                <span>Material apa yang digunakan pada produk Raxie?</span>
                 <span className="transition group-open:rotate-180">
                   <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
               <div className="text-muted-foreground p-5 pt-0 border-t border-border/50 bg-muted/20">
-                <p>Ya, 100%. Kami tidak menggunakan kulit sintetis (PU/PVC). Kami mendedikasikan diri untuk hanya menggunakan kulit sapi asli berjenis Full-Grain, material kulit dengan ketahanan tertinggi dan mampu mengembangkan warna alami (patina) yang indah.</p>
+                <p>Seluruh produk Raxie dibuat menggunakan <strong>PU Leather Premium (kulit sintetis berkualitas tinggi)</strong>. Material ini dirancang khusus agar tahan terhadap ciptaan air, tidak gampang terkelupas, mudah dibersihkan, serta memiliki tampilan presisi dan elegan.</p>
               </div>
             </details>
 
@@ -85,17 +85,17 @@ export default function FAQPage() {
 
             <details className="group border border-border bg-card rounded-xl overflow-hidden">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-foreground hover:bg-muted/50 transition-colors">
-                <span>Bagaimana cara merawat dompet kulit asli agar awet?</span>
+                <span>Bagaimana cara merawat dompet PU Leather Raxie agar awet?</span>
                 <span className="transition group-open:rotate-180">
                   <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                 </span>
               </summary>
               <div className="text-muted-foreground p-5 pt-0 border-t border-border/50 bg-muted/20">
-                <p>Kulit asli membutuhkan sedikit perawatan agar tetap lentur dan tidak retak:</p>
+                <p>Material PU Leather Premium Raxie sangat mudah dirawat:</p>
                 <ul className="list-disc pl-5 mt-2 space-y-1">
-                  <li>Hindari paparan sinar matahari langsung yang terlalu lama.</li>
-                  <li>Jika basah, jangan gunakan <em>hair dryer</em>; cukup lap dengan kain kering dan angin-anginkan di suhu ruang.</li>
-                  <li>Gunakan *leather balm* atau kondisioner kulit setiap 3-6 bulan sekali untuk menjaga kelembapan material.</li>
+                  <li>Jika terkena noda atau kotoran, cukup lap dengan kain lembut yang sedikit lembap.</li>
+                  <li>Hindari menyimpan di tempat basah atau terlalu lembap dalam waktu lama.</li>
+                  <li>Jauhkan dari benda tajam atau gesekan kasar untuk menjaga kerapian permukaan.</li>
                 </ul>
               </div>
             </details>

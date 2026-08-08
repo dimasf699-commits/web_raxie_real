@@ -21,15 +21,15 @@ export default function ReturnPolicyPage() {
           <h1 className="font-serif font-bold text-3xl md:text-4xl mb-8">Kebijakan Pengembalian Dana & Garansi</h1>
           
           <p>
-            Di Raxie, kami berkomitmen menyajikan produk kulit full-grain dengan standar kualitas tertinggi. 
+            Di Raxie, kami berkomitmen menyajikan produk dompet dan aksesoris PU Leather Premium dengan standar kualitas terbaik. 
             Namun, kami menyadari bahwa terkadang produk yang Anda terima mungkin tidak sesuai ekspektasi atau mengalami kendala pengiriman.
-            Oleh karena itu, kami menyediakan kebijakan pengembalian dana (refund) dan garansi untuk melindungi Anda.
+            Oleh karena itu, kami menyediakan kebijakan pengembalian dana (refund) dan garansi resmi untuk melindungi Anda.
           </p>
 
           <h2>1. Syarat Pengembalian Barang (Retur)</h2>
           <p>Anda dapat mengajukan pengembalian barang apabila memenuhi kriteria berikut:</p>
           <ul>
-            <li>Barang diterima dalam kondisi cacat produksi (misal: jahitan lepas, resleting rusak, kulit robek).</li>
+            <li>Barang diterima dalam kondisi cacat produksi (misal: jahitan lepas, resleting rusak, permukaan terkelupas).</li>
             <li>Barang yang diterima tidak sesuai dengan pesanan Anda (salah warna atau salah model).</li>
             <li>Permintaan retur diajukan maksimal <strong>7x24 jam</strong> sejak barang berstatus "Diterima" berdasarkan resi pelacakan kurir.</li>
             <li>Barang belum pernah dipakai untuk aktivitas di luar ruangan, belum dicuci, dan tidak ada bau atau noda parfum/keringat.</li>
@@ -43,12 +43,12 @@ export default function ReturnPolicyPage() {
             <li><strong>Pengembalian Uang (Refund):</strong> Dana akan dikembalikan penuh (100%) ke rekening bank, e-wallet, atau limit kartu kredit Anda. Proses pencairan dana membutuhkan waktu <strong>3-5 hari kerja</strong> setelah barang retur kami terima di gudang dan lolos proses inspeksi.</li>
           </ul>
 
-          <h2>3. Garansi Kulit Raxie</h2>
-          <p>Karena kami menggunakan kulit sapi asli tipe <em>Full-Grain</em>, kami memberikan <strong>Garansi Material Kulit selama 12 Bulan</strong>. Garansi ini mencakup masalah terkelupasnya kulit secara tidak wajar. Garansi <strong>tidak</strong> mencakup:</p>
+          <h2>3. Garansi Material Raxie</h2>
+          <p>Seluruh produk Raxie menggunakan PU Leather Premium berkualitas tinggi. Kami memberikan <strong>Garansi Material selama 12 Bulan</strong> yang mencakup masalah terkelupasnya permukaan kulit secara tidak wajar. Garansi <strong>tidak</strong> mencakup:</p>
           <ul>
-            <li>Goresan atau noda akibat kelalaian pemakaian (terkena tinta, benda tajam, bahan kimia).</li>
+            <li>Goresan atau noda akibat kelalaian pemakaian (terkena tinta, benda tajam, bahan kimia, atau api).</li>
             <li>Kerusakan akibat penyimpanan di tempat lembap yang memicu timbulnya jamur.</li>
-            <li>Keausan wajar pada warna kulit yang merupakan karakteristik alami kulit asli (patina).</li>
+            <li>Keausan wajar akibat penggunaan jangka panjang.</li>
           </ul>
 
           <h2>4. Cara Mengajukan Klaim</h2>
@@ -61,8 +61,8 @@ export default function ReturnPolicyPage() {
           
           <div className="bg-muted p-6 rounded-xl mt-8 not-prose">
             <h4 className="font-bold mb-2">Hubungi Tim Bantuan Raxie:</h4>
-            <p className="text-muted-foreground text-sm mb-1"><strong>Email:</strong> support@raxie.id</p>
-            <p className="text-muted-foreground text-sm"><strong>WhatsApp:</strong> 0812-3456-7890 (Senin - Jumat, 09.00 - 17.00 WIB)</p>
+            <p className="text-muted-foreground text-sm mb-1"><strong>Email:</strong> raxieleather@gmail.com</p>
+            <p className="text-muted-foreground text-sm"><strong>WhatsApp:</strong> 0821-2886-2433 (Senin - Jumat, 09.00 - 17.00 WIB)</p>
           </div>
         </div>
       </div>

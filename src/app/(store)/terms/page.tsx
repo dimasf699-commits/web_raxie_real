@@ -20,7 +20,7 @@ export default function TermsPage() {
         <div className="mt-8 prose prose-lg prose-stone dark:prose-invert max-w-none">
           <h1 className="font-serif font-bold text-3xl md:text-4xl mb-8">Syarat & Ketentuan Layanan</h1>
           
-          <p>Terakhir diperbarui: <em>Agustus 2024</em></p>
+          <p>Terakhir diperbarui: <em>Agustus 2026</em></p>
 
           <p>
             Selamat datang di Raxie. Dengan mengakses, menelusuri, atau melakukan pembelian di website ini, 
@@ -52,7 +52,7 @@ export default function TermsPage() {
           <h2>4. Deskripsi & Visual Produk</h2>
           <p>
             Kami berusaha menampilkan warna dan detail produk seakurat mungkin. Namun, karena perbedaan kalibrasi layar monitor atau layar ponsel Anda, warna produk asli mungkin sedikit berbeda. 
-            Selain itu, karakteristik kulit asli <em>(genuine leather)</em> memiliki tekstur dan guratan alami yang membuat setiap produk unik; ini bukanlah sebuah cacat.
+            Seluruh produk Raxie dibuat menggunakan material PU Leather Premium (kulit sintetis berkualitas tinggi) yang konsisten, presisi, dan mudah dibersihkan.
           </p>
 
           <h2>5. Kebijakan Privasi Data</h2>
@@ -69,8 +69,8 @@ export default function TermsPage() {
           <div className="bg-muted p-6 rounded-xl mt-8 not-prose">
             <h4 className="font-bold mb-2">Informasi Kontak Hukum:</h4>
             <p className="text-muted-foreground text-sm mb-1"><strong>Raxie Leather Goods</strong></p>
-            <p className="text-muted-foreground text-sm mb-1"><strong>Email:</strong> legal@raxie.id</p>
-            <p className="text-muted-foreground text-sm"><strong>WhatsApp:</strong> 0812-3456-7890</p>
+            <p className="text-muted-foreground text-sm mb-1"><strong>Email:</strong> raxieleather@gmail.com</p>
+            <p className="text-muted-foreground text-sm"><strong>WhatsApp:</strong> 0821-2886-2433</p>
           </div>
         </div>
       </div>

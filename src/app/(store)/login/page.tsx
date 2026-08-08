@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -66,13 +67,15 @@ export default function AuthPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8 space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2.5 font-serif font-bold text-2xl tracking-[0.2em] text-[#C19A6B]">
-            <div className="w-8 h-8 flex items-center justify-center border border-[#C19A6B]/50 rounded rotate-45 bg-[#C19A6B]/10">
-              <span className="text-xs font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
-            </div>
-            <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
-              RAXIE
-            </span>
+          <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
+            <Image
+              src="https://i.imgur.com/SrBEKD5.png"
+              alt="RAXIE Logo"
+              width={140}
+              height={40}
+              className="h-10 w-auto object-contain mx-auto"
+              priority
+            />
           </Link>
           <p className="text-muted-foreground text-xs uppercase tracking-wider">
             {mode === 'login' ? 'Masuk ke Akun Member Anda' : 'Buat Akun Member Baru'}

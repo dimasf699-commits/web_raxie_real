@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState } from 'react'
 import { Instagram, Send } from 'lucide-react'
 import { toast } from '@/components/ui/Toaster'
@@ -21,14 +22,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-border">
           {/* Col 1: Brand Info */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2.5 font-serif font-bold text-xl tracking-[0.2em] text-[#C19A6B]">
-              <div className="w-7 h-7 flex items-center justify-center border border-[#C19A6B]/50 rounded rotate-45 bg-[#C19A6B]/10">
-                <span className="text-[10px] font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
-              </div>
-              <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
-                RAXIE
-              </span>
-            </div>
+            <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
+              <Image
+                src="https://i.imgur.com/SrBEKD5.png"
+                alt="RAXIE Logo"
+                width={130}
+                height={36}
+                className="h-8 w-auto object-contain"
+              />
+            </Link>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
               RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit premium dengan desain elegan dan kualitas terbaik.
             </p>
@@ -87,7 +89,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black rounded-lg px-3 py-2 flex items-center justify-center shrink-0 transition-colors"
+                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-[#0F0D0A] rounded-lg px-3 py-2 flex items-center justify-center shrink-0 transition-colors"
                 aria-label="Submit newsletter"
               >
                 <Send className="h-3.5 w-3.5" />
