@@ -126,3 +126,32 @@ export const sendContactFormEmail = async (name: string, email: string, message:
     console.error('Failed to send contact email:', error)
   }
 }
+
+export const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY not found. Skipping password reset email.')
+    return
+  }
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: 'Reset Password Akun RAXIE Anda 🔐',
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+          <h2 style="color: #C19A6B;">Permintaan Reset Password</h2>
+          <p>Kami menerima permintaan untuk mereset password akun RAXIE Anda.</p>
+          <p>Silakan klik tombol di bawah ini untuk membuat password baru Anda (berlaku selama 1 jam):</p>
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${resetUrl}" style="background-color: #C19A6B; color: #000; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password Saya</a>
+          </div>
+          <p style="font-size: 12px; color: #666;">Jika Anda tidak merasa mengajukan permintaan ini, silakan abaikan email ini.</p>
+          <p style="margin-top: 40px; font-size: 12px; color: #666;">© ${new Date().getFullYear()} RAXIE. All rights reserved.</p>
+        </div>
+      `,
+    })
+  } catch (error) {
+    console.error('Failed to send password reset email:', error)
+  }
+}
