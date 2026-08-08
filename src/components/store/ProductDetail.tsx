@@ -57,10 +57,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     ? getDiscountPercent(product.compareAtPrice, product.price)
     : 0
 
-  const handleAddToCart = async () => {
-    setAddingCart(true)
-    await new Promise((r) => setTimeout(r, 300))
-    
+  const handleAddToCart = () => {
     const finalPrice = selectedVariant.price ?? product.price
     
     addItem({
@@ -79,7 +76,6 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     
     trackAddToCart(product.name, finalPrice * qty)
     toast.success('Berhasil ditambahkan ke keranjang!', `${qty}x ${product.name}`)
-    setAddingCart(false)
     openCart()
   }
 

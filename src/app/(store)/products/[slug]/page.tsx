@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { cache } from 'react'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { ProductDetail } from '@/components/store/ProductDetail'
@@ -12,8 +13,8 @@ interface ProductPageProps {
   }
 }
 
-// Helper to map DB product to the shape ProductDetail expects
-async function getProductBySlug(slug: string) {
+// Deduplicated helper using React cache() to prevent duplicate DB calls during SSR
+const getProductBySlug = cache(async (slug: string) => {
   return prisma.product.findUnique({
     where: { slug },
     include: {
@@ -24,11 +25,11 @@ async function getProductBySlug(slug: string) {
         where: { isApproved: true }, 
         orderBy: { createdAt: 'desc' }, 
         take: 10,
-        include: { user: true }
+        include: { user: { select: { name: true, image: true } } }
       },
     },
   })
-}
+})
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const product = await getProductBySlug(params.slug)
@@ -58,35 +59,32 @@ export default async function ProductPage({ params }: ProductPageProps) {
     images: dbProduct.images.map(i => i.url),
     avgRating: dbProduct.avgRating,
     reviewCount: dbProduct.reviewCount,
-    isBestSeller: dbProduct.isBestSeller,
-    isNew: dbProduct.isNew,
-    material: dbProduct.material ?? '',
-    weight: dbProduct.weight ?? null,
-    dimensions: dbProduct.dimensions ?? null,
-    careInstructions: dbProduct.careInstructions ?? null,
-    tags: dbProduct.tags,
-    categorySlug: dbProduct.category.slug,
-    categoryName: dbProduct.category.name,
+    material: dbProduct.material,
+    dimensions: dbProduct.dimensions,
+    weight: dbProduct.weight,
+    features: dbProduct.features,
+    sku: dbProduct.variants[0]?.sku ?? '',
+    stock: dbProduct.variants[0]?.stock ?? 0,
+    categoryName: dbProduct.category?.name ?? 'Kategori',
     variants: dbProduct.variants.map(v => ({
       id: v.id,
       name: v.name,
-      colorHex: v.colorHex ?? undefined,
-      stock: v.stock,
       price: v.price,
+      stock: v.stock,
+      sku: v.sku,
     })),
-    stock: dbProduct.variants.reduce((sum, v) => sum + v.stock, 0),
-    sku: dbProduct.variants[0]?.sku ?? '',
     reviews: dbProduct.reviews.map(r => ({
       id: r.id,
+      userName: r.user?.name ?? 'Pembeli RAXIE',
+      userAvatar: r.user?.image ?? null,
       rating: r.rating,
-      comment: r.body,
+      comment: r.comment,
       createdAt: r.createdAt.toISOString(),
-      userName: r.user?.name || 'Anonim',
     })),
   }
 
-  // Fetch related products from the same category
-  const relatedDbProducts = await prisma.product.findMany({
+  // Related products from the same category
+  const relatedRaw = await prisma.product.findMany({
     where: {
       categoryId: dbProduct.categoryId,
       id: { not: dbProduct.id },
@@ -96,71 +94,45 @@ export default async function ProductPage({ params }: ProductPageProps) {
     include: {
       variants: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, take: 1 },
       images:   { orderBy: { sortOrder: 'asc' }, take: 1 },
+      category: true,
     },
   })
 
-  const relatedProducts = relatedDbProducts.map((p) => ({
-    id: p.variants[0]?.id ?? p.id,
-    productId: p.id,
-    name: p.name,
-    slug: p.slug,
-    price: p.variants[0]?.price ?? p.basePrice,
-    compareAtPrice: p.compareAtPrice,
-    image: p.images[0]?.url ?? '/placeholder.jpg',
-    avgRating: p.avgRating,
-    reviewCount: p.reviewCount,
-    isBestSeller: p.isBestSeller,
-    isNew: p.isNew,
-    stock: p.variants[0]?.stock ?? 0,
-    sku: p.variants[0]?.sku ?? '',
-  }))
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: product.name,
-    image: product.images[0] || 'https://raxie.id/og-image.jpg',
-    description: product.description.replace(/<[^>]*>?/gm, ''), // strip html tags for description
-    sku: product.sku,
-    brand: {
-      '@type': 'Brand',
-      name: 'Raxie',
-    },
-    offers: {
-      '@type': 'Offer',
-      url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.id'}/products/${product.slug}`,
-      priceCurrency: 'IDR',
-      price: product.price,
-      itemCondition: 'https://schema.org/NewCondition',
-      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-    },
-    ...(product.reviewCount > 0 && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: product.avgRating,
-        reviewCount: product.reviewCount,
-      },
-    }),
-  }
+  const relatedProducts = relatedRaw.map(p => {
+    const v = p.variants[0]
+    const img = p.images[0]
+    return {
+      id: v?.id ?? p.id,
+      productId: p.id,
+      name: p.name,
+      slug: p.slug,
+      price: v?.price ?? p.basePrice,
+      compareAtPrice: p.compareAtPrice,
+      image: img?.url ?? '/placeholder.jpg',
+      avgRating: p.avgRating,
+      reviewCount: p.reviewCount,
+      isBestSeller: p.isBestSeller,
+      isNew: p.isNew,
+      stock: v?.stock ?? 0,
+      sku: v?.sku ?? '',
+      categoryName: p.category?.name ?? '',
+    }
+  })
 
   return (
-    <div className="container-raxie py-8 md:py-12">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <Breadcrumbs
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Koleksi', href: '/products' },
-          { label: product.categoryName, href: `/products?category=${product.categorySlug}` },
-          { label: product.name },
-        ]}
-        className="mb-8"
-      />
-
-      <ProductDetail product={product} relatedProducts={relatedProducts} />
+    <div className="bg-background text-foreground min-h-screen py-10 transition-colors duration-300">
+      <div className="container-raxie">
+        <Breadcrumbs
+          items={[
+            { label: 'Koleksi', href: '/products' },
+            { label: product.categoryName, href: `/products?category=${product.categoryName.toLowerCase()}` },
+            { label: product.name, href: `#` },
+          ]}
+        />
+        <div className="mt-6">
+          <ProductDetail product={product} relatedProducts={relatedProducts} />
+        </div>
+      </div>
     </div>
   )
 }
-

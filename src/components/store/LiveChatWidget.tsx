@@ -94,13 +94,16 @@ export function LiveChatWidget() {
     }
   }, [session])
 
-  // Optimized Auto-poll (3s when open, 10s when closed)
+  // Optimized Auto-poll (Only active when chat modal is OPEN)
   useEffect(() => {
-    if (!conversationId || !isInitialized) return
-    const pollSpeed = isOpen ? 3000 : 10000
+    if (!conversationId || !isInitialized || !isOpen) return
+    
+    // Fetch immediately upon opening
+    fetchConversation(conversationId)
+
     const interval = setInterval(() => {
       fetchConversation(conversationId)
-    }, pollSpeed)
+    }, 3500)
     return () => clearInterval(interval)
   }, [conversationId, isInitialized, isOpen])
 

@@ -53,11 +53,9 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
     ? getDiscountPercent(product.compareAtPrice, product.price)
     : 0
 
-  async function handleAddToCart(e: React.MouseEvent) {
+  function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
-    setAddingCart(true)
-    await new Promise((r) => setTimeout(r, 300))
     addItem({
       id: product.id,
       productId: product.productId,
@@ -69,7 +67,6 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
       sku: product.sku,
     })
     toast.success('Ditambahkan ke keranjang!', product.name)
-    setAddingCart(false)
   }
 
   function handleWishlist(e: React.MouseEvent) {

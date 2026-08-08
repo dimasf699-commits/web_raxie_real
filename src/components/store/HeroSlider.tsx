@@ -94,7 +94,8 @@ export function HeroSlider() {
             src={activeSlide.bgImage}
             alt={activeSlide.title}
             fill
-            priority
+            priority={activeSlide.id === 1}
+            sizes="100vw"
             className="object-contain md:object-cover object-center"
           />
         </motion.div>

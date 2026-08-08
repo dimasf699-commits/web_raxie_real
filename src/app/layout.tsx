@@ -1,10 +1,23 @@
 import type { Metadata, Viewport } from 'next'
+import { Fraunces, Manrope } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { Toaster } from '@/components/ui/Toaster'
 import { CookieConsent } from '@/components/ui/CookieConsent'
 import './globals.css'
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.my.id'),
@@ -53,9 +66,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Raxie — Premium Leather Wallets & Accessories',
-    description:
-      'Handcrafted premium leather wallets and accessories.',
+    title: 'Raxie — Dompet PU Leather Premium',
+    description: 'Koleksi dompet PU Leather premium Raxie.',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -68,12 +80,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  manifest: '/manifest.json',
-  icons: {
-    icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
   },
 }
 
@@ -119,28 +125,20 @@ const jsonLdWebSite = {
   url: 'https://raxie.my.id',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://raxie.my.id/products?search={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
+    target: 'https://raxie.my.id/products?q={search_term_string}',
+    'query-input': 'required name=search_term_string'
+  }
 }
 
 const jsonLdStore = {
   '@context': 'https://schema.org',
-  '@type': 'Store',
-  name: 'Raxie Store',
-  image: 'https://i.imgur.com/X1YcH8c.jpeg',
-  '@id': 'https://raxie.my.id/#store',
+  '@type': 'OnlineStore',
+  name: 'Raxie Official Store',
+  description: 'Jual dompet PU Leather premium, tas, & aksesoris pria elegan berkualitas tinggi.',
   url: 'https://raxie.my.id',
-  telephone: '082128862433',
-  priceRange: '$$',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Jakarta',
-    addressLocality: 'Jakarta',
-    addressRegion: 'DKI Jakarta',
-    postalCode: '10000',
-    addressCountry: 'ID',
-  },
+  priceRange: 'Rp100.000 - Rp500.000',
+  currenciesAccepted: 'IDR',
+  paymentAccepted: 'Bank Transfer, QRIS, Credit Card, E-Wallet',
 }
 
 export default function RootLayout({
@@ -149,14 +147,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="id" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}

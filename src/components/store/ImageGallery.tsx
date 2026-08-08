@@ -54,7 +54,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
               src={images[currentIndex]}
               alt={`${alt} preview`}
               fill
-              priority
+              priority={currentIndex === 0}
               className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, 50vw"
             />

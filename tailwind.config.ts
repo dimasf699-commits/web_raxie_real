@@ -79,8 +79,8 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        serif: ['Fraunces', 'Georgia', 'serif'],
-        sans: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-fraunces)', 'Fraunces', 'Georgia', 'serif'],
+        sans: ['var(--font-manrope)', 'Manrope', 'Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         '2xs': ['0.65rem', { lineHeight: '1rem' }],
