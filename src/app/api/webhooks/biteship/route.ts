@@ -8,6 +8,24 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    // ── SECURITY CHECK ────────────────────────────────────────────────────────
+    const webhookSecret = process.env.BITESHIP_WEBHOOK_SECRET || process.env.BITESHIP_API_KEY
+    if (webhookSecret) {
+      const authHeader = req.headers.get('authorization') || req.headers.get('x-biteship-signature') || req.headers.get('x-webhook-secret')
+      const urlToken = req.nextUrl.searchParams.get('token')
+      
+      const isHeaderValid = authHeader && (authHeader === webhookSecret || authHeader === `Bearer ${webhookSecret}`)
+      const isTokenValid = urlToken && urlToken === webhookSecret
+
+      if (!isHeaderValid && !isTokenValid) {
+        console.warn('[BITESHIP_WEBHOOK] Unauthorized webhook attempt:', {
+          ip: req.ip || req.headers.get('x-forwarded-for'),
+        })
+        return NextResponse.json({ error: 'Unauthorized webhook request' }, { status: 401 })
+      }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     let data: any = {}
     try {
       data = await req.json()

@@ -199,6 +199,9 @@ export async function POST(req: NextRequest) {
             create: verifiedItems,
           }
         },
+        include: {
+          items: true,
+        },
       })
 
       // Record voucher usage for authenticated user
@@ -247,7 +250,6 @@ export async function POST(req: NextRequest) {
     let snapToken = null
 
     if (midtransServerKey) {
-      console.log('[MIDTRANS] Using key prefix:', midtransServerKey.substring(0, 20), '| isProduction:', isProduction)
       const authString = Buffer.from(midtransServerKey + ':').toString('base64')
       
       // Filter payment channels sesuai pilihan user
@@ -265,11 +267,11 @@ export async function POST(req: NextRequest) {
 
       const appUrl = 'https://raxie.my.id'
 
-      const itemDetails: any[] = data.items.map(item => ({
-        id: item.sku,
+      const itemDetails: any[] = order.items.map((item: any) => ({
+        id: item.sku || item.id,
         price: Math.round(item.price),
         quantity: item.quantity,
-        name: item.name.substring(0, 50),
+        name: item.productName.substring(0, 50),
       }))
 
       if (data.shippingCost > 0) {

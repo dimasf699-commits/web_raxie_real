@@ -11,7 +11,8 @@
     "prisma:push": "prisma db push",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "tsx prisma/seed.ts",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "test:suite": "tsx scripts/test-suite.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",

@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import crypto from 'crypto'
 
 /** Merge Tailwind classes safely */
 export function cn(...inputs: ClassValue[]) {
@@ -60,10 +61,8 @@ export function generateOrderNumber() {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
-  const random = Math.floor(Math.random() * 9999)
-    .toString()
-    .padStart(4, '0')
-  return `RXE-${year}${month}${day}-${random}`
+  const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase()
+  return `RXE-${year}${month}${day}-${randomHex}`
 }
 
 /** Slugify string */

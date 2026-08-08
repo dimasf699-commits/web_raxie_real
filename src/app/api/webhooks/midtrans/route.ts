@@ -64,7 +64,14 @@ export async function POST(req: NextRequest) {
           status: newStatus as any,
           ...(paidAt && !existingOrder.paidAt ? { paidAt } : {})
         },
-        include: { items: true }
+        include: { 
+          items: {
+            include: {
+              product: { select: { weight: true } },
+              variant: { select: { weight: true } },
+            }
+          } 
+        }
       })
 
       // If paid for the first time, trigger automated shipping creation via Biteship
@@ -77,10 +84,6 @@ export async function POST(req: NextRequest) {
           let type = 'reg'
           
           if (order.courierName) {
-            // Assume format "Bebas Ongkir" or real ones from API
-            // For real ones, the ID is company_serviceCode (e.g. jne_reg)
-            // But we only have courierName in the DB. Wait, courierName is the readable name. 
-            // We should use the generic values, Biteship API expects company and type
             company = order.courierName.toLowerCase().includes('j&t') ? 'jnt' : 
                       order.courierName.toLowerCase().includes('sicepat') ? 'sicepat' : 'jne'
           }
@@ -108,12 +111,12 @@ export async function POST(req: NextRequest) {
             courier_company: company,
             courier_type: type,
             delivery_type: "now",
-            items: order.items.map(item => ({
+            items: order.items.map((item: any) => ({
               name: item.productName,
               description: item.variantName || item.productName,
               value: item.price,
               quantity: item.quantity,
-              weight: 500
+              weight: item.variant?.weight || item.product?.weight || 500
             }))
           }
 

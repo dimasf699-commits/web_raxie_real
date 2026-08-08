@@ -45,6 +45,19 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
+    // Verify magic bytes (file signature) to prevent MIME-type spoofing
+    const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff
+    const isPng = buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47
+    const isWebp = buffer.slice(0, 4).toString('utf-8') === 'RIFF' && buffer.slice(8, 12).toString('utf-8') === 'WEBP'
+    const isPdf = buffer.slice(0, 4).toString('utf-8') === '%PDF'
+
+    if (!isJpeg && !isPng && !isWebp && !isPdf) {
+      return NextResponse.json(
+        { error: 'Konten file tidak valid atau rusak (hanya format JPG, PNG, WEBP, dan PDF asli)' },
+        { status: 400 }
+      )
+    }
+
     // Upload to Cloudinary using a Promise
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(

@@ -26,6 +26,7 @@ const tabs = [
 interface OrdersPageProps {
   searchParams?: {
     status?: string
+    page?: string
   }
 }
 
@@ -36,6 +37,8 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
   }
 
   const activeStatus = searchParams?.status || 'ALL'
+  const page = Math.max(1, parseInt(searchParams?.page || '1', 10))
+  const limit = 15
 
   // Build prisma filter clause
   let whereStatus: any = undefined
@@ -51,17 +54,26 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
 
   const userEmail = session?.user?.email
 
-  const orders = await prisma.order.findMany({
-    where: {
-      OR: [
-        { userId: session.user.id },
-        ...(userEmail ? [{ guestEmail: userEmail }] : []),
-      ],
-      ...(whereStatus ? { status: whereStatus } : {})
-    },
-    orderBy: { createdAt: 'desc' },
-    include: { items: true }
-  })
+  const whereClause = {
+    OR: [
+      { userId: session.user.id },
+      ...(userEmail ? [{ guestEmail: userEmail }] : []),
+    ],
+    ...(whereStatus ? { status: whereStatus } : {})
+  }
+
+  const [orders, totalOrders] = await Promise.all([
+    prisma.order.findMany({
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+      include: { items: true }
+    }),
+    prisma.order.count({ where: whereClause })
+  ])
+
+  const totalPages = Math.ceil(totalOrders / limit)
 
   const isProduction = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true'
   const snapScriptUrl = isProduction 

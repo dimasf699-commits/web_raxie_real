@@ -70,17 +70,18 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    // Update product stats
-    const allReviews = await prisma.review.findMany({
-      where: { productId, isApproved: true }
+    // Update product stats using DB aggregation for high performance
+    const stats = await prisma.review.aggregate({
+      where: { productId, isApproved: true },
+      _count: { rating: true },
+      _avg: { rating: true },
     })
-    const avgRating = allReviews.reduce((acc, r) => acc + r.rating, 0) / allReviews.length
 
     await prisma.product.update({
       where: { id: productId },
       data: {
-        reviewCount: allReviews.length,
-        avgRating,
+        reviewCount: stats._count.rating || 0,
+        avgRating: stats._avg.rating || 0,
       }
     })
 

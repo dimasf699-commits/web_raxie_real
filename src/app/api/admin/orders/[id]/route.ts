@@ -40,6 +40,39 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     const body = await req.json()
     const { status, trackingNumber, courierCode, courierName, courierService } = body
 
+    const existingOrder = await prisma.order.findUnique({
+      where: { id: params.id },
+      include: { items: true },
+    })
+
+    if (!existingOrder) {
+      return NextResponse.json({ message: 'Pesanan tidak ditemukan' }, { status: 404 })
+    }
+
+    const VALID_TRANSITIONS: Record<string, string[]> = {
+      PENDING_PAYMENT: ['PAYMENT_CONFIRMED', 'CANCELLED'],
+      PAYMENT_CONFIRMED: ['PROCESSING', 'PACKED', 'SHIPPED', 'CANCELLED'],
+      PROCESSING: ['PACKED', 'SHIPPED', 'CANCELLED'],
+      PACKED: ['SHIPPED', 'CANCELLED'],
+      SHIPPED: ['DELIVERED', 'COMPLETED', 'RETURN_REQUESTED', 'RETURNED', 'CANCELLED'],
+      DELIVERED: ['COMPLETED', 'RETURN_REQUESTED', 'RETURNED'],
+      COMPLETED: ['RETURN_REQUESTED', 'RETURNED'],
+      RETURN_REQUESTED: ['RETURNED', 'REFUNDED'],
+      RETURNED: ['REFUNDED'],
+      CANCELLED: [],
+      REFUNDED: [],
+    }
+
+    if (status && status !== existingOrder.status) {
+      const allowedNextStatuses = VALID_TRANSITIONS[existingOrder.status] || []
+      if (!allowedNextStatuses.includes(status)) {
+        return NextResponse.json(
+          { message: `Perubahan status dari ${existingOrder.status} ke ${status} tidak valid.` },
+          { status: 400 }
+        )
+      }
+    }
+
     const data: any = {}
     if (status) {
       data.status = status
@@ -55,6 +88,18 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (courierCode) data.courierCode = courierCode
     if (courierName) data.courierName = courierName
     if (courierService) data.courierService = courierService
+
+    // Restore stock if transitioning to CANCELLED from non-cancelled status
+    if (status === 'CANCELLED' && existingOrder.status !== 'CANCELLED') {
+      for (const item of existingOrder.items) {
+        if (item.variantId) {
+          await prisma.productVariant.update({
+            where: { id: item.variantId },
+            data: { stock: { increment: item.quantity } },
+          })
+        }
+      }
+    }
 
     const order = await prisma.order.update({
       where: { id: params.id },
@@ -101,6 +146,24 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     const session = await auth()
     if (!session || (session.user as any)?.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: params.id },
+      select: { id: true, status: true }
+    })
+
+    if (!order) {
+      return NextResponse.json({ error: 'Pesanan tidak ditemukan' }, { status: 404 })
+    }
+
+    // Protect paid / processed / shipped orders from hard deletion
+    const ALLOWED_DELETE_STATUSES = ['PENDING_PAYMENT', 'CANCELLED']
+    if (!ALLOWED_DELETE_STATUSES.includes(order.status)) {
+      return NextResponse.json(
+        { error: 'Pesanan yang sudah dibayar atau dalam proses pengiriman tidak dapat dihapus demi integritas data keuangan.' },
+        { status: 400 }
+      )
     }
 
     await prisma.order.delete({

@@ -1,22 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now()
-  const record = rateLimitMap.get(key)
-  if (!record || now > record.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + 10000 })
-    return false
-  }
-  if (record.count >= 10) {
-    return true
-  }
-  record.count++
-  return false
-}
+import { rateLimit } from '@/lib/redis'
 
 function sanitizeHtml(str: string): string {
   return str
@@ -42,20 +27,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Conversation ID diperlukan' }, { status: 400 })
     }
 
-    if (isRateLimited(conversationId)) {
+    // Redis-backed rate limiting (10 messages per 10 seconds per conversation)
+    const limit = await rateLimit(`chat_msg:${conversationId}`, 10, 10)
+    if (!limit.success) {
       return NextResponse.json(
-        { error: 'Batas pengiriman pesan terlampaui (maksimal 10 pesan dalam 10 detik).' },
-        { status: 429 }
+        { error: 'Batas pengiriman pesan terlampaui. Silakan tunggu sejenak.' },
+        { status: 429, headers: { 'X-RateLimit-Reset': limit.reset.toString() } }
       )
     }
 
     const session = await auth()
     const isAdmin = (session?.user as any)?.role === 'ADMIN'
-
-    // Force sender to USER unless user is an authenticated ADMIN
-    const actualSender = isAdmin && sender === 'ADMIN' ? 'ADMIN' : 'USER'
-    const isUser = actualSender === 'USER'
-    const cleanMessage = sanitizeHtml(message || '')
 
     const conversationExists = await prisma.chatConversation.findUnique({
       where: { id: conversationId }
@@ -64,6 +46,17 @@ export async function POST(req: NextRequest) {
     if (!conversationExists) {
       return NextResponse.json({ error: 'Sesi chat tidak ditemukan' }, { status: 404 })
     }
+
+    // Force sender to USER unless authenticated as ADMIN
+    const actualSender = isAdmin && sender === 'ADMIN' ? 'ADMIN' : 'USER'
+    const isUser = actualSender === 'USER'
+
+    // Ownership check: If conversation has a userId, non-admin user must match the userId
+    if (isUser && conversationExists.userId && session?.user?.id && conversationExists.userId !== session.user.id) {
+      return NextResponse.json({ error: 'Tidak memiliki akses ke percakapan ini' }, { status: 403 })
+    }
+
+    const cleanMessage = sanitizeHtml(message || '')
 
     const newMessage = await prisma.chatMessage.create({
       data: {
