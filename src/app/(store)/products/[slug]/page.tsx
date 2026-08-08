@@ -62,7 +62,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     material: dbProduct.material,
     dimensions: dbProduct.dimensions,
     weight: dbProduct.weight,
-    features: dbProduct.features,
+    features: (dbProduct as any).features ?? [],
     sku: dbProduct.variants[0]?.sku ?? '',
     stock: dbProduct.variants[0]?.stock ?? 0,
     categoryName: dbProduct.category?.name ?? 'Kategori',
