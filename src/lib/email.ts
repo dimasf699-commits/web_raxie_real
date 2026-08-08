@@ -54,6 +54,7 @@ export const sendOrderEmail = async (email: string, orderNumber: string, total: 
           <div style="margin-top: 30px; text-align: center;">
             <a href="${process.env.NEXTAUTH_URL}/account/orders" style="background-color: #111; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Lacak Pesanan</a>
           </div>
+          <p style="margin-top: 40px; font-size: 12px; color: #666;">© ${new Date().getFullYear()} Raxie. All rights reserved.</p>
         </div>
       `,
     })
@@ -62,36 +63,7 @@ export const sendOrderEmail = async (email: string, orderNumber: string, total: 
   }
 }
 
-export const sendPasswordResetEmail = async (email: string, resetLink: string) => {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not found. Skipping reset email.')
-    return
-  }
-
-  try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
-      to: email,
-      subject: 'Atur Ulang Kata Sandi Raxie Anda',
-      html: `
-        <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #333;">
-          <h1 style="color: #a18a66;">Atur Ulang Kata Sandi</h1>
-          <p>Kami menerima permintaan untuk mengatur ulang kata sandi akun Raxie Anda.</p>
-          <p>Klik tombol di bawah ini untuk membuat kata sandi baru. Tautan ini hanya berlaku selama 1 jam.</p>
-          <div style="margin-top: 30px; margin-bottom: 30px; text-align: center;">
-            <a href="${resetLink}" style="background-color: #a18a66; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">Atur Ulang Kata Sandi</a>
-          </div>
-          <p>Jika Anda tidak meminta pengaturan ulang kata sandi, abaikan email ini. Akun Anda tetap aman.</p>
-          <p style="margin-top: 40px; font-size: 12px; color: #666;">© ${new Date().getFullYear()} Raxie. All rights reserved.</p>
-        </div>
-      `,
-    })
-  } catch (error) {
-    console.error('Failed to send reset password email:', error)
-  }
-}
-
-export const sendShippingEmail = async (email: string, orderNumber: string, trackingNumber: string, courierName: string) => {
+export const sendShippingEmail = async (email: string, orderNumber: string, courierName: string, trackingNumber: string) => {
   if (!process.env.RESEND_API_KEY) {
     console.warn('RESEND_API_KEY not found. Skipping shipping email.')
     return
@@ -121,5 +93,36 @@ export const sendShippingEmail = async (email: string, orderNumber: string, trac
     })
   } catch (error) {
     console.error('Failed to send shipping email:', error)
+  }
+}
+
+export const sendContactFormEmail = async (name: string, email: string, message: string) => {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY not found. Skipping contact email.')
+    return
+  }
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: 'raxieleather@gmail.com',
+      subject: `📩 Pesan Baru dari Website RAXIE - ${name}`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+          <h2 style="color: #C19A6B;">Pesan Kontak Baru dari Website RAXIE</h2>
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 12px; margin: 20px 0;">
+            <p style="margin: 0 0 10px 0;"><strong>Nama Pengirim:</strong> ${name}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Email Pengirim:</strong> ${email}</p>
+            <p style="margin: 0 0 5px 0;"><strong>Isi Pesan:</strong></p>
+            <div style="background-color: #ffffff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; font-style: italic;">
+              ${message.replace(/\n/g, '<br/>')}
+            </div>
+          </div>
+          <p style="font-size: 12px; color: #666;">Pesan ini dikirimkan melalui formulir Hubungi Kami di raxie.my.id</p>
+        </div>
+      `,
+    })
+  } catch (error) {
+    console.error('Failed to send contact email:', error)
   }
 }
