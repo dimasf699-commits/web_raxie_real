@@ -79,8 +79,8 @@ export function HeroSlider() {
   const activeSlide = SLIDES[current]
 
   return (
-    <section className="relative w-full min-h-[480px] sm:min-h-[540px] md:min-h-[600px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
-      {/* 100% Crisp Background Image Carousel without Dark Overlays or Blurs */}
+    <section className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
+      {/* 100% Crisp Uncropped Background Image Carousel */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeSlide.id}
@@ -95,13 +95,13 @@ export function HeroSlider() {
             alt={activeSlide.title}
             fill
             priority
-            className="object-cover object-center"
+            className="object-contain md:object-cover object-center"
           />
         </motion.div>
       </AnimatePresence>
 
       {/* Content Container (Pushed tightly to left with clear readable badges & CTA) */}
-      <div className="w-full relative z-10 py-12 md:py-20 px-6 sm:px-12 lg:px-20">
+      <div className="w-full relative z-10 py-10 md:py-16 px-6 sm:px-12 lg:px-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSlide.id}
@@ -109,7 +109,7 @@ export function HeroSlider() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="max-w-md lg:max-w-xl space-y-5"
+            className="max-w-md lg:max-w-xl space-y-4 md:space-y-5"
           >
             {/* Tag / Subtitle */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#C19A6B]/50 bg-black/80">
@@ -120,27 +120,27 @@ export function HeroSlider() {
             </div>
 
             {/* Main Title */}
-            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-white tracking-tight leading-[1.1] uppercase drop-shadow-md">
+            <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-normal text-white tracking-tight leading-[1.1] uppercase drop-shadow-md">
               {activeSlide.title}
             </h1>
 
             {/* Description */}
-            <p className="text-neutral-200 text-xs sm:text-sm max-w-md leading-relaxed font-normal drop-shadow">
+            <p className="text-neutral-200 text-xs sm:text-sm max-w-md leading-relaxed font-normal drop-shadow hidden sm:block">
               {activeSlide.description}
             </p>
 
             {/* Single Specific Action Button */}
-            <div className="pt-2">
+            <div className="pt-1">
               <Link
                 href={activeSlide.buttonLink}
-                className="inline-block bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded shadow-xl transition-all hover:scale-105"
+                className="inline-block bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-7 py-3 rounded shadow-xl transition-all hover:scale-105"
               >
                 {activeSlide.buttonText}
               </Link>
             </div>
 
             {/* Sub-Badges (Clean solid background without blur) */}
-            <div className="grid grid-cols-2 gap-3 pt-5 border-t border-neutral-800/80 max-w-md">
+            <div className="grid grid-cols-2 gap-2.5 pt-4 border-t border-neutral-800/80 max-w-md hidden sm:grid">
               {activeSlide.badges.map((badge, idx) => {
                 const IconComponent = badge.icon
                 return (
@@ -180,7 +180,7 @@ export function HeroSlider() {
       </button>
 
       {/* Slide Indicator Dots */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/80 px-3 py-1.5 rounded-full border border-white/10">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/80 px-3 py-1.5 rounded-full border border-white/10">
         {SLIDES.map((slide, idx) => (
           <button
             key={slide.id}
