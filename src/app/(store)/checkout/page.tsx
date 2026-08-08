@@ -149,7 +149,7 @@ export default function CheckoutPage() {
     }, 500)
 
     return () => clearTimeout(delayDebounceFn)
-  }, [searchArea])
+  }, [searchArea, address.areaName])
 
   useEffect(() => {
     setMounted(true)

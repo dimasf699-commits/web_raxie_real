@@ -40,7 +40,7 @@ export default function AdminProductsPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [page, search, toast])
+  }, [page, search])
 
   useEffect(() => {
     const timer = setTimeout(fetchProducts, 300)

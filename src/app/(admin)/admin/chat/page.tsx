@@ -41,7 +41,7 @@ export default function AdminChatPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch all chat conversations
-  const fetchConversations = async () => {
+  const fetchConversations = useCallback(async () => {
     try {
       const res = await fetch(`/api/chat/conversations?search=${encodeURIComponent(search)}&filter=${filter}&status=${statusFilter}`)
       if (res.ok) {
@@ -58,14 +58,14 @@ export default function AdminChatPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [search, filter, statusFilter, selectedConvId])
 
   // Ultra-fast Realtime Poll conversations every 1.2 seconds
   useEffect(() => {
     fetchConversations()
     const interval = setInterval(fetchConversations, 1200)
     return () => clearInterval(interval)
-  }, [search, filter, statusFilter, selectedConvId])
+  }, [fetchConversations])
 
   // Sync active conversation messages & mark as read
   useEffect(() => {
