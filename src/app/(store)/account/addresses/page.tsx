@@ -250,7 +250,7 @@ export default function AddressesPage() {
                             district: area.name,
                             city: area.administrative_division_level_2_name,
                             province: area.administrative_division_level_1_name,
-                            postalCode: area.postal_code || '',
+                            postalCode: String(area.postal_code || ''),
                           })
                           setShowAreaDropdown(false)
                         }}

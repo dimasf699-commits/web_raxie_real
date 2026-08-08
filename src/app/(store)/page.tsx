@@ -5,8 +5,7 @@ import {
   ShieldCheck,
   Truck,
   Zap,
-  PackageCheck,
-  Award
+  PackageCheck
 } from 'lucide-react'
 import { ProductCard } from '@/components/store/ProductCard'
 import { HeroSlider } from '@/components/store/HeroSlider'
@@ -159,29 +158,29 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── 4. TRUST BAR (4 FEATURES) ────────────────────────────────────── */}
-      <section className="py-12 bg-background text-foreground transition-colors duration-300 border-b border-border">
+      {/* ─── 4. TRUST BAR (PERMANENT LUXURY DARK BACKGROUND) ─────────────── */}
+      <section className="py-12 bg-[#070707] text-white border-b border-neutral-900">
         <div className="container-raxie">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="p-4 space-y-2">
               <Truck className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">GRATIS ONGKIR</h4>
-              <p className="text-[11px] text-muted-foreground">Seluruh Indonesia tanpa min. belanja</p>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white">GRATIS ONGKIR</h4>
+              <p className="text-[11px] text-neutral-400">Seluruh Indonesia tanpa min. belanja</p>
             </div>
             <div className="p-4 space-y-2">
               <ShieldCheck className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">GARANSI 1 TAHUN</h4>
-              <p className="text-[11px] text-muted-foreground">Jaminan kualitas & material</p>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white">GARANSI 1 TAHUN</h4>
+              <p className="text-[11px] text-neutral-400">Jaminan kualitas & material</p>
             </div>
             <div className="p-4 space-y-2">
               <PackageCheck className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">PEMBAYARAN AMAN</h4>
-              <p className="text-[11px] text-muted-foreground">BCA, Mandiri, QRIS & Midtrans</p>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white">PEMBAYARAN AMAN</h4>
+              <p className="text-[11px] text-neutral-400">BCA, Mandiri, QRIS & Midtrans</p>
             </div>
             <div className="p-4 space-y-2">
               <Zap className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">PROSES FAST RESPONSE</h4>
-              <p className="text-[11px] text-muted-foreground">Dikirim pada hari yang sama</p>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-white">PROSES FAST RESPONSE</h4>
+              <p className="text-[11px] text-neutral-400">Dikirim pada hari yang sama</p>
             </div>
           </div>
         </div>
