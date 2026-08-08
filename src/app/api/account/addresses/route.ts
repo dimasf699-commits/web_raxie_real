@@ -5,12 +5,24 @@ import { prisma } from '@/lib/prisma'
 export async function GET() {
   try {
     const session = await auth()
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    let dbUser = null
+    if (session.user.id) {
+      dbUser = await prisma.user.findUnique({ where: { id: session.user.id } })
+    }
+    if (!dbUser && session.user.email) {
+      dbUser = await prisma.user.findUnique({ where: { email: session.user.email } })
+    }
+
+    if (!dbUser) {
+      return NextResponse.json({ addresses: [] })
+    }
+
     const addresses = await prisma.address.findMany({
-      where: { userId: session.user.id },
+      where: { userId: dbUser.id },
       orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
     })
 
@@ -24,8 +36,20 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const session = await auth()
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized: Silakan login terlebih dahulu' }, { status: 401 })
+    }
+
+    let dbUser = null
+    if (session.user.id) {
+      dbUser = await prisma.user.findUnique({ where: { id: session.user.id } })
+    }
+    if (!dbUser && session.user.email) {
+      dbUser = await prisma.user.findUnique({ where: { email: session.user.email } })
+    }
+
+    if (!dbUser) {
+      return NextResponse.json({ error: 'Akun pengguna tidak ditemukan di database' }, { status: 404 })
     }
 
     const body = await req.json()
@@ -38,14 +62,14 @@ export async function POST(req: NextRequest) {
     // If setting as default, unset other default addresses for this user
     if (isDefault) {
       await prisma.address.updateMany({
-        where: { userId: session.user.id, isDefault: true },
+        where: { userId: dbUser.id, isDefault: true },
         data: { isDefault: false },
       })
     }
 
     const address = await prisma.address.create({
       data: {
-        userId: session.user.id,
+        userId: dbUser.id,
         label: label || 'Rumah',
         recipientName,
         phone,
@@ -54,14 +78,14 @@ export async function POST(req: NextRequest) {
         city: city || '',
         province: province || '',
         postalCode: postalCode || '',
-        areaId,
+        areaId: areaId || null,
         isDefault: !!isDefault,
       },
     })
 
     return NextResponse.json({ address }, { status: 201 })
-  } catch (error) {
+  } catch (error: any) {
     console.error('[ADDRESSES_POST_ERROR]', error)
-    return NextResponse.json({ error: 'Gagal menyimpan alamat' }, { status: 500 })
+    return NextResponse.json({ error: error.message || 'Gagal menyimpan alamat' }, { status: 500 })
   }
 }

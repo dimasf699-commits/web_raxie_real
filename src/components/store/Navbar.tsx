@@ -56,10 +56,12 @@ export function Navbar() {
         const res = await fetch('/api/categories')
         const cats = await res.json()
         if (cats && cats.length > 0) {
-          const categoryLinks = cats.map((c: any) => ({
-            href: `/products?category=${c.slug}`,
-            label: c.name
-          }))
+          const categoryLinks = cats
+            .filter((c: any) => c.slug !== 'aksesoris' && c.name.toLowerCase() !== 'aksesoris')
+            .map((c: any) => ({
+              href: `/products?category=${c.slug}`,
+              label: c.name
+            }))
           setNavLinks([
             { href: '/products', label: 'Semua Koleksi' },
             ...categoryLinks,

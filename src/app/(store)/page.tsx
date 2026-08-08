@@ -197,7 +197,8 @@ export default function HomePage() {
             tas: 'https://i.imgur.com/Y6g6vrp.jpeg',
             sabuk: 'https://i.imgur.com/kF5yKip.jpeg',
           }
-          setCategories(catData.map((c: any) => ({
+          const validCats = catData.filter((c: any) => c.slug !== 'aksesoris' && c.name.toLowerCase() !== 'aksesoris')
+          setCategories(validCats.map((c: any) => ({
             name: c.name,
             href: `/products?category=${c.slug}`,
             image: catImageMap[c.slug] || 'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80',
