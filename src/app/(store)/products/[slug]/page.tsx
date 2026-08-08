@@ -78,7 +78,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       userName: r.user?.name ?? 'Pembeli RAXIE',
       userAvatar: r.user?.image ?? null,
       rating: r.rating,
-      comment: r.comment,
+      comment: r.body,
       createdAt: r.createdAt.toISOString(),
     })),
   }
