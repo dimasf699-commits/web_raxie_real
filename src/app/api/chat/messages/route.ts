@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
       data: {
         conversationId,
         sender: actualSender,
-        senderName: senderName || (isUser ? (conversationExists.userName || 'Pelanggan') : 'CS Raxie Official'),
+        senderName: senderName || (isUser ? (conversationExists.customerName || 'Pelanggan') : 'CS Raxie Official'),
         message: cleanMessage,
         status: 'Sent',
         isRead: false,
