@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Package, MapPin, Gift, Clock } from 'lucide-react'
+import { Package, MapPin, Gift, Clock, ArrowRight } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { formatPrice } from '@/lib/utils'
 
@@ -17,75 +17,87 @@ export default function AccountDashboardPage() {
       .catch(() => {})
   }, [])
 
-  const firstName = session?.user?.name?.split(' ')[0] ?? 'Halo'
+  const firstName = session?.user?.name?.split(' ')[0] ?? 'Pelanggan'
 
   return (
-    <div className="space-y-8">
-      <h1 className="font-serif text-3xl font-bold text-foreground">Halo, {firstName}! 👋</h1>
+    <div className="space-y-8 text-white">
+      <div>
+        <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
+          RAXIE MEMBER DASHBOARD
+        </span>
+        <h1 className="font-serif text-3xl font-bold uppercase tracking-wider text-white">
+          HALO, {firstName.toUpperCase()}! 👋
+        </h1>
+      </div>
       
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-tan-500 to-tan-700 rounded-2xl p-6 text-white shadow-lg">
-          <div className="flex items-center gap-2 text-white/80 mb-2 text-sm">
-            <Gift className="w-4 h-4" /> Poin Raxie
+        {/* Card 1: Poin */}
+        <div className="bg-[#C19A6B] rounded-xl p-6 text-black shadow-lg space-y-2">
+          <div className="flex items-center gap-2 text-black/80 text-xs font-bold uppercase tracking-wider">
+            <Gift className="w-4 h-4" /> Poin RAXIE
           </div>
-          <div className="text-3xl font-bold font-serif mb-1">{stats?.points ?? 0}</div>
-          <div className="text-xs text-white/80">
+          <div className="text-4xl font-bold font-serif">{stats?.points ?? 0}</div>
+          <div className="text-[11px] text-black/80 font-medium">
             = {formatPrice((stats?.points ?? 0) * 10)} Cashback
           </div>
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2 text-sm">
-            <Package className="w-4 h-4" /> Sedang Diproses
+        {/* Card 2: Sedang Diproses */}
+        <div className="bg-black border border-neutral-800 rounded-xl p-6 space-y-2">
+          <div className="flex items-center gap-2 text-neutral-400 text-xs font-bold uppercase tracking-wider">
+            <Package className="w-4 h-4 text-[#C19A6B]" /> Sedang Diproses
           </div>
-          <div className="text-3xl font-bold font-serif text-foreground mb-1">
+          <div className="text-4xl font-bold font-serif text-white">
             {stats?.activeOrders ?? 0}
           </div>
-          <Link href="/account/orders" className="text-xs text-tan-600 hover:underline">
-            Lihat status pengiriman &rarr;
+          <Link href="/account/orders" className="text-[11px] text-[#C19A6B] hover:underline inline-flex items-center gap-1">
+            Lihat status pengiriman <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2 text-sm">
-            <MapPin className="w-4 h-4" /> Total Pesanan
+        {/* Card 3: Total Pesanan */}
+        <div className="bg-black border border-neutral-800 rounded-xl p-6 space-y-2">
+          <div className="flex items-center gap-2 text-neutral-400 text-xs font-bold uppercase tracking-wider">
+            <MapPin className="w-4 h-4 text-[#C19A6B]" /> Total Pesanan
           </div>
-          <div className="text-3xl font-bold font-serif text-foreground mb-1">
+          <div className="text-4xl font-bold font-serif text-white">
             {stats?.totalOrders ?? 0}
           </div>
-          <div className="text-xs text-muted-foreground">Semua waktu</div>
+          <div className="text-[11px] text-neutral-500">Semua riwayat transaksi</div>
         </div>
       </div>
 
       {/* Recent Orders */}
-      <div>
-        <h2 className="font-bold text-lg text-foreground mb-4">Pesanan Terakhir</h2>
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+      <div className="space-y-4 pt-4">
+        <h2 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B]">PESANAN TERAKHIR</h2>
+        <div className="bg-black border border-neutral-800 rounded-xl overflow-hidden">
           {stats?.recentOrders?.length > 0 ? (
             stats.recentOrders.map((order: any) => (
-              <div key={order.id} className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors border-b border-border last:border-0">
-                <div className="w-12 h-12 bg-tan-50 text-tan-500 rounded-full flex items-center justify-center shrink-0">
-                  <Package className="w-6 h-6" />
+              <div key={order.id} className="flex items-center justify-between p-4 hover:bg-neutral-900 transition-colors border-b border-neutral-800/80 last:border-0 text-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-neutral-900 border border-neutral-800 text-[#C19A6B] rounded-full flex items-center justify-center shrink-0">
+                    <Package className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-white uppercase">{order.orderNumber}</p>
+                    <p className="text-[11px] text-neutral-400 mt-0.5">
+                      {new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm">{order.orderNumber}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="font-bold text-sm">{formatPrice(order.totalAmount)}</p>
-                  <span className="text-xs text-muted-foreground">{order.status}</span>
+                <div className="text-right">
+                  <p className="font-bold text-sm text-[#C19A6B]">{formatPrice(order.totalAmount)}</p>
+                  <span className="text-[10px] uppercase font-bold text-neutral-400">{order.status}</span>
                 </div>
               </div>
             ))
           ) : (
-            <div className="p-8 text-center">
-              <Clock className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-sm text-muted-foreground">Belum ada pesanan</p>
-              <Link href="/products" className="text-sm text-tan-600 hover:underline mt-2 inline-block">
-                Mulai belanja &rarr;
+            <div className="p-8 text-center space-y-2">
+              <Clock className="w-8 h-8 text-neutral-600 mx-auto" />
+              <p className="text-xs text-neutral-400">Belum ada riwayat pesanan</p>
+              <Link href="/products" className="text-xs text-[#C19A6B] hover:underline font-bold inline-block pt-1">
+                Mulai Belanja &rarr;
               </Link>
             </div>
           )}

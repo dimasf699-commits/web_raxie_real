@@ -9,13 +9,13 @@ import { useCartStore } from '@/store/cart.store'
 import { useEffect, useState } from 'react'
 import { formatPrice, getDiscountPercent } from '@/lib/utils'
 import { toast } from '@/components/ui/Toaster'
-import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 
 export default function WishlistPage() {
   const [isMounted, setIsMounted] = useState(false)
   const { items, removeItem } = useWishlistStore()
   const addCartItem = useCartStore((s) => s.addItem)
+  const openCart = useCartStore((s) => s.openCart)
 
   useEffect(() => {
     setIsMounted(true)
@@ -36,10 +36,11 @@ export default function WishlistPage() {
       stock: 99,
     })
     toast.success('Berhasil ditambahkan ke keranjang!', item.name)
+    openCart()
   }
 
   return (
-    <div className="pt-24 pb-20 min-h-[70vh]">
+    <div className="bg-black text-white min-h-screen py-10">
       <div className="container-raxie">
         <Breadcrumbs
           items={[
@@ -48,55 +49,60 @@ export default function WishlistPage() {
           ]}
         />
 
-        <div className="mt-8">
-          <h1 className="font-serif font-bold text-3xl text-foreground mb-8">
-            Daftar Keinginan{isMounted && items.length > 0 ? ` (${items.length})` : ''}
-          </h1>
+        <div className="mt-6">
+          <div className="mb-8">
+            <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
+              RAXIE FAVORITE ITEMS
+            </span>
+            <h1 className="font-serif font-bold text-3xl uppercase tracking-wider text-white">
+              WISHLIST SAYA{isMounted && items.length > 0 ? ` (${items.length})` : ''}
+            </h1>
+          </div>
 
           {!isMounted ? (
             <div className="flex items-center justify-center py-20">
-              <span className="w-8 h-8 border-4 border-tan-200 border-t-tan-600 rounded-full animate-spin" />
+              <span className="w-8 h-8 border-4 border-[#C19A6B] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : items.length === 0 ? (
-            <div className="max-w-md mx-auto text-center py-16">
-              <div className="w-20 h-20 bg-muted text-muted-foreground rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="max-w-md mx-auto text-center py-16 space-y-4">
+              <div className="w-20 h-20 bg-neutral-900 border border-neutral-800 rounded-full flex items-center justify-center mx-auto text-neutral-500">
                 <Heart className="w-10 h-10" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Wishlist Masih Kosong</h2>
-              <p className="text-muted-foreground mb-6">
+              <h2 className="text-xl font-bold uppercase tracking-wider text-white">Wishlist Masih Kosong</h2>
+              <p className="text-neutral-400 text-xs leading-relaxed">
                 Anda belum menyimpan produk apapun. Klik ikon hati ❤️ di kartu produk untuk menyimpannya di sini.
               </p>
-              <Button asChild variant="brand">
+              <Button asChild className="bg-[#C19A6B] text-black font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#b08b5c]">
                 <Link href="/products">Jelajahi Koleksi</Link>
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
               {items.map((item) => {
                 const discount = item.compareAtPrice
                   ? getDiscountPercent(item.compareAtPrice, item.price)
                   : 0
                 return (
-                  <div key={item.productId} className="group relative bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+                  <div key={item.productId} className="group relative bg-[#121212] border border-neutral-800 rounded-xl overflow-hidden shadow-md flex flex-col justify-between">
                     {/* Remove btn */}
                     <button
                       onClick={() => {
                         removeItem(item.productId)
                         toast.success('Dihapus dari wishlist', item.name)
                       }}
-                      className="absolute top-2 right-2 z-10 w-8 h-8 bg-white/90 dark:bg-card/90 rounded-full flex items-center justify-center shadow hover:bg-red-50 text-muted-foreground hover:text-red-500 transition-colors"
+                      className="absolute top-3 right-3 z-10 w-8 h-8 bg-black/80 rounded-full flex items-center justify-center text-neutral-400 hover:text-red-400 transition-colors border border-neutral-800"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
 
                     {discount > 0 && (
-                      <div className="absolute top-2 left-2 z-10">
-                        <Badge variant="sale">-{discount}%</Badge>
+                      <div className="absolute top-3 left-3 z-10 bg-red-950/80 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800/50 uppercase">
+                        -{discount}% OFF
                       </div>
                     )}
 
                     <Link href={`/products/${item.slug}`} className="block">
-                      <div className="relative aspect-square bg-muted overflow-hidden">
+                      <div className="relative aspect-square bg-black overflow-hidden border-b border-neutral-800">
                         <Image
                           src={item.image}
                           alt={item.name}
@@ -105,24 +111,24 @@ export default function WishlistPage() {
                           sizes="(max-width: 640px) 50vw, 25vw"
                         />
                       </div>
-                      <div className="p-3">
-                        <p className="font-semibold text-sm text-foreground line-clamp-2">{item.name}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="font-bold text-tan-600 text-sm">{formatPrice(item.price)}</span>
+                      <div className="p-4 space-y-1">
+                        <p className="font-bold text-xs uppercase tracking-wider text-white line-clamp-1 group-hover:text-[#C19A6B] transition-colors">{item.name}</p>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-[#C19A6B] text-xs">{formatPrice(item.price)}</span>
                           {item.compareAtPrice && (
-                            <span className="text-xs text-muted-foreground line-through">{formatPrice(item.compareAtPrice)}</span>
+                            <span className="text-[11px] text-neutral-500 line-through">{formatPrice(item.compareAtPrice)}</span>
                           )}
                         </div>
                       </div>
                     </Link>
 
-                    <div className="px-3 pb-3">
+                    <div className="px-4 pb-4">
                       <button
                         onClick={() => handleAddToCart(item)}
-                        className="w-full flex items-center justify-center gap-2 text-sm font-medium py-2 rounded-xl border border-tan-400 text-tan-600 hover:bg-tan-50 dark:hover:bg-tan-900/20 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider py-2.5 rounded-lg bg-[#C19A6B] text-black hover:bg-[#b08b5c] transition-colors"
                       >
-                        <ShoppingBag className="w-4 h-4" />
-                        Tambah ke Keranjang
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                        Keranjang
                       </button>
                     </div>
                   </div>

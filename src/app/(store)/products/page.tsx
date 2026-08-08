@@ -27,7 +27,7 @@ interface ProductsPageProps {
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const q = searchParams.q || ''
-  const category = searchParams.category || 'Semua Produk'
+  const category = searchParams.category || 'KOLEKSI PRODUK'
 
   // Build Prisma where clause for initial SSR load
   const where: Prisma.ProductWhereInput = { isActive: true }
@@ -101,41 +101,46 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   })
 
   return (
-    <div className="container-raxie py-8 md:py-12">
-      {/* Breadcrumbs & Header */}
-      <div className="mb-8">
-        <Breadcrumbs
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'Koleksi', href: '/products' },
-            ...(searchParams.category ? [{ label: searchParams.category, href: `/products?category=${searchParams.category}` }] : []),
-          ]}
-        />
-        <div className="mt-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground capitalize">
-              {q ? `Pencarian: "${q}"` : category}
+    <div className="bg-black text-white min-h-screen">
+      {/* Header Banner */}
+      <div className="bg-[#0B0A08] py-12 border-b border-neutral-900">
+        <div className="container-raxie">
+          <Breadcrumbs
+            items={[
+              { label: 'Beranda', href: '/' },
+              { label: 'Koleksi', href: '/products' },
+              ...(searchParams.category ? [{ label: searchParams.category, href: `/products?category=${searchParams.category}` }] : []),
+            ]}
+          />
+          <div className="mt-6 text-center max-w-xl mx-auto space-y-2">
+            <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase">
+              RAXIE CATALOGUE
+            </span>
+            <h1 className="font-serif text-3xl md:text-5xl font-bold uppercase tracking-wider text-white">
+              {q ? `PENCARIAN: "${q}"` : category}
             </h1>
-            <p className="text-muted-foreground mt-2">
-              Menampilkan koleksi terbaik kami untuk Anda.
+            <p className="text-neutral-400 text-xs md:text-sm">
+              Temukan dompet dan aksesoris kulit sintetis & asli bermutu tinggi untuk melengkapi gaya elegan Anda.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Sidebar Desktop (Filters) */}
-        <div className="hidden lg:block w-64 flex-shrink-0 sticky top-24">
-          <FilterSidebar />
-        </div>
+      <div className="container-raxie py-10">
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Sidebar Desktop (Filters) */}
+          <div className="hidden lg:block w-64 flex-shrink-0 sticky top-24">
+            <FilterSidebar />
+          </div>
 
-        {/* Main Content */}
-        <div className="flex-1 w-full min-w-0">
-          <InfiniteProductGrid
-            searchParams={searchParams}
-            initialProducts={initialProducts}
-            initialCursor={nextCursor}
-          />
+          {/* Main Product Grid */}
+          <div className="flex-1 w-full min-w-0">
+            <InfiniteProductGrid
+              searchParams={searchParams}
+              initialProducts={initialProducts}
+              initialCursor={nextCursor}
+            />
+          </div>
         </div>
       </div>
     </div>

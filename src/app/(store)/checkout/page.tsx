@@ -303,27 +303,6 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <Script src={snapScriptUrl} data-client-key={clientKey} strategy="lazyOnload" />
-      <div className="container-raxie py-8 md:py-12 bg-[#FDFCFB] min-h-screen">
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
-        
-        {/* Left Col - Steps */}
-        <div className="flex-1 w-full order-2 lg:order-1">
-          {/* Breadcrumb Steps */}
-          <div className="flex items-center gap-2 mb-8 text-sm md:text-base font-medium overflow-x-auto pb-2">
-            <button onClick={handleBack} className="text-muted-foreground mr-2 hover:text-foreground">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className={cn("flex items-center gap-2 whitespace-nowrap", step >= 1 ? "text-foreground" : "text-muted-foreground")}>
-              <div className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs text-white", step >= 1 ? "bg-tan-500" : "bg-muted")}>1</div>
-              <span>Info Pengiriman</span>
-            </div>
-            <div className="w-8 h-[1px] bg-border mx-2"></div>
-            <div className={cn("flex items-center gap-2 whitespace-nowrap", step >= 2 ? "text-foreground" : "text-muted-foreground")}>
-              <div className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs text-white", step >= 2 ? "bg-tan-500" : "bg-muted")}>2</div>
-              <span>Opsi Kurir</span>
-            </div>
-            <div className="w-8 h-[1px] bg-border mx-2"></div>
             <div className={cn("flex items-center gap-2 whitespace-nowrap", step >= 3 ? "text-foreground" : "text-muted-foreground")}>
               <div className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs text-white", step >= 3 ? "bg-tan-500" : "bg-muted")}>3</div>
               <span>Pembayaran</span>
