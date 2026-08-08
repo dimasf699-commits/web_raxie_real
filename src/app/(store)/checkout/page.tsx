@@ -5,37 +5,12 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, CircleCheck, ShieldCheck, MapPin, Truck, CreditCard, Tag } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ShieldCheck, MapPin, Truck, CreditCard, Tag, CheckCircle2 } from 'lucide-react'
 import { useCartStore } from '@/store/cart.store'
 import { Button } from '@/components/ui/Button'
 import { toast } from '@/components/ui/Toaster'
 import { cn, formatPrice } from '@/lib/utils'
 import Script from 'next/script'
-import { fbEvent } from '@/components/analytics/MetaPixel'
-import { gaEvent } from '@/components/analytics/GoogleAnalytics'
-
-// Helper for Purchase Event
-const trackPurchase = (orderNumber: string, value: number, items: any[]) => {
-  if (typeof window !== 'undefined') {
-    if ((window as any).fbq) {
-      ;(window as any).fbq('track', 'Purchase', {
-        value: value,
-        currency: 'IDR',
-        content_ids: items.map(i => i.sku || i.productId),
-        content_type: 'product',
-        order_id: orderNumber
-      })
-    }
-    if ((window as any).gtag) {
-      ;(window as any).gtag('event', 'purchase', {
-        transaction_id: orderNumber,
-        value: value,
-        currency: 'IDR',
-        items: items.map(i => ({ item_id: i.sku || i.productId, item_name: i.name, price: i.price, quantity: i.quantity }))
-      })
-    }
-  }
-}
 
 type CheckoutStep = 1 | 2 | 3
 
@@ -51,7 +26,7 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState({ name: '', email: '', phone: '', detail: '', areaId: '', postalCode: '', areaName: '' })
   const [shippingCost, setShippingCost] = useState(0)
   const [courierName, setCourierName] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState('midtrans')
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [shippingRates, setShippingRates] = useState<any[]>([])
@@ -66,7 +41,6 @@ export default function CheckoutPage() {
   // Saved Addresses State
   const [savedAddresses, setSavedAddresses] = useState<any[]>([])
   const [selectedSavedId, setSelectedSavedId] = useState<string>('')
-  const [saveAddressOption, setSaveAddressOption] = useState<boolean>(false)
 
   // Voucher State
   const [voucherCode, setVoucherCode] = useState('')
@@ -154,28 +128,8 @@ export default function CheckoutPage() {
   useEffect(() => {
     setMounted(true)
     const currentItems = useCartStore.getState().items
-    // Redirect if cart empty
     if (currentItems.length === 0) {
       router.push('/cart')
-    } else {
-      // Track InitiateCheckout
-      if (typeof window !== 'undefined') {
-        const total = useCartStore.getState().totalPrice()
-        if ((window as any).fbq) {
-          ;(window as any).fbq('track', 'InitiateCheckout', {
-            value: total,
-            currency: 'IDR',
-            num_items: currentItems.length
-          })
-        }
-        if ((window as any).gtag) {
-          ;(window as any).gtag('event', 'begin_checkout', {
-            currency: 'IDR',
-            value: total,
-            items: currentItems.map(i => ({ item_id: i.sku || i.productId, item_name: i.name, price: i.price, quantity: i.quantity }))
-          })
-        }
-      }
     }
   }, [router])
 
@@ -185,9 +139,7 @@ export default function CheckoutPage() {
     if (step === 1) {
       setIsLoadingRates(true)
       try {
-        // Calculate total weight (mock 500g per item for now)
         const totalWeight = cartItems.reduce((acc, item) => acc + (500 * item.quantity), 0)
-        
         const res = await fetch('/api/shipping/rates', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -212,17 +164,11 @@ export default function CheckoutPage() {
     }
   }
 
-  const handleBack = () => {
-    if (step > 1) setStep((s) => (s - 1) as CheckoutStep)
-    else router.push('/cart')
-  }
-
   const handleCheckout = async () => {
     setIsProcessing(true)
     setErrorMsg('')
     
     try {
-      // Setup payload for API
       const payload = {
         items: cartItems,
         shipping: address,
@@ -240,37 +186,28 @@ export default function CheckoutPage() {
       })
 
       const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Gagal memproses pesanan')
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Gagal memproses pesanan')
-      }
-
-      const finalTotalValue = totalPrice + shippingCost;
-
-      // If Midtrans Snap is ready
       if (data.snapToken && (window as any).snap) {
         (window as any).snap.pay(data.snapToken, {
-          onSuccess: async function (result: any) {
+          onSuccess: async function () {
             try {
               await fetch('/api/orders/confirm-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orderNumber: data.orderNumber }),
               })
-            } catch (e) {
-              console.error(e)
-            }
-            trackPurchase(data.orderNumber, finalTotalValue, cartItems)
+            } catch (e) {}
             clearCart()
             toast.success('Pembayaran Berhasil!', 'Pesanan Anda sedang diproses.')
             router.push(`/checkout/success?order=${data.orderNumber}`)
           },
-          onPending: function (result: any) {
+          onPending: function () {
             clearCart()
             toast.info('Menunggu Pembayaran', 'Selesaikan pembayaran Anda segera.')
             router.push(`/checkout/success?order=${data.orderNumber}&status=pending`)
           },
-          onError: function (result: any) {
+          onError: function () {
             clearCart()
             toast.error('Pembayaran Gagal', 'Terjadi kesalahan saat memproses pembayaran.')
             router.push(`/checkout/success?order=${data.orderNumber}&status=failed`)
@@ -282,8 +219,6 @@ export default function CheckoutPage() {
           }
         })
       } else {
-        // Fallback for payment methods that don't use Midtrans (if any) or if token is missing
-        trackPurchase(data.orderNumber, finalTotalValue, cartItems)
         clearCart()
         toast.success('Pesanan Dibuat', 'Silakan lanjutkan pembayaran.')
         router.push(`/checkout/success?order=${data.orderNumber}&status=pending`)
@@ -303,9 +238,16 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <Script src={snapScriptUrl} data-client-key={clientKey} strategy="lazyOnload" />
+      <Script
+        id="midtrans-script"
+        src={snapScriptUrl}
+        data-client-key={clientKey}
+        strategy="lazyOnload"
+      />
+
       <div className="bg-black text-white min-h-screen py-10">
         <div className="container-raxie">
+          {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <Link href="/cart" className="text-neutral-400 hover:text-white transition-colors">
               <ArrowLeft className="w-5 h-5" />
@@ -335,346 +277,339 @@ export default function CheckoutPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-10 items-start">
+            {/* Left Main Section */}
             <div className="flex-1 w-full bg-[#121212] p-6 md:p-8 rounded-2xl border border-neutral-800 space-y-6">
               <AnimatePresence mode="wait">
-            {/* STEP 1: ADDRESS */}
-            {step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h2 className="font-serif text-2xl font-bold text-foreground">Informasi Kontak & Pengiriman</h2>
+                {/* STEP 1: ALAMAT */}
+                {step === 1 && (
+                  <motion.div
+                    key="step1"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    className="space-y-4"
+                  >
+                    <h2 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B]">INFORMASI PENGIRIMAN</h2>
 
-                {savedAddresses.length > 0 && (
-                  <div className="p-4 bg-tan-50/50 dark:bg-tan-950/20 border border-tan-200 dark:border-tan-800 rounded-xl space-y-2">
-                    <label className="text-sm font-semibold text-foreground flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-tan-600" />
-                      Pilih Alamat Tersimpan:
-                    </label>
-                    <select
-                      value={selectedSavedId}
-                      onChange={(e) => {
-                        const id = e.target.value
-                        setSelectedSavedId(id)
-                        const selected = savedAddresses.find((a) => a.id === id)
-                        if (selected) {
-                          const areaLabel = `${selected.district ? selected.district + ', ' : ''}${selected.city}, ${selected.province}`
-                          setAddress((prev) => ({
-                            ...prev,
-                            name: selected.recipientName,
-                            phone: selected.phone,
-                            detail: selected.street,
-                            areaId: selected.areaId || '',
-                            postalCode: selected.postalCode || '',
-                            areaName: areaLabel,
-                          }))
-                          setSearchArea(areaLabel)
-                        }
-                      }}
-                      className="w-full bg-card border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-tan-500"
-                    >
-                      {savedAddresses.map((a) => (
-                        <option key={a.id} value={a.id}>
-                          [{a.label}] {a.recipientName} - {a.street.substring(0, 40)}... ({a.city})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Nama Lengkap</label>
-                    <input 
-                      type="text" 
-                      value={address.name}
-                      onChange={(e) => setAddress({...address, name: e.target.value})}
-                      className="w-full bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400" 
-                      placeholder="John Doe" 
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email</label>
-                    <input 
-                      type="email" 
-                      value={address.email}
-                      onChange={(e) => setAddress({...address, email: e.target.value})}
-                      className="w-full bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400" 
-                      placeholder="john@example.com" 
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-medium">Nomor WhatsApp</label>
-                    <input 
-                      type="tel" 
-                      value={address.phone}
-                      onChange={(e) => setAddress({...address, phone: e.target.value})}
-                      className="w-full bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400" 
-                      placeholder="08123456789" 
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2 relative">
-                    <label className="text-sm font-medium">Kecamatan Tujuan</label>
-                    <input 
-                      type="text" 
-                      value={searchArea}
-                      onChange={(e) => {
-                        setSearchArea(e.target.value)
-                        if (address.areaId) setAddress({...address, areaId: '', areaName: '', postalCode: ''})
-                      }}
-                      onFocus={() => { if(areaResults.length > 0) setShowAreaDropdown(true) }}
-                      className="w-full bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400" 
-                      placeholder="Ketik nama kecamatan..." 
-                    />
-                    {isSearchingArea && <p className="text-xs text-muted-foreground mt-1 absolute right-3 top-10">Mencari...</p>}
-                    
-                    {showAreaDropdown && areaResults.length > 0 && (
-                      <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                        {areaResults.map((area) => (
-                          <div 
-                            key={area.id}
-                            className="px-4 py-3 hover:bg-muted cursor-pointer border-b border-border last:border-0"
-                            onClick={() => {
-                              const fullName = `${area.name}, ${area.administrative_division_level_2_name}, ${area.administrative_division_level_1_name}`
-                              setSearchArea(fullName)
-                              setAddress({
-                                ...address, 
-                                areaId: area.id, 
-                                areaName: fullName,
-                                postalCode: area.postal_code || ''
-                              })
-                              setShowAreaDropdown(false)
-                            }}
-                          >
-                            <p className="font-medium text-sm">{area.name}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {area.administrative_division_level_2_name}, {area.administrative_division_level_1_name} {area.postal_code}
-                            </p>
-                          </div>
-                        ))}
+                    {savedAddresses.length > 0 && (
+                      <div className="p-4 bg-black border border-neutral-800 rounded-xl space-y-2">
+                        <label className="text-xs font-bold text-[#C19A6B] flex items-center gap-2 uppercase">
+                          <MapPin className="w-4 h-4 text-[#C19A6B]" />
+                          Alamat Tersimpan
+                        </label>
+                        <select
+                          value={selectedSavedId}
+                          onChange={(e) => {
+                            const id = e.target.value
+                            setSelectedSavedId(id)
+                            const selected = savedAddresses.find((a) => a.id === id)
+                            if (selected) {
+                              const areaLabel = `${selected.district ? selected.district + ', ' : ''}${selected.city}, ${selected.province}`
+                              setAddress((prev) => ({
+                                ...prev,
+                                name: selected.recipientName,
+                                phone: selected.phone,
+                                detail: selected.street,
+                                areaId: selected.areaId || '',
+                                postalCode: selected.postalCode || '',
+                                areaName: areaLabel,
+                              }))
+                              setSearchArea(areaLabel)
+                            }
+                          }}
+                          className="w-full bg-[#121212] border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C19A6B]"
+                        >
+                          {savedAddresses.map((a) => (
+                            <option key={a.id} value={a.id}>
+                              [{a.label}] {a.recipientName} - {a.street.substring(0, 40)}... ({a.city})
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     )}
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-sm font-medium">Alamat Lengkap</label>
-                    <textarea 
-                      rows={3} 
-                      value={address.detail}
-                      onChange={(e) => setAddress({...address, detail: e.target.value})}
-                      className="w-full bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400" 
-                      placeholder="Jl. Sudirman No. 123, Kec. Kebayoran Baru, Jakarta Selatan, 12190"
-                    ></textarea>
-                  </div>
-                </div>
-                <Button 
-                  onClick={handleNext} 
-                  disabled={!address.name || !address.email || !address.detail || !address.areaId || isLoadingRates}
-                  loading={isLoadingRates}
-                  className="w-full md:w-auto"
-                >
-                  Lanjut ke Pengiriman
-                </Button>
-              </motion.div>
-            )}
 
-            {/* STEP 2: SHIPPING */}
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h2 className="font-serif text-2xl font-bold text-foreground">Pilih Ekspedisi</h2>
-                
-                <div className="space-y-4">
-                  {shippingRates.length === 0 ? (
-                    <p className="text-muted-foreground text-sm py-4">Gagal memuat tarif pengiriman. Silakan kembali dan cek alamat Anda.</p>
-                  ) : (
-                    shippingRates.map((courier) => (
-                      <label key={courier.id} className={cn(
-                        "flex items-center justify-between p-4 border rounded-xl cursor-pointer transition-all",
-                        shippingCost === courier.price && courierName === courier.name ? "border-tan-500 bg-tan-50/30" : "border-border hover:border-tan-300"
-                      )}>
-                        <div className="flex items-center gap-4">
-                          <input 
-                            type="radio" 
-                            name="courier" 
-                            className="w-5 h-5 text-tan-500 focus:ring-tan-500"
-                            checked={shippingCost === courier.price && courierName === courier.name}
-                            onChange={() => {
-                              setShippingCost(courier.price)
-                              setCourierName(courier.name)
-                            }}
-                          />
-                          <div>
-                            <p className="font-semibold text-foreground">{courier.name}</p>
-                            <p className="text-sm text-muted-foreground">{courier.courier}</p>
-                          </div>
-                        </div>
-                        <span className="font-bold">{formatPrice(courier.price)}</span>
-                      </label>
-                    ))
-                  )}
-                </div>
-
-                <Button 
-                  onClick={handleNext} 
-                  disabled={!courierName}
-                  className="w-full md:w-auto"
-                >
-                  Lanjut ke Pembayaran
-                </Button>
-              </motion.div>
-            )}
-
-            {/* STEP 3: PAYMENT */}
-            {step === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
-              >
-                <h2 className="font-serif text-2xl font-bold text-foreground">Pilih Metode Pembayaran</h2>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { id: 'qris', name: 'QRIS', icon: <CreditCard className="w-6 h-6" /> },
-                    { id: 'bca', name: 'BCA Virtual Account', icon: <CreditCard className="w-6 h-6" /> },
-                    { id: 'mandiri', name: 'Mandiri Virtual Account', icon: <CreditCard className="w-6 h-6" /> },
-                    { id: 'cc', name: 'Kartu Kredit / Debit', icon: <CreditCard className="w-6 h-6" /> },
-                  ].map((method) => (
-                    <label key={method.id} className={cn(
-                      "flex items-center gap-4 p-4 border rounded-xl cursor-pointer transition-all",
-                      paymentMethod === method.id ? "border-tan-500 bg-tan-50/30 ring-1 ring-tan-500" : "border-border hover:border-tan-300"
-                    )}>
-                      <input 
-                        type="radio" 
-                        name="payment" 
-                        className="sr-only"
-                        checked={paymentMethod === method.id}
-                        onChange={() => setPaymentMethod(method.id)}
-                      />
-                      <div className={cn("p-2 rounded-lg bg-card border", paymentMethod === method.id ? "text-tan-600 border-tan-200" : "text-muted-foreground")}>
-                        {method.icon}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">NAMA LENGKAP</label>
+                        <input
+                          type="text"
+                          placeholder="Nama Lengkap Anda"
+                          value={address.name}
+                          onChange={(e) => setAddress({ ...address, name: e.target.value })}
+                          className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                        />
                       </div>
-                      <span className="font-semibold text-foreground">{method.name}</span>
-                    </label>
-                  ))}
-                </div>
+                      <div>
+                        <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">NOMOR WHATSAPP / TELEPON</label>
+                        <input
+                          type="text"
+                          placeholder="08123456789"
+                          value={address.phone}
+                          onChange={(e) => setAddress({ ...address, phone: e.target.value })}
+                          className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                        />
+                      </div>
+                    </div>
 
-                <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-900/50 rounded-xl flex items-start gap-3 mt-6">
-                  <ShieldCheck className="w-6 h-6 text-yellow-600 shrink-0 mt-0.5" />
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200/80">
-                    Pembayaran Anda diamankan oleh enkripsi tingkat bank. Raxie tidak pernah menyimpan data kartu kredit Anda.
-                  </p>
-                </div>
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">EMAIL PESANAN</label>
+                      <input
+                        type="email"
+                        placeholder="email@domain.com"
+                        value={address.email}
+                        onChange={(e) => setAddress({ ...address, email: e.target.value })}
+                        className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                      />
+                    </div>
 
-                {errorMsg && (
-                  <p className="text-sm text-red-500 bg-red-50 dark:bg-red-950/30 px-3 py-2 rounded-lg mt-4">
-                    {errorMsg}
-                  </p>
+                    <div className="relative">
+                      <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">KECAMATAN / KOTA TUJUAN</label>
+                      <input
+                        type="text"
+                        placeholder="Ketik nama kecamatan..."
+                        value={searchArea}
+                        onChange={(e) => {
+                          setSearchArea(e.target.value)
+                          if (address.areaId) setAddress({ ...address, areaId: '', areaName: '', postalCode: '' })
+                        }}
+                        onFocus={() => { if (areaResults.length > 0) setShowAreaDropdown(true) }}
+                        className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                      />
+                      {isSearchingArea && <p className="text-[10px] text-[#C19A6B] mt-1 absolute right-3 top-8">Mencari...</p>}
+                      
+                      {showAreaDropdown && areaResults.length > 0 && (
+                        <div className="absolute z-50 w-full mt-1 bg-black border border-neutral-800 rounded-lg shadow-2xl max-h-56 overflow-y-auto">
+                          {areaResults.map((area) => (
+                            <div
+                              key={area.id}
+                              className="px-3 py-2.5 hover:bg-neutral-900 cursor-pointer border-b border-neutral-900 text-xs"
+                              onClick={() => {
+                                const fullName = `${area.name}, ${area.administrative_division_level_2_name}, ${area.administrative_division_level_1_name}`
+                                setSearchArea(fullName)
+                                setAddress({
+                                  ...address,
+                                  areaId: area.id,
+                                  areaName: fullName,
+                                  postalCode: area.postal_code || ''
+                                })
+                                setShowAreaDropdown(false)
+                              }}
+                            >
+                              <p className="font-bold text-white">{area.name}</p>
+                              <p className="text-[10px] text-neutral-400">{area.administrative_division_level_2_name}, {area.administrative_division_level_1_name} {area.postal_code}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">ALAMAT LENGKAP</label>
+                      <textarea
+                        rows={3}
+                        placeholder="Nama jalan, nomor rumah, RT/RW, patokan..."
+                        value={address.detail}
+                        onChange={(e) => setAddress({ ...address, detail: e.target.value })}
+                        className="w-full bg-black border border-neutral-800 rounded-lg p-3 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                      />
+                    </div>
+
+                    <div className="pt-2">
+                      <Button
+                        onClick={handleNext}
+                        disabled={!address.name || !address.email || !address.detail || !address.areaId || isLoadingRates}
+                        className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider px-8 py-3.5 rounded-lg flex items-center gap-2"
+                      >
+                        {isLoadingRates ? 'MEMUAT ONGKIR...' : 'LANJUT PILIH KURIR'} <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </motion.div>
                 )}
 
-                <Button 
-                  onClick={handleCheckout} 
-                  disabled={!paymentMethod || isProcessing}
-                  className="w-full py-6 text-lg font-bold mt-4"
-                >
-                  {isProcessing ? 'Memproses Pesanan...' : `Bayar ${formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}`}
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                {/* STEP 2: PENGIRIMAN */}
+                {step === 2 && (
+                  <motion.div
+                    key="step2"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    className="space-y-4"
+                  >
+                    <h2 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B]">PILIH EKSPEDISI / KURIR</h2>
 
-        {/* Right Col - Order Summary Sidebar */}
-        <div className="w-full lg:w-[400px] order-1 lg:order-2">
-          <div className="bg-card border border-border shadow-sm rounded-2xl p-6 sticky top-24">
-            <h3 className="font-serif font-bold text-lg text-foreground mb-4">Ringkasan Pesanan</h3>
-            
-            <div className="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex gap-4">
-                  <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0 border border-border">
-                    <Image src={item.image || '/placeholder.jpg'} alt={item.name} fill className="object-cover" />
-                    <div className="absolute -top-2 -right-2 w-5 h-5 bg-tan-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold z-10 border-2 border-card">
-                      {item.quantity}
+                    <div className="space-y-3">
+                      {shippingRates.length === 0 ? (
+                        <p className="text-xs text-neutral-400 py-4">Gagal memuat tarif pengiriman. Silakan kembali dan cek kecamatan alamat Anda.</p>
+                      ) : (
+                        shippingRates.map((courier: any) => (
+                          <label
+                            key={courier.id}
+                            className={cn(
+                              "flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-colors text-xs",
+                              courierName === courier.name ? "border-[#C19A6B] bg-black" : "border-neutral-800 bg-black/40 hover:border-neutral-700"
+                            )}
+                          >
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="radio"
+                                name="courier"
+                                className="accent-[#C19A6B]"
+                                checked={courierName === courier.name}
+                                onChange={() => {
+                                  setShippingCost(courier.price)
+                                  setCourierName(courier.name)
+                                }}
+                              />
+                              <div>
+                                <p className="font-bold text-white uppercase">{courier.name}</p>
+                                <p className="text-[11px] text-neutral-400">{courier.courier} - {courier.estimated}</p>
+                              </div>
+                            </div>
+                            <span className="font-bold text-[#C19A6B]">{formatPrice(courier.price)}</span>
+                          </label>
+                        ))
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-4 pt-2">
+                      <Button variant="outline" onClick={() => setStep(1)} className="border-neutral-700 text-white text-xs">
+                        Kembali
+                      </Button>
+                      <Button
+                        onClick={handleNext}
+                        disabled={!courierName}
+                        className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider px-8 py-3.5 rounded-lg flex items-center gap-2"
+                      >
+                        LANJUT PEMBAYARAN <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* STEP 3: PEMBAYARAN */}
+                {step === 3 && (
+                  <motion.div
+                    key="step3"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    className="space-y-4"
+                  >
+                    <h2 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B]">PEMBAYARAN SECURE MIDTRANS</h2>
+
+                    <div className="p-4 bg-black border border-neutral-800 rounded-xl space-y-3 text-xs">
+                      <div className="flex items-center gap-2 text-[#C19A6B]">
+                        <CheckCircle2 className="w-5 h-5" />
+                        <span className="font-bold uppercase tracking-wider">PEMBAYARAN OTOMATIS & 100% AMAN</span>
+                      </div>
+                      <p className="text-neutral-400 text-[11px] leading-relaxed">
+                        Anda dapat memilih metode pembayaran seperti **QRIS, Virtual Account BCA/Mandiri/BRI, Kartu Kredit, GoPay, atau ShopeePay** secara langsung melalui pop-up transaksi Midtrans yang aman.
+                      </p>
+                    </div>
+
+                    {errorMsg && (
+                      <p className="text-xs text-red-400 bg-red-950/40 border border-red-800/50 p-3 rounded-lg">
+                        {errorMsg}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-4 pt-2">
+                      <Button variant="outline" onClick={() => setStep(2)} className="border-neutral-700 text-white text-xs">
+                        Kembali
+                      </Button>
+                      <Button
+                        onClick={handleCheckout}
+                        disabled={isProcessing}
+                        className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg flex-1"
+                      >
+                        {isProcessing ? 'MEMPROSES PESANAN...' : `BAYAR ${formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}`}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Right Sidebar - Order Summary */}
+            <div className="w-full lg:w-[360px] bg-[#121212] border border-neutral-800 rounded-2xl p-6 sticky top-24 space-y-4">
+              <h3 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B] pb-3 border-b border-neutral-800">
+                RINGKASAN ITEM
+              </h3>
+
+              <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1 custom-scrollbar">
+                {cartItems.map((item) => (
+                  <div key={item.id} className="flex items-center gap-3 text-xs">
+                    <div className="relative w-12 h-12 rounded bg-black border border-neutral-800 overflow-hidden shrink-0">
+                      <Image src={item.image || '/placeholder.jpg'} alt={item.name} fill className="object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-white truncate">{item.name}</p>
+                      <p className="text-[10px] text-neutral-400">{item.quantity}x @ {formatPrice(item.price)}</p>
                     </div>
                   </div>
-                  <div className="flex-1 min-w-0 py-1">
-                    <p className="font-semibold text-sm text-foreground truncate">{item.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{item.variantName}</p>
-                    <p className="font-medium text-sm mt-1">{formatPrice(item.price)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Voucher Section */}
-            <div className="py-3 border-t border-border space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <Tag className="w-3.5 h-3.5 text-tan-500" />
-                Voucher / Kode Promo
-              </label>
-              {appliedVoucher ? (
-                <div className="flex items-center justify-between p-2.5 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-xl text-xs">
-                  <div>
-                    <span className="font-bold text-green-700 dark:text-green-300">{appliedVoucher.code}</span>
-                    <p className="text-[10px] text-green-600 dark:text-green-400">Hemat {formatPrice(appliedVoucher.discountAmount)}</p>
-                  </div>
-                  <button onClick={handleRemoveVoucher} className="text-xs text-red-500 hover:underline">Hapus</button>
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={voucherCode}
-                    onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-                    placeholder="Contoh: RAXIE20"
-                    className="flex-1 bg-background border border-border rounded-xl px-3 py-2 text-xs uppercase font-mono"
-                  />
-                  <Button size="sm" variant="outline" onClick={handleApplyVoucher} disabled={!voucherCode || isValidatingVoucher}>
-                    {isValidatingVoucher ? '...' : 'Gunakan'}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3 text-sm border-t border-border pt-4 mb-4">
-              <div className="flex justify-between text-muted-foreground">
-                <span>Subtotal produk</span>
-                <span className="font-medium text-foreground">{formatPrice(totalPrice)}</span>
+                ))}
               </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>Ongkos Kirim</span>
-                <span className="font-medium text-foreground">
-                  {shippingCost > 0 ? formatPrice(shippingCost) : '-'}
-                </span>
-              </div>
-              {appliedVoucher && (
-                <div className="flex justify-between text-green-600 dark:text-green-400 font-semibold">
-                  <span>Diskon Voucher ({appliedVoucher.code})</span>
-                  <span>-{formatPrice(appliedVoucher.discountAmount)}</span>
-                </div>
-              )}
-            </div>
 
-            <div className="flex justify-between items-end border-t border-border pt-4">
-              <span className="font-bold text-foreground">Total Keseluruhan</span>
-              <span className="font-bold text-2xl text-tan-600 dark:text-tan-400">
-                {formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}
-              </span>
+              {/* Voucher Input */}
+              <div className="pt-3 border-t border-neutral-800 space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
+                  <Tag className="w-3 h-3 text-[#C19A6B]" /> Kode Voucher
+                </label>
+                {appliedVoucher ? (
+                  <div className="flex items-center justify-between p-2.5 bg-black border border-green-800 rounded-lg text-xs">
+                    <div>
+                      <span className="font-bold text-green-400 uppercase">{appliedVoucher.code}</span>
+                      <p className="text-[10px] text-neutral-400">Potongan {formatPrice(appliedVoucher.discountAmount)}</p>
+                    </div>
+                    <button onClick={handleRemoveVoucher} className="text-[10px] text-red-400 hover:underline">Hapus</button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={voucherCode}
+                      onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                      placeholder="KODE VOUCHER"
+                      className="flex-1 bg-black border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B] uppercase font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyVoucher}
+                      disabled={!voucherCode || isValidatingVoucher}
+                      className="bg-[#C19A6B] text-black font-bold text-xs uppercase px-3 py-1.5 rounded-lg hover:bg-[#b08b5c] disabled:opacity-50"
+                    >
+                      {isValidatingVoucher ? '...' : 'Gunakan'}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 text-xs border-t border-neutral-800 pt-3">
+                <div className="flex justify-between text-neutral-400">
+                  <span>Subtotal</span>
+                  <span className="font-bold text-white">{formatPrice(totalPrice)}</span>
+                </div>
+                <div className="flex justify-between text-neutral-400">
+                  <span>Ongkir ({courierName || 'Belum dipilih'})</span>
+                  <span className="font-bold text-white">{shippingCost > 0 ? formatPrice(shippingCost) : '-'}</span>
+                </div>
+                {appliedVoucher && (
+                  <div className="flex justify-between text-[#C19A6B]">
+                    <span>Voucher ({appliedVoucher.code})</span>
+                    <span>-{formatPrice(appliedVoucher.discountAmount)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center border-t border-neutral-800 pt-3 text-sm">
+                  <span className="font-bold text-white">TOTAL</span>
+                  <span className="font-bold text-xl text-[#C19A6B]">
+                    {formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   )
 }
