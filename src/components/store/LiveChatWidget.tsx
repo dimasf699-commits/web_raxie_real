@@ -36,6 +36,8 @@ interface PendingAttachment {
 
 export function LiveChatWidget() {
   const pathname = usePathname()
+  if (pathname?.startsWith('/admin')) return null
+  
   const { data: session } = useSession()
   const [isOpen, setIsOpen] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)

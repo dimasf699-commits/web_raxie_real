@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, ShoppingBag, Eye, Star, Scale } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
-import { formatPrice, getDiscountPercent } from '@/lib/utils'
+import { formatPrice, getDiscountPercent, getCloudinaryUrl } from '@/lib/utils'
 import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { useCompareStore } from '@/store/compare.store'
@@ -118,7 +118,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
         {/* Image Container */}
         <div className="relative overflow-hidden rounded-2xl aspect-product bg-ivory-200 dark:bg-charcoal-800">
           <Image
-            src={product.image}
+            src={getCloudinaryUrl(product.image, { width: 500, quality: 80 })}
             alt={product.name}
             fill
             className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"

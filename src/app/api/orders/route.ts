@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { sendOrderEmail } from '@/lib/email'
 import { rateLimit } from '@/lib/redis'
 import { generateOrderNumber } from '@/lib/utils'
+import { resolveOrSyncDbUser } from '@/lib/auth-user'
 
 const orderSchema = z.object({
   items: z.array(z.object({
@@ -68,11 +69,10 @@ export async function POST(req: NextRequest) {
     if (data.paymentMethod === 'qris') paymentEnum = 'QRIS'
     if (data.paymentMethod === 'cc') paymentEnum = 'CREDIT_CARD'
     if (data.paymentMethod === 'bca' || data.paymentMethod === 'mandiri') paymentEnum = 'VIRTUAL_ACCOUNT'
-
     // Verify if user actually exists in DB (handles stale JWT session tokens if DB was reset)
     let validUserId = null
-    if (session?.user?.id) {
-      const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } })
+    if (session?.user) {
+      const dbUser = await resolveOrSyncDbUser(session.user)
       if (dbUser) validUserId = dbUser.id
     }
 

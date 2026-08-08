@@ -91,7 +91,12 @@ import { Suspense } from 'react'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 
-import { LiveChatWidget } from '@/components/store/LiveChatWidget'
+import dynamic from 'next/dynamic'
+
+const DynamicLiveChatWidget = dynamic(
+  () => import('@/components/store/LiveChatWidget').then((mod) => mod.LiveChatWidget),
+  { ssr: false }
+)
 
 const jsonLdOrganization = {
   '@context': 'https://schema.org',
@@ -182,7 +187,7 @@ export default function RootLayout({
             <QueryProvider>
               {children}
               <Toaster />
-              <LiveChatWidget />
+              <DynamicLiveChatWidget />
               <CookieConsent />
             </QueryProvider>
           </AuthProvider>

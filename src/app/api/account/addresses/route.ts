@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { resolveOrSyncDbUser } from '@/lib/auth-user'
 
 export async function GET() {
   try {
@@ -9,14 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    let dbUser = null
-    if (session.user.id) {
-      dbUser = await prisma.user.findUnique({ where: { id: session.user.id } })
-    }
-    if (!dbUser && session.user.email) {
-      dbUser = await prisma.user.findUnique({ where: { email: session.user.email } })
-    }
-
+    const dbUser = await resolveOrSyncDbUser(session.user)
     if (!dbUser) {
       return NextResponse.json({ addresses: [] })
     }
@@ -40,16 +34,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized: Silakan login terlebih dahulu' }, { status: 401 })
     }
 
-    let dbUser = null
-    if (session.user.id) {
-      dbUser = await prisma.user.findUnique({ where: { id: session.user.id } })
-    }
-    if (!dbUser && session.user.email) {
-      dbUser = await prisma.user.findUnique({ where: { email: session.user.email } })
-    }
-
+    const dbUser = await resolveOrSyncDbUser(session.user)
     if (!dbUser) {
-      return NextResponse.json({ error: 'Akun pengguna tidak ditemukan di database' }, { status: 404 })
+      return NextResponse.json({ error: 'Gagal memverifikasi akun pengguna' }, { status: 400 })
     }
 
     const body = await req.json()

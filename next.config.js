@@ -7,7 +7,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  swcMinify: true,
   experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
     serverActions: {
       allowedOrigins: [
         'localhost:3000',
@@ -17,6 +19,7 @@ const nextConfig = {
     },
   },
   images: {
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
