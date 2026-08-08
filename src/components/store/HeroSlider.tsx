@@ -79,7 +79,7 @@ export function HeroSlider() {
   const activeSlide = SLIDES[current]
 
   return (
-    <section className="relative w-full min-h-[550px] md:min-h-[620px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
+    <section className="relative w-full min-h-[540px] md:min-h-[600px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
       {/* Background Image Carousel with Fade & Scale Effect */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -95,16 +95,16 @@ export function HeroSlider() {
             alt={activeSlide.title}
             fill
             priority
-            className="object-cover object-center md:object-right"
+            className="object-cover object-right md:object-right"
           />
-          {/* Gradient Overlays for High Contrast Text */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/75 to-black/30 md:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+          {/* Deep Dark Left Gradient to guarantee text clarity & zero overlap with product images on the right */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 via-45% to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30" />
         </motion.div>
       </AnimatePresence>
 
-      {/* Content Container */}
-      <div className="container-raxie relative z-10 py-16 md:py-24">
+      {/* Content Container (Pushed tightly to left) */}
+      <div className="w-full relative z-10 py-16 md:py-24 px-6 sm:px-12 lg:px-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSlide.id}
@@ -112,50 +112,50 @@ export function HeroSlider() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="max-w-2xl space-y-6"
+            className="max-w-md lg:max-w-xl space-y-5"
           >
             {/* Tag / Subtitle */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#C19A6B]/50 bg-black/60 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#C19A6B]/50 bg-black/70 backdrop-blur-sm">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C19A6B] animate-pulse" />
-              <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase">
+              <span className="text-[#C19A6B] text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase">
                 {activeSlide.subtitle}
               </span>
             </div>
 
             {/* Main Title */}
-            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-[1.1] uppercase">
+            <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-white tracking-tight leading-[1.1] uppercase">
               {activeSlide.title}
             </h1>
 
             {/* Description */}
-            <p className="text-neutral-300 text-sm md:text-base max-w-lg leading-relaxed font-light">
+            <p className="text-neutral-300 text-xs sm:text-sm max-w-md leading-relaxed font-light">
               {activeSlide.description}
             </p>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-wrap gap-3 pt-1">
               <Link
                 href={activeSlide.buttonLink}
-                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded shadow-lg shadow-[#C19A6B]/20 transition-all hover:scale-105"
+                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-7 py-3 rounded shadow-lg shadow-[#C19A6B]/20 transition-all hover:scale-105"
               >
                 {activeSlide.buttonText}
               </Link>
               <Link
                 href="/products"
-                className="border border-neutral-600 hover:border-white text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded bg-black/40 backdrop-blur-sm transition-all hover:bg-white/10"
+                className="border border-neutral-600 hover:border-white text-white font-bold text-xs uppercase tracking-[0.15em] px-7 py-3 rounded bg-black/40 backdrop-blur-sm transition-all hover:bg-white/10"
               >
                 LIHAT KOLEKSI
               </Link>
             </div>
 
-            {/* Sub-Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-neutral-800/80">
+            {/* Sub-Badges (Neat 2x2 grid confined within max-w-md) */}
+            <div className="grid grid-cols-2 gap-3 pt-5 border-t border-neutral-800/80 max-w-md">
               {activeSlide.badges.map((badge, idx) => {
                 const IconComponent = badge.icon
                 return (
-                  <div key={idx} className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full border border-neutral-700 bg-black/40 flex items-center justify-center shrink-0">
-                      <IconComponent className="h-4 w-4 text-[#C19A6B]" />
+                  <div key={idx} className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full border border-neutral-700 bg-black/60 flex items-center justify-center shrink-0">
+                      <IconComponent className="h-3.5 w-3.5 text-[#C19A6B]" />
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-white uppercase tracking-wider leading-tight">
@@ -175,7 +175,7 @@ export function HeroSlider() {
       <button
         onClick={prevSlide}
         aria-label="Previous slide"
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/20 bg-black/40 text-white/80 hover:text-white hover:bg-black/80 hover:border-white transition-all flex items-center justify-center backdrop-blur-sm"
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full border border-white/20 bg-black/60 text-white/80 hover:text-white hover:bg-black hover:border-white transition-all flex items-center justify-center backdrop-blur-sm"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -183,13 +183,13 @@ export function HeroSlider() {
       <button
         onClick={nextSlide}
         aria-label="Next slide"
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full border border-white/20 bg-black/40 text-white/80 hover:text-white hover:bg-black/80 hover:border-white transition-all flex items-center justify-center backdrop-blur-sm"
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full border border-white/20 bg-black/60 text-white/80 hover:text-white hover:bg-black hover:border-white transition-all flex items-center justify-center backdrop-blur-sm"
       >
         <ChevronRight className="w-5 h-5" />
       </button>
 
       {/* Slide Indicator Dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
         {SLIDES.map((slide, idx) => (
           <button
             key={slide.id}
