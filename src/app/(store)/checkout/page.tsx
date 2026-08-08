@@ -303,13 +303,40 @@ export default function CheckoutPage() {
 
   return (
     <>
-            <div className={cn("flex items-center gap-2 whitespace-nowrap", step >= 3 ? "text-foreground" : "text-muted-foreground")}>
-              <div className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs text-white", step >= 3 ? "bg-tan-500" : "bg-muted")}>3</div>
-              <span>Pembayaran</span>
-            </div>
+      <Script src={snapScriptUrl} data-client-key={clientKey} strategy="lazyOnload" />
+      <div className="bg-black text-white min-h-screen py-10">
+        <div className="container-raxie">
+          <div className="flex items-center gap-3 mb-8">
+            <Link href="/cart" className="text-neutral-400 hover:text-white transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <h1 className="font-serif text-2xl md:text-3xl font-bold uppercase tracking-wider text-white">CHECKOUT PESANAN</h1>
           </div>
 
-          <AnimatePresence mode="wait">
+          {/* Step Indicator */}
+          <div className="flex items-center justify-between max-w-xl mx-auto mb-10 pb-4 border-b border-neutral-800">
+            {[
+              { num: 1, label: 'ALAMAT' },
+              { num: 2, label: 'PENGIRIMAN' },
+              { num: 3, label: 'PEMBAYARAN' }
+            ].map((s) => (
+              <div key={s.num} className="flex items-center gap-2">
+                <div className={cn(
+                  "w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs",
+                  step >= s.num ? "bg-[#C19A6B] text-black" : "bg-neutral-800 text-neutral-400"
+                )}>
+                  {s.num}
+                </div>
+                <span className={cn("text-xs font-bold tracking-wider", step >= s.num ? "text-white" : "text-neutral-500")}>
+                  {s.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-10 items-start">
+            <div className="flex-1 w-full bg-[#121212] p-6 md:p-8 rounded-2xl border border-neutral-800 space-y-6">
+              <AnimatePresence mode="wait">
             {/* STEP 1: ADDRESS */}
             {step === 1 && (
               <motion.div
