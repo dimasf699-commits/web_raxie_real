@@ -27,28 +27,30 @@ export async function POST(req: NextRequest) {
 
     let isPaid = false
 
-    if (serverKey) {
-      try {
-        const authString = Buffer.from(serverKey + ':').toString('base64')
-        const res = await fetch(statusApiUrl, {
-          headers: {
-            Authorization: `Basic ${authString}`,
-            Accept: 'application/json',
-          },
-        })
-        if (res.ok) {
-          const midtransData = await res.json()
-          const status = midtransData.transaction_status
-          if (status === 'settlement' || (status === 'capture' && midtransData.fraud_status === 'accept')) {
-            isPaid = true
-          }
+    if (!serverKey) {
+      return NextResponse.json(
+        { error: 'Konfigurasi pembayaran belum lengkap di server' },
+        { status: 500 }
+      )
+    }
+
+    try {
+      const authString = Buffer.from(serverKey + ':').toString('base64')
+      const res = await fetch(statusApiUrl, {
+        headers: {
+          Authorization: `Basic ${authString}`,
+          Accept: 'application/json',
+        },
+      })
+      if (res.ok) {
+        const midtransData = await res.json()
+        const status = midtransData.transaction_status
+        if (status === 'settlement' || (status === 'capture' && midtransData.fraud_status === 'accept')) {
+          isPaid = true
         }
-      } catch (err) {
-        console.error('[MIDTRANS_STATUS_CHECK_ERROR]', err)
       }
-    } else {
-      // Fallback if serverKey not present in dev
-      isPaid = true
+    } catch (err) {
+      console.error('[MIDTRANS_STATUS_CHECK_ERROR]', err)
     }
 
     if (isPaid && order.status === 'PENDING_PAYMENT') {

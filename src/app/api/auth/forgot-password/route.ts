@@ -1,10 +1,20 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { sendPasswordResetEmail } from '@/lib/email'
+import { rateLimit } from '@/lib/redis'
 import crypto from 'crypto'
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    const identifier = req.ip || 'anonymous'
+    const limit = await rateLimit(`forgot_pw:${identifier}`, 3, 900)
+    if (!limit.success) {
+      return NextResponse.json(
+        { message: 'Terlalu banyak permintaan reset password. Coba lagi 15 menit lagi.' },
+        { status: 429 }
+      )
+    }
+
     const { email } = await req.json()
 
     if (!email) {
@@ -26,6 +36,11 @@ export async function POST(req: Request) {
       )
     }
 
+    // Clean up existing tokens for this email first
+    await prisma.verificationToken.deleteMany({
+      where: { identifier: email }
+    }).catch(() => {})
+
     // Generate unique token
     const token = crypto.randomUUID()
     
@@ -33,20 +48,9 @@ export async function POST(req: Request) {
     const expires = new Date()
     expires.setHours(expires.getHours() + 1)
 
-    // Save token to database
-    // We use upsert so if they request multiple times, we just update the token
-    await prisma.verificationToken.upsert({
-      where: {
-        identifier_token: {
-          identifier: email,
-          token: token,
-        },
-      },
-      update: {
-        token,
-        expires,
-      },
-      create: {
+    // Save new token to database
+    await prisma.verificationToken.create({
+      data: {
         identifier: email,
         token,
         expires,

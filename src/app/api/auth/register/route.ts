@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { sendWelcomeEmail } from '@/lib/email'
 
+import { rateLimit } from '@/lib/redis'
+
 const registerSchema = z.object({
   name: z.string().min(2, 'Nama minimal 2 karakter'),
   email: z.string().email('Format email tidak valid'),
@@ -12,6 +14,15 @@ const registerSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    const identifier = req.ip || 'anonymous'
+    const limit = await rateLimit(`register:${identifier}`, 5, 900)
+    if (!limit.success) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak pendaftaran dari perangkat Anda. Silakan coba lagi nanti.' },
+        { status: 429 }
+      )
+    }
+
     const body = await req.json()
     const parsed = registerSchema.safeParse(body)
 

@@ -129,7 +129,44 @@ export async function POST(req: NextRequest) {
         })
       )
 
-      const verifiedTotalAmount = Math.max(0, verifiedSubtotal + data.shippingCost - (data.discountAmount || 0))
+      // ── VALIDASI VOUCHER SERVER-SIDE ──────────────────────────────────
+      let calculatedDiscount = 0
+      let validVoucherId: string | null = null
+
+      if (data.voucherId) {
+        const voucher = await tx.voucher.findUnique({
+          where: { id: data.voucherId }
+        })
+
+        if (voucher && voucher.isActive) {
+          const now = new Date()
+          const isValidTime = (!voucher.startsAt || now >= voucher.startsAt) && (!voucher.expiresAt || now <= voucher.expiresAt)
+          const isValidUsage = voucher.usageLimit === null || voucher.usageCount < voucher.usageLimit
+          const isValidMinPurchase = verifiedSubtotal >= voucher.minPurchase
+
+          if (isValidTime && isValidUsage && isValidMinPurchase) {
+            validVoucherId = voucher.id
+            if (voucher.type === 'PERCENTAGE') {
+              calculatedDiscount = (verifiedSubtotal * voucher.value) / 100
+              if (voucher.maxDiscount && calculatedDiscount > voucher.maxDiscount) {
+                calculatedDiscount = voucher.maxDiscount
+              }
+            } else if (voucher.type === 'FIXED_AMOUNT') {
+              calculatedDiscount = voucher.value
+            } else if (voucher.type === 'FREE_SHIPPING') {
+              calculatedDiscount = Math.min(data.shippingCost, voucher.value)
+            }
+
+            // Increment voucher usage count atomically inside transaction
+            await tx.voucher.update({
+              where: { id: voucher.id },
+              data: { usageCount: { increment: 1 } }
+            })
+          }
+        }
+      }
+
+      const verifiedTotalAmount = Math.max(0, verifiedSubtotal + data.shippingCost - calculatedDiscount)
       // ───────────────────────────────────────────────────────────────────
 
       const newOrder = await tx.order.create({
@@ -147,10 +184,11 @@ export async function POST(req: NextRequest) {
           shippingPostalCode: data.shipping.postalCode || '10000', 
           subtotal: verifiedSubtotal,
           shippingCost: data.shippingCost,
+          discountAmount: calculatedDiscount,
           totalAmount: verifiedTotalAmount,
           paymentMethod: paymentEnum,
           courierName: data.courierName,
-          voucherId: data.voucherId || null,
+          voucherId: validVoucherId,
           status: 'PENDING_PAYMENT',
           items: {
             create: verifiedItems,
@@ -158,15 +196,20 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      // Reduce stock for each variant concurrently
-      await Promise.all(
-        verifiedItems.map(item => {
-          return tx.productVariant.update({
-            where: { id: item.variantId },
-            data: { stock: { decrement: item.quantity } }
-          })
+      // Atomic stock reduction to prevent race condition (overselling)
+      for (const item of verifiedItems) {
+        const updateRes = await tx.productVariant.updateMany({
+          where: {
+            id: item.variantId,
+            stock: { gte: item.quantity }
+          },
+          data: { stock: { decrement: item.quantity } }
         })
-      )
+
+        if (updateRes.count === 0) {
+          throw new Error(`Stok "${item.productName} (${item.variantName})" mendadak habis / tidak mencukupi`)
+        }
+      }
 
       return newOrder
     })

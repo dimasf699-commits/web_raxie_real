@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
 import { auth } from '@/lib/auth'
+import { rateLimit } from '@/lib/redis'
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 })
+
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf']
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 // 5MB
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +19,12 @@ export async function POST(req: NextRequest) {
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized: Silakan login terlebih dahulu' }, { status: 401 })
     }
+
+    // Rate Limiting: max 10 uploads per 10 minutes per user
+    const limit = await rateLimit(`upload:${session.user.id}`, 10, 600)
+    if (!limit.success) {
+      return NextResponse.json({ error: 'Terlalu banyak upload. Coba lagi nanti.' }, { status: 429 })
+    }
     // ─────────────────────────────────────────────────────────────────────────
 
     const formData = await req.formData()
@@ -22,6 +32,14 @@ export async function POST(req: NextRequest) {
 
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+    }
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json({ error: 'Ukuran file terlalu besar (maksimal 5MB)' }, { status: 400 })
+    }
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type.toLowerCase())) {
+      return NextResponse.json({ error: 'Tipe file tidak didukung (hanya JPG, PNG, WEBP, dan PDF)' }, { status: 400 })
     }
 
     const arrayBuffer = await file.arrayBuffer()

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(
@@ -34,6 +35,11 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await auth()
+    if (!session || (session.user as any)?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized: Akses khusus Admin' }, { status: 401 })
+    }
+
     const conversationId = params.id
     const body = await req.json()
     const { status } = body

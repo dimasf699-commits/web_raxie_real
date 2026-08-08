@@ -47,17 +47,28 @@ export async function POST(req: NextRequest) {
     }
 
     if (newStatus) {
+      const existingOrder = await prisma.order.findUnique({
+        where: { orderNumber: order_id },
+      })
+
+      if (!existingOrder) {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+      }
+
+      // Idempotency check: Only process payment confirmation if order is currently PENDING_PAYMENT
+      const isFirstPaymentConfirmation = shouldCreateShipment && existingOrder.status === 'PENDING_PAYMENT'
+
       const order = await prisma.order.update({
         where: { orderNumber: order_id },
         data: { 
           status: newStatus as any,
-          ...(paidAt ? { paidAt } : {})
+          ...(paidAt && !existingOrder.paidAt ? { paidAt } : {})
         },
-        include: { items: true } // Need items for Biteship
+        include: { items: true }
       })
 
-      // If paid, trigger automated shipping creation via Biteship
-      if (shouldCreateShipment && !order.shippingOrderId && order.shippingCity && order.shippingPostalCode) {
+      // If paid for the first time, trigger automated shipping creation via Biteship
+      if (isFirstPaymentConfirmation && !order.shippingOrderId && order.shippingCity && order.shippingPostalCode) {
         try {
           const STORE_AREA_ID = process.env.STORE_AREA_ID || 'IDNP9IDNC122IDND450IDZ44161'
           
@@ -126,8 +137,8 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Update totalSold for each product when payment is confirmed
-      if (shouldCreateShipment) {
+      // Update totalSold for each product when payment is confirmed for the first time
+      if (isFirstPaymentConfirmation) {
         try {
           await Promise.all(
             order.items.map(item =>

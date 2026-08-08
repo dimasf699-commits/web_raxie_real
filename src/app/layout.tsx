@@ -93,6 +93,51 @@ import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 
 import { LiveChatWidget } from '@/components/store/LiveChatWidget'
 
+const jsonLdOrganization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Raxie',
+  alternateName: 'Raxie Official Store',
+  url: 'https://raxie.my.id',
+  logo: 'https://i.imgur.com/X1YcH8c.jpeg',
+  description: 'Brand fashion Indonesia terkemuka untuk dompet PU Leather premium, tas, & aksesoris pria modern.',
+  sameAs: [
+    'https://www.instagram.com/raxie.official',
+    'https://raxie.my.id'
+  ],
+}
+
+const jsonLdWebSite = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Raxie Official Store',
+  url: 'https://raxie.my.id',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://raxie.my.id/products?search={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+const jsonLdStore = {
+  '@context': 'https://schema.org',
+  '@type': 'Store',
+  name: 'Raxie Store',
+  image: 'https://i.imgur.com/X1YcH8c.jpeg',
+  '@id': 'https://raxie.my.id/#store',
+  url: 'https://raxie.my.id',
+  telephone: '082128862433',
+  priceRange: '$$',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Jakarta',
+    addressLocality: 'Jakarta',
+    addressRegion: 'DKI Jakarta',
+    postalCode: '10000',
+    addressCountry: 'ID',
+  },
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -106,6 +151,18 @@ export default function RootLayout({
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebSite) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdStore) }}
         />
       </head>
       <body>

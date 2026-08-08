@@ -43,7 +43,10 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     },
   })
 
-  if (!order || (order.userId && order.userId !== session.user.id)) {
+  const userEmail = session.user.email
+  const isOwner = order && (order.userId === session.user.id || (userEmail && order.guestEmail === userEmail))
+
+  if (!order || !isOwner) {
     notFound()
   }
 

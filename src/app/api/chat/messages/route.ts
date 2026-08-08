@@ -48,14 +48,27 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const isUser = sender === 'USER'
+    const session = await auth()
+    const isAdmin = (session?.user as any)?.role === 'ADMIN'
+
+    // Force sender to USER unless user is an authenticated ADMIN
+    const actualSender = isAdmin && sender === 'ADMIN' ? 'ADMIN' : 'USER'
+    const isUser = actualSender === 'USER'
     const cleanMessage = sanitizeHtml(message || '')
+
+    const conversationExists = await prisma.chatConversation.findUnique({
+      where: { id: conversationId }
+    })
+
+    if (!conversationExists) {
+      return NextResponse.json({ error: 'Sesi chat tidak ditemukan' }, { status: 404 })
+    }
 
     const newMessage = await prisma.chatMessage.create({
       data: {
         conversationId,
-        sender: sender || 'USER',
-        senderName: senderName || (isUser ? 'Pelanggan' : 'CS Raxie Official'),
+        sender: actualSender,
+        senderName: senderName || (isUser ? (conversationExists.userName || 'Pelanggan') : 'CS Raxie Official'),
         message: cleanMessage,
         status: 'Sent',
         isRead: false,
