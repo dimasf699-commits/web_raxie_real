@@ -4,8 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Truck, Package, Award } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Truck, Award } from 'lucide-react'
 import { useCartStore } from '@/store/cart.store'
 import { formatPrice } from '@/lib/utils'
 import { toast } from '@/components/ui/Toaster'
@@ -75,7 +74,7 @@ export function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeCart}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
 
           {/* Drawer Container */}
@@ -84,12 +83,12 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 220 }}
-            className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-[#121212] text-white shadow-2xl flex flex-col border-l border-neutral-800"
+            className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-card text-card-foreground shadow-2xl flex flex-col border-l border-border transition-colors duration-300"
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-800">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-border">
               <div className="flex items-center gap-3">
-                <h2 className="font-serif font-bold text-lg tracking-wider uppercase text-white">
+                <h2 className="font-serif font-bold text-base tracking-wider uppercase text-foreground">
                   KERANJANG ANDA
                 </h2>
                 <span className="bg-[#C19A6B] text-black text-xs font-extrabold w-5 h-5 rounded-full flex items-center justify-center">
@@ -98,217 +97,163 @@ export function CartDrawer() {
               </div>
               <button
                 onClick={closeCart}
-                className="text-neutral-400 hover:text-white transition-colors p-1"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
                 aria-label="Tutup keranjang"
               >
-                <X className="h-5 w-5" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Top Security Banner */}
-            <div className="mx-6 mt-4 p-3 rounded-lg border border-[#C19A6B]/40 bg-[#1A1815] flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#C19A6B]/10 flex items-center justify-center shrink-0 border border-[#C19A6B]/30">
-                <ShieldCheck className="h-4 w-4 text-[#C19A6B]" />
-              </div>
-              <div className="text-xs leading-tight">
-                <p className="font-semibold text-[#E5C396]">Belanja aman & terpercaya</p>
-                <p className="text-neutral-400 text-[11px] mt-0.5">Semua transaksi dilindungi 100% secure</p>
-              </div>
+            <div className="bg-muted px-6 py-2.5 border-b border-border flex items-center gap-2 text-[11px] text-muted-foreground">
+              <ShieldCheck className="w-4 h-4 text-[#C19A6B] shrink-0" />
+              <span>Belanja aman & terpercaya - Semua transaksi 100% terlindungi</span>
             </div>
 
-            {/* Cart Items List */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 custom-scrollbar">
+            {/* Items List */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {items.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
-                  <div className="w-16 h-16 bg-neutral-900 border border-neutral-800 rounded-full flex items-center justify-center">
-                    <ShoppingBag className="h-8 w-8 text-neutral-500" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-base text-white">
-                      Keranjang Anda kosong
-                    </h3>
-                    <p className="text-neutral-400 text-xs mt-1 max-w-[240px]">
-                      Temukan produk aksesoris kulit premium favorit Anda.
-                    </p>
-                  </div>
-                  <Button
+                <div className="py-16 text-center space-y-3">
+                  <ShoppingBag className="w-12 h-12 text-muted-foreground mx-auto" />
+                  <p className="font-bold text-xs uppercase text-foreground">Keranjang Anda Masih Kosong</p>
+                  <p className="text-xs text-muted-foreground">Jelajahi koleksi dompet dan tas kulit kami untuk menemukan produk favorit Anda.</p>
+                  <Link
+                    href="/products"
                     onClick={closeCart}
-                    asChild
-                    className="mt-4 bg-[#C19A6B] text-black hover:bg-[#b08b5c] font-bold text-xs uppercase tracking-wider px-6 py-2 rounded-lg"
+                    className="inline-block bg-[#C19A6B] text-black font-bold text-xs uppercase px-6 py-2.5 rounded-lg mt-2 hover:bg-[#b08b5c]"
                   >
-                    <Link href="/products">Mulai Belanja</Link>
-                  </Button>
+                    Mulai Belanja
+                  </Link>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  <AnimatePresence initial={false}>
-                    {items.map((item) => (
-                      <motion.div
-                        key={item.id}
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="flex gap-4 p-3 rounded-xl bg-[#1A1A1A] border border-neutral-800/80 items-center"
-                      >
-                        {/* Product Image */}
-                        <div className="relative w-16 h-16 bg-black rounded-lg overflow-hidden flex-shrink-0 border border-neutral-800">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                            sizes="64px"
-                          />
-                        </div>
+                items.map((item) => (
+                  <div key={item.id} className="flex gap-4 pb-4 border-b border-border">
+                    <div className="relative w-20 h-20 bg-muted rounded-lg overflow-hidden shrink-0 border border-border">
+                      <Image src={item.image || '/placeholder.jpg'} alt={item.name} fill className="object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex justify-between items-start">
+                        <Link
+                          href={`/products/${item.slug}`}
+                          onClick={closeCart}
+                          className="font-bold text-xs uppercase tracking-wider text-foreground hover:text-[#C19A6B] truncate"
+                        >
+                          {item.name}
+                        </Link>
+                        <button
+                          onClick={() => removeItem(item.id)}
+                          className="text-muted-foreground hover:text-red-500 text-xs ml-2 shrink-0"
+                          aria-label="Hapus item"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
 
-                        {/* Product Info */}
-                        <div className="flex-1 min-w-0">
-                          <Link
-                            href={`/products/${item.slug}`}
-                            onClick={closeCart}
-                            className="font-medium text-xs text-white hover:text-[#C19A6B] transition-colors line-clamp-2 leading-snug"
+                      {item.variantName && (
+                        <p className="text-[11px] text-muted-foreground">Warna: {item.variantName}</p>
+                      )}
+
+                      <div className="flex justify-between items-center pt-2">
+                        <div className="flex items-center border border-border rounded bg-background px-2 py-0.5">
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            className="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground text-xs"
                           >
-                            {item.name}
-                          </Link>
-                          <div className="font-bold text-xs text-neutral-200 mt-1">
-                            {formatPrice(item.price)}
-                          </div>
-
-                          {/* Controls Row */}
-                          <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center border border-neutral-700 rounded bg-black px-2 py-0.5">
-                              <button
-                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                disabled={item.quantity <= 1}
-                                className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
-                              >
-                                <Minus className="h-3 w-3" />
-                              </button>
-                              <span className="w-6 text-center text-xs font-semibold text-white">
-                                {item.quantity}
-                              </span>
-                              <button
-                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                disabled={item.quantity >= item.stock}
-                                className="text-neutral-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed p-0.5"
-                              >
-                                <Plus className="h-3 w-3" />
-                              </button>
-                            </div>
-
-                            <button
-                              onClick={() => removeItem(item.id)}
-                              className="text-neutral-400 hover:text-red-400 transition-colors p-1"
-                              aria-label="Hapus item"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </div>
+                            -
+                          </button>
+                          <span className="w-6 text-center text-xs font-bold text-foreground">{item.quantity}</span>
+                          <button
+                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            disabled={item.quantity >= item.stock}
+                            className="w-5 h-5 flex items-center justify-center text-muted-foreground hover:text-foreground text-xs disabled:opacity-30"
+                          >
+                            +
+                          </button>
                         </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
+
+                        <span className="font-bold text-xs text-[#C19A6B]">
+                          {formatPrice(item.price * item.quantity)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
 
-            {/* Footer Summary */}
+            {/* Footer / Summary */}
             {items.length > 0 && (
-              <div className="p-6 border-t border-neutral-800 bg-[#121212] space-y-4">
-                {/* Voucher Input */}
+              <div className="p-6 bg-card border-t border-border space-y-4">
+                {/* Voucher Form */}
                 <div className="flex gap-2">
-                  <input 
-                    type="text" 
-                    placeholder="Kode voucher (contoh: RAXIE20)" 
+                  <input
+                    type="text"
+                    placeholder="Kode voucher (contoh: RAXIE20)"
                     value={voucherCode}
                     onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-                    disabled={!!appliedVoucher || isApplyingVoucher}
-                    className="flex-1 uppercase text-xs border border-neutral-800 rounded-lg px-3 py-2 bg-black text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                    className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground uppercase font-mono focus:outline-none focus:border-[#C19A6B]"
                   />
-                  {appliedVoucher ? (
-                    <button 
-                      className="text-xs text-red-400 hover:text-red-300 border border-red-900/50 bg-red-950/30 rounded-lg px-3 py-2 font-medium"
-                      onClick={() => { setAppliedVoucher(null); setVoucherCode('') }}
-                    >
-                      Hapus
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={handleApplyVoucher}
-                      disabled={!voucherCode || isApplyingVoucher}
-                      className="border border-[#C19A6B]/50 text-[#C19A6B] hover:bg-[#C19A6B] hover:text-black rounded-lg px-4 py-2 text-xs font-semibold transition-colors disabled:opacity-40"
-                    >
-                      Terapkan
-                    </button>
-                  )}
+                  <button
+                    onClick={handleApplyVoucher}
+                    disabled={isApplyingVoucher || !voucherCode.trim()}
+                    className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase px-4 rounded-lg disabled:opacity-50"
+                  >
+                    {isApplyingVoucher ? '...' : 'TERAPKAN'}
+                  </button>
                 </div>
 
-                {/* Subtotal & Total Summary */}
-                <div className="space-y-2 text-xs border-t border-neutral-800/80 pt-3">
-                  <div className="flex justify-between text-neutral-400">
+                {/* Summary */}
+                <div className="space-y-1.5 text-xs pt-2 border-t border-border">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>Subtotal</span>
-                    <span className="font-semibold text-white">{formatPrice(totalPrice())}</span>
+                    <span className="font-bold text-foreground">{formatPrice(totalPrice())}</span>
                   </div>
                   {appliedVoucher && (
-                    <div className="flex justify-between text-[#C19A6B] font-medium">
-                      <span>Voucher: {appliedVoucher.name}</span>
+                    <div className="flex justify-between text-[#C19A6B]">
+                      <span>Diskon Voucher ({appliedVoucher.code})</span>
                       <span>-{formatPrice(appliedVoucher.discountAmount)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-neutral-400">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>Ongkos Kirim</span>
-                    <span className="text-neutral-500 text-[11px]">Dihitung saat checkout</span>
+                    <span className="text-muted-foreground text-[11px]">Dihitung di checkout</span>
                   </div>
-
-                  <div className="border-t border-neutral-800 pt-3 flex justify-between items-center">
-                    <span className="font-bold text-sm text-white">Total</span>
-                    <span className="font-bold text-lg text-[#C19A6B]">{formatPrice(finalPrice)}</span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 pt-1">
-                    <Truck className="h-3.5 w-3.5 text-[#C19A6B] shrink-0" />
-                    <span>Gratis ongkir untuk pembelian minimal Rp 100.000</span>
+                  <div className="flex justify-between items-center pt-2 text-sm">
+                    <span className="font-bold uppercase tracking-wider text-foreground">TOTAL</span>
+                    <span className="font-bold text-xl text-[#C19A6B]">{formatPrice(finalPrice)}</span>
                   </div>
                 </div>
 
-                {/* Action CTA Buttons */}
-                <div className="space-y-2 pt-1">
-                  <Button 
-                    asChild 
-                    className="w-full bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-3 rounded-lg flex items-center justify-center gap-2"
-                    onClick={closeCart}
-                  >
-                    <Link href="/checkout">
-                      Lanjut ke Pembayaran <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button 
-                    asChild 
-                    variant="outline" 
-                    className="w-full border-neutral-700 text-white hover:bg-neutral-900 font-semibold text-xs py-2.5 rounded-lg"
-                    onClick={closeCart}
-                  >
-                    <Link href="/cart">Lihat Detail Keranjang</Link>
-                  </Button>
-                </div>
+                {/* Primary CTA */}
+                <Link
+                  href="/checkout"
+                  onClick={closeCart}
+                  className="w-full bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg"
+                >
+                  LANJUT KE PEMBAYARAN <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <Link
+                  href="/cart"
+                  onClick={closeCart}
+                  className="w-full border border-border hover:border-foreground text-foreground font-bold text-xs uppercase tracking-wider py-2.5 rounded-lg flex items-center justify-center transition-colors block text-center"
+                >
+                  LIHAT DETAIL KERANJANG
+                </Link>
 
                 {/* Bottom Trust Badges */}
-                <div className="grid grid-cols-3 gap-2 border-t border-neutral-800/80 pt-4 text-center text-[10px] text-neutral-400">
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border text-[10px] text-center text-muted-foreground">
                   <div className="flex flex-col items-center gap-1">
-                    <Award className="h-4 w-4 text-[#C19A6B]" />
-                    <span className="font-bold text-neutral-200">100% Original</span>
-                    <span className="text-[9px] text-neutral-500 leading-tight">Produk original & berkualitas</span>
+                    <Award className="w-3.5 h-3.5 text-[#C19A6B]" />
+                    <span>100% Original</span>
                   </div>
                   <div className="flex flex-col items-center gap-1">
-                    <ShieldCheck className="h-4 w-4 text-[#C19A6B]" />
-                    <span className="font-bold text-neutral-200">Garansi 1 Tahun</span>
-                    <span className="text-[9px] text-neutral-500 leading-tight">Untuk setiap produk</span>
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#C19A6B]" />
+                    <span>Garansi 1 Tahun</span>
                   </div>
                   <div className="flex flex-col items-center gap-1">
-                    <Package className="h-4 w-4 text-[#C19A6B]" />
-                    <span className="font-bold text-neutral-200">Packing Premium</span>
-                    <span className="text-[9px] text-neutral-500 leading-tight">Aman & eksklusif</span>
+                    <Truck className="w-3.5 h-3.5 text-[#C19A6B]" />
+                    <span>Packing Premium</span>
                   </div>
                 </div>
               </div>

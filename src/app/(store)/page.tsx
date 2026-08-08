@@ -6,7 +6,6 @@ import {
   Truck,
   Zap,
   PackageCheck,
-  Sparkles,
   Award,
   Scissors
 } from 'lucide-react'
@@ -100,10 +99,10 @@ export default async function HomePage() {
   const { bestSellers, categories } = await getHomepageData()
 
   return (
-    <div className="bg-black text-white min-h-screen overflow-x-hidden font-sans">
+    <div className="bg-background text-foreground min-h-screen overflow-x-hidden font-sans transition-colors duration-300">
       
-      {/* ─── 1. HERO SECTION ──────────────────────────────────────────────── */}
-      <section className="relative bg-[#070707] py-16 md:py-24 border-b border-neutral-900 overflow-hidden">
+      {/* ─── 1. HERO SECTION (DARK CINEMATIC SHOWCASE) ──────────────────── */}
+      <section className="relative bg-[#070707] text-white py-16 md:py-24 border-b border-neutral-900 overflow-hidden">
         <div className="container-raxie relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
@@ -145,7 +144,7 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <p className="text-xs font-bold text-white uppercase tracking-wider">PREMIUM MATERIAL</p>
-                    <p className="text-[10px] text-neutral-400">Kulit asli berkualitas tinggi</p>
+                    <p className="text-[10px] text-neutral-400">Kulit sintetis berkualitas tinggi</p>
                   </div>
                 </div>
 
@@ -171,7 +170,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Product Showcase Hero Image */}
+            {/* Right Showcase Image */}
             <div className="relative flex justify-center items-center">
               <div className="relative w-full max-w-lg aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl border border-neutral-800 bg-neutral-900">
                 <Image
@@ -189,24 +188,24 @@ export default async function HomePage() {
       </section>
 
       {/* ─── 2. CATEGORY CARDS ─────────────────────────────────────────────── */}
-      <section className="py-12 bg-white text-black">
+      <section className="py-12 bg-background text-foreground transition-colors duration-300">
         <div className="container-raxie">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className="group relative bg-[#F4F1EA] rounded-xl p-6 flex items-center justify-between border border-neutral-200 hover:border-black transition-all shadow-sm hover:shadow-md"
+                className="group relative bg-card rounded-xl p-6 flex items-center justify-between border border-border hover:border-[#C19A6B] transition-all shadow-sm hover:shadow-md"
               >
                 <div>
-                  <h3 className="font-serif font-bold text-xl tracking-wider text-black uppercase">
+                  <h3 className="font-serif font-bold text-xl tracking-wider text-foreground uppercase group-hover:text-[#C19A6B] transition-colors">
                     {cat.name}
                   </h3>
-                  <span className="inline-flex items-center text-xs font-semibold text-neutral-600 group-hover:text-black mt-2">
+                  <span className="inline-flex items-center text-xs font-semibold text-muted-foreground group-hover:text-[#C19A6B] mt-2">
                     Lihat Koleksi <ArrowRight className="h-3.5 w-3.5 ml-1 transition-transform group-hover:translate-x-1" />
                   </span>
                 </div>
-                <div className="relative w-28 h-20 shrink-0 rounded-lg overflow-hidden">
+                <div className="relative w-28 h-20 shrink-0 rounded-lg overflow-hidden border border-border">
                   <Image
                     src={cat.image}
                     alt={cat.name}
@@ -222,24 +221,24 @@ export default async function HomePage() {
       </section>
 
       {/* ─── 3. BEST SELLERS ──────────────────────────────────────────────── */}
-      <section className="py-16 md:py-20 bg-white text-black">
+      <section className="py-16 md:py-20 bg-background text-foreground transition-colors duration-300">
         <div className="container-raxie text-center">
           <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1">
             BEST SELLER
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-wide text-black uppercase mb-12">
+          <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-wide text-foreground uppercase mb-12">
             PRODUK TERLARIS
           </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
             {bestSellers.length > 0 ? (
               bestSellers.map((p) => (
-                <div key={p.id} className="bg-[#121212] p-3 rounded-xl border border-neutral-800">
-                  <ProductCard product={p} isDarkBg={true} />
+                <div key={p.id} className="bg-card p-3 rounded-xl border border-border shadow-sm">
+                  <ProductCard product={p} />
                 </div>
               ))
             ) : (
-              <div className="col-span-full py-10 text-center text-neutral-500">
+              <div className="col-span-full py-10 text-center text-muted-foreground">
                 Belum ada produk terlaris.
               </div>
             )}
@@ -248,7 +247,7 @@ export default async function HomePage() {
           <div className="mt-12">
             <Link
               href="/products"
-              className="inline-block border border-black text-black font-bold text-xs uppercase tracking-[0.15em] px-8 py-3 rounded hover:bg-black hover:text-white transition-colors"
+              className="inline-block border border-foreground text-foreground font-bold text-xs uppercase tracking-[0.15em] px-8 py-3 rounded hover:bg-foreground hover:text-background transition-colors"
             >
               LIHAT SEMUA PRODUK
             </Link>
@@ -256,49 +255,49 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ─── 4. TRUST BAR (DARK SECTION) ─────────────────────────────────── */}
-      <section className="bg-[#0B0A08] py-8 border-y border-neutral-900">
+      {/* ─── 4. TRUST BAR ─────────────────────────────────────────────────── */}
+      <section className="bg-muted py-8 border-y border-border transition-colors duration-300">
         <div className="container-raxie">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+              <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-[#C19A6B]">
                 <Truck className="h-5 w-5" />
               </div>
-              <p className="font-bold text-xs uppercase tracking-wider text-white">GRATIS ONGKIR</p>
-              <p className="text-[11px] text-neutral-400">Seluruh Indonesia</p>
+              <p className="font-bold text-xs uppercase tracking-wider text-foreground">GRATIS ONGKIR</p>
+              <p className="text-[11px] text-muted-foreground">Seluruh Indonesia</p>
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+              <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-[#C19A6B]">
                 <Zap className="h-5 w-5" />
               </div>
-              <p className="font-bold text-xs uppercase tracking-wider text-white">PENGIRIMAN CEPAT</p>
-              <p className="text-[11px] text-neutral-400">1-2 Hari Sampai</p>
+              <p className="font-bold text-xs uppercase tracking-wider text-foreground">PENGIRIMAN CEPAT</p>
+              <p className="text-[11px] text-muted-foreground">1-2 Hari Sampai</p>
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+              <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-[#C19A6B]">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <p className="font-bold text-xs uppercase tracking-wider text-white">PEMBAYARAN AMAN</p>
-              <p className="text-[11px] text-neutral-400">100% Secure</p>
+              <p className="font-bold text-xs uppercase tracking-wider text-foreground">PEMBAYARAN AMAN</p>
+              <p className="text-[11px] text-muted-foreground">100% Secure</p>
             </div>
 
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-[#C19A6B]">
+              <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-[#C19A6B]">
                 <PackageCheck className="h-5 w-5" />
               </div>
-              <p className="font-bold text-xs uppercase tracking-wider text-white">PACKAGING PREMIUM</p>
-              <p className="text-[11px] text-neutral-400">Box Eksklusif</p>
+              <p className="font-bold text-xs uppercase tracking-wider text-foreground">PACKAGING PREMIUM</p>
+              <p className="text-[11px] text-muted-foreground">Box Eksklusif</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ─── 5. BRAND STORY ("TENTANG RAXIE") ─────────────────────────────── */}
-      <section className="bg-white py-16 md:py-24 text-black">
+      <section className="bg-background py-16 md:py-24 text-foreground transition-colors duration-300">
         <div className="container-raxie">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-neutral-200 shadow-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden rounded-2xl border border-border shadow-xl bg-card">
             {/* Left Photo */}
             <div className="relative min-h-[350px] lg:min-h-[450px]">
               <Image
@@ -311,24 +310,24 @@ export default async function HomePage() {
             </div>
 
             {/* Right Story Text Box */}
-            <div className="bg-[#FAF8F5] p-8 md:p-14 flex flex-col justify-center space-y-4">
+            <div className="p-8 md:p-14 flex flex-col justify-center space-y-4">
               <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase">
                 TENTANG RAXIE
               </span>
               
-              <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-black leading-tight">
+              <h2 className="font-serif text-3xl md:text-4xl font-normal tracking-tight text-foreground leading-tight">
                 BUILT FOR STYLE, <br />
                 MADE TO LAST
               </h2>
 
-              <p className="text-neutral-600 text-xs md:text-sm leading-relaxed">
+              <p className="text-muted-foreground text-xs md:text-sm leading-relaxed">
                 RAXIE percaya bahwa setiap detail mencerminkan kualitas diri. Dibuat dari material terbaik oleh pengrajin berpengalaman untuk menghasilkan produk yang bukan hanya stylish, tapi juga tahan lama.
               </p>
 
               <div className="pt-4">
                 <Link
                   href="/about"
-                  className="inline-block bg-black hover:bg-neutral-800 text-white font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded transition-colors"
+                  className="inline-block bg-foreground text-background hover:opacity-90 font-bold text-xs uppercase tracking-[0.15em] px-8 py-3.5 rounded transition-all"
                 >
                   SELENGKAPNYA
                 </Link>

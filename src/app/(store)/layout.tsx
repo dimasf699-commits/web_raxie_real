@@ -9,13 +9,13 @@ export default function StoreLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <div className="bg-background text-foreground min-h-screen transition-colors duration-300">
       <Navbar />
-      <main className="min-h-screen m-0 p-0">{children}</main>
+      <main className="min-h-screen m-0 p-0 bg-background text-foreground">{children}</main>
       <Footer />
       <MobileBottomNav />
       <CartDrawer />
       <CompareDrawer />
-    </>
+    </div>
   )
 }

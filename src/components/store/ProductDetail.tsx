@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Heart, Minus, Plus, Scale, Share2, ShieldCheck, ShoppingBag, Star, Truck, Award } from 'lucide-react'
+import { useState } from 'react'
+import { Heart, Minus, Plus, Share2, ShieldCheck, ShoppingBag, Truck } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs'
 import { ImageGallery } from '@/components/store/ImageGallery'
@@ -51,8 +51,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
   const toggleWishlist = useWishlistStore((s) => s.toggleItem)
   const isWishlisted = useWishlistStore((s) => s.hasItem(product.id))
   
-  const { addItem: addCompare, items: compareItems } = useCompareStore()
-  const isCompared = compareItems.some((i) => i.id === product.id)
+  const { addItem: addCompare } = useCompareStore()
 
   const discount = product.compareAtPrice
     ? getDiscountPercent(product.compareAtPrice, product.price)
@@ -97,18 +96,6 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     }
   }
 
-  const handleCompare = () => {
-    addCompare({
-      id: product.id,
-      name: product.name,
-      slug: product.slug,
-      price: product.price,
-      image: product.image,
-      avgRating: product.avgRating,
-    })
-    toast.success('Ditambahkan ke perbandingan')
-  }
-
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -141,34 +128,34 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       ]
 
   return (
-    <div className="text-white">
+    <div className="text-foreground transition-colors duration-300">
       {/* ─── Main Product Section ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <ImageGallery images={images} alt={product.name} />
 
-        <div className="flex flex-col bg-[#121212] p-6 md:p-8 rounded-2xl border border-neutral-800 space-y-6">
+        <div className="flex flex-col bg-card p-6 md:p-8 rounded-2xl border border-border space-y-6 shadow-sm">
           {/* Brand & Header Info */}
           <div>
             <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
               RAXIE LEATHER GOODS
             </span>
-            <h1 className="font-serif text-2xl md:text-4xl font-normal text-white tracking-wide uppercase leading-tight">
+            <h1 className="font-serif text-2xl md:text-4xl font-normal text-foreground tracking-wide uppercase leading-tight">
               {product.name}
             </h1>
             
-            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-neutral-800/80 text-xs">
+            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border text-xs">
               <div className="flex items-center gap-1 text-[#C19A6B]">
                 <span>★ ★ ★ ★ ★</span>
-                <span className="font-bold ml-1 text-white">{product.avgRating ? product.avgRating.toFixed(1) : '5.0'}</span>
+                <span className="font-bold ml-1 text-foreground">{product.avgRating ? product.avgRating.toFixed(1) : '5.0'}</span>
               </div>
-              <span className="text-neutral-500">|</span>
-              <span className="text-neutral-400">{product.reviewCount || 128} Ulasan</span>
-              <span className="text-neutral-500">|</span>
-              <span className="text-neutral-400">{product.totalSold || 0} Terjual</span>
+              <span className="text-muted-foreground">|</span>
+              <span className="text-muted-foreground">{product.reviewCount || 128} Ulasan</span>
+              <span className="text-muted-foreground">|</span>
+              <span className="text-muted-foreground">{product.totalSold || 0} Terjual</span>
 
               <button
                 onClick={handleShare}
-                className="ml-auto flex items-center gap-1 text-neutral-400 hover:text-[#C19A6B] transition-colors"
+                className="ml-auto flex items-center gap-1 text-muted-foreground hover:text-[#C19A6B] transition-colors"
               >
                 <Share2 className="h-3.5 w-3.5" /> Bagikan
               </button>
@@ -176,13 +163,13 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           </div>
 
           {/* Price Block */}
-          <div className="p-4 rounded-xl bg-black border border-neutral-800 flex items-center gap-4">
+          <div className="p-4 rounded-xl bg-muted border border-border flex items-center gap-4">
             <span className="text-2xl md:text-3xl font-bold text-[#C19A6B]">
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
               <>
-                <span className="text-sm text-neutral-500 line-through">
+                <span className="text-sm text-muted-foreground line-through">
                   {formatPrice(product.compareAtPrice)}
                 </span>
                 <span className="bg-red-950/80 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800/50 uppercase">
@@ -193,7 +180,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           </div>
 
           {/* Guarantee Badges */}
-          <div className="grid grid-cols-2 gap-3 text-xs text-neutral-400 py-2 border-y border-neutral-800">
+          <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground py-2 border-y border-border">
             <div className="flex items-center gap-2">
               <Truck className="h-4 w-4 text-[#C19A6B] shrink-0" />
               <span>Gratis Ongkir Seluruh Indonesia</span>
@@ -221,25 +208,25 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           {/* Quantity & CTA */}
           <div className="space-y-4 pt-2">
             <div className="flex items-center gap-4">
-              <span className="text-xs uppercase font-bold text-neutral-400">Kuantitas</span>
-              <div className="flex items-center border border-neutral-800 rounded-lg bg-black px-2 py-1">
+              <span className="text-xs uppercase font-bold text-muted-foreground">Kuantitas</span>
+              <div className="flex items-center border border-border rounded-lg bg-background px-2 py-1">
                 <button
                   onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="w-7 h-7 flex items-center justify-center text-neutral-400 hover:text-white"
+                  className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground"
                 >
-                  <Minus className="h-3 w-3" />
+                  -
                 </button>
-                <span className="w-8 text-center text-xs font-bold text-white">{qty}</span>
+                <span className="w-8 text-center text-xs font-bold text-foreground">{qty}</span>
                 <button
                   onClick={() => setQty(Math.min(selectedVariant.stock, qty + 1))}
                   disabled={qty >= selectedVariant.stock}
-                  className="w-7 h-7 flex items-center justify-center text-neutral-400 hover:text-white disabled:opacity-30"
+                  className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30"
                 >
-                  <Plus className="h-3 w-3" />
+                  +
                 </button>
               </div>
-              <span className="text-xs text-neutral-400">
-                Stok: <span className="font-bold text-white">{selectedVariant.stock}</span>
+              <span className="text-xs text-muted-foreground">
+                Stok: <span className="font-bold text-foreground">{selectedVariant.stock}</span>
               </span>
             </div>
 
@@ -254,7 +241,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </Button>
 
               <Button
-                className="flex-1 border border-neutral-700 hover:border-white text-white font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg"
+                className="flex-1 border border-border hover:border-foreground text-foreground font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg"
                 onClick={() => {
                   handleAddToCart()
                 }}
@@ -266,7 +253,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               <div className="flex gap-2">
                 <button
                   onClick={() => toggleWishlist(product)}
-                  className={`p-3 rounded-lg border flex items-center justify-center ${isWishlisted ? 'border-red-500 bg-red-950/20 text-red-400' : 'border-neutral-800 bg-black text-neutral-400 hover:text-white'}`}
+                  className={`p-3 rounded-lg border flex items-center justify-center ${isWishlisted ? 'border-red-500 bg-red-950/20 text-red-400' : 'border-border bg-background text-muted-foreground hover:text-foreground'}`}
                   aria-label="Wishlist"
                 >
                   <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
@@ -282,26 +269,26 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       </div>
 
       {/* ─── Details & Specs Tabs ─────────────────────────────────────────── */}
-      <div className="mt-16 bg-[#121212] rounded-2xl border border-neutral-800 p-6 md:p-10">
+      <div className="mt-16 bg-card rounded-2xl border border-border p-6 md:p-10 shadow-sm">
         <Tabs defaultValue="deskripsi">
-          <TabsList className="w-full justify-start h-auto p-0 bg-transparent border-b border-neutral-800 rounded-none gap-6">
+          <TabsList className="w-full justify-start h-auto p-0 bg-transparent border-b border-border rounded-none gap-6">
             {['Deskripsi', 'Spesifikasi', 'Ulasan'].map((tab) => (
               <TabsTrigger
                 key={tab}
                 value={tab.toLowerCase()}
-                className="px-2 py-3 rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#C19A6B] data-[state=active]:text-[#C19A6B] text-xs font-bold uppercase tracking-wider text-neutral-400"
+                className="px-2 py-3 rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#C19A6B] data-[state=active]:text-[#C19A6B] text-xs font-bold uppercase tracking-wider text-muted-foreground"
               >
                 {tab} {tab === 'Ulasan' && `(${product.reviewCount || 0})`}
               </TabsTrigger>
             ))}
           </TabsList>
           
-          <div className="pt-6 text-xs leading-relaxed text-neutral-300">
+          <div className="pt-6 text-xs leading-relaxed text-foreground">
             <TabsContent value="deskripsi" className="space-y-4 max-w-2xl">
               <p>
                 {product.description || 'Terbuat dari material PU Leather / Kulit Asli pilihan yang tahan lama, tahan air, dan mudah dibersihkan. Didesain dengan presisi tinggi oleh pengrajin berpengalaman untuk menampung kebutuhan harian Anda dengan rapi.'}
               </p>
-              <ul className="list-disc pl-4 space-y-1">
+              <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
                 <li>Material berkualitas tinggi</li>
                 <li>Jahitan presisi dan benang tahan lama</li>
                 <li>Desain modern & maskulin</li>
@@ -310,29 +297,29 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
             </TabsContent>
 
             <TabsContent value="spesifikasi" className="space-y-3 max-w-md">
-              <div className="flex justify-between py-2 border-b border-neutral-800">
-                <span className="text-neutral-500">Material</span>
-                <span className="font-semibold text-white">{product.material || 'PU Leather Premium'}</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted-foreground">Material</span>
+                <span className="font-semibold text-foreground">{product.material || 'PU Leather Premium'}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-neutral-800">
-                <span className="text-neutral-500">Dimensi</span>
-                <span className="font-semibold text-white">{product.dimensions || '11 x 9 x 2 cm'}</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted-foreground">Dimensi</span>
+                <span className="font-semibold text-foreground">{product.dimensions || '11 x 9 x 2 cm'}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-neutral-800">
-                <span className="text-neutral-500">Berat</span>
-                <span className="font-semibold text-white">{product.weight || 200} gram</span>
+              <div className="flex justify-between py-2 border-b border-border">
+                <span className="text-muted-foreground">Berat</span>
+                <span className="font-semibold text-foreground">{product.weight || 200} gram</span>
               </div>
             </TabsContent>
 
             <TabsContent value="ulasan" className="space-y-6">
-              <form onSubmit={handleSubmitReview} className="space-y-3 max-w-lg bg-black p-4 rounded-xl border border-neutral-800">
+              <form onSubmit={handleSubmitReview} className="space-y-3 max-w-lg bg-background p-4 rounded-xl border border-border">
                 <h4 className="font-bold text-xs uppercase tracking-wider text-[#C19A6B]">TULIS ULASAN</h4>
                 <div>
-                  <label className="text-[10px] text-neutral-400 uppercase font-bold block mb-1">Rating</label>
+                  <label className="text-[10px] text-muted-foreground uppercase font-bold block mb-1">Rating</label>
                   <select
                     value={rating}
                     onChange={(e) => setRating(Number(e.target.value))}
-                    className="bg-[#121212] border border-neutral-800 text-white rounded text-xs px-3 py-1.5 focus:outline-none"
+                    className="bg-card border border-border text-foreground rounded text-xs px-3 py-1.5 focus:outline-none"
                   >
                     <option value={5}>★★★★★ (5 Bintang)</option>
                     <option value={4}>★★★★ (4 Bintang)</option>
@@ -346,7 +333,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     required
-                    className="w-full bg-[#121212] border border-neutral-800 rounded p-3 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                    className="w-full bg-card border border-border rounded p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                   />
                 </div>
                 <button
@@ -368,13 +355,13 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1 text-center">
             REKOMENDASI
           </span>
-          <h2 className="font-serif text-2xl md:text-3xl font-normal tracking-wide text-white uppercase text-center mb-8">
+          <h2 className="font-serif text-2xl md:text-3xl font-normal tracking-wide text-foreground uppercase text-center mb-8">
             PRODUK SERUPA
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {relatedProducts.slice(0, 4).map((rp: any) => (
-              <div key={rp.id} className="bg-[#121212] p-3 rounded-xl border border-neutral-800">
-                <ProductCard product={rp} isDarkBg={true} />
+              <div key={rp.id} className="bg-card p-3 rounded-xl border border-border shadow-sm">
+                <ProductCard product={rp} />
               </div>
             ))}
           </div>

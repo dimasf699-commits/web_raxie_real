@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ShoppingBag,
   Heart,
@@ -15,7 +15,6 @@ import {
   Sun,
   Moon,
   ChevronDown,
-  Bell,
   LogOut,
   ArrowRight
 } from 'lucide-react'
@@ -48,7 +47,6 @@ export function Navbar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const { data: session } = useSession()
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
@@ -57,7 +55,7 @@ export function Navbar() {
   const [searchResults, setSearchResults] = useState<any[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const [navLinks, setNavLinks] = useState<any[]>(defaultNavLinks)
+  const [navLinks] = useState<any[]>(defaultNavLinks)
 
   useEffect(() => {
     setIsMounted(true)
@@ -66,12 +64,6 @@ export function Navbar() {
   const cartItems = useCartStore((s) => s.totalItems())
   const wishlistItems = useWishlistStore((s) => s.totalItems())
   const openCart = useCartStore((s) => s.openCart)
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   useEffect(() => {
     if (isSearchOpen) {
@@ -102,7 +94,6 @@ export function Navbar() {
     return () => clearTimeout(timer)
   }, [searchQuery])
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileOpen(false)
     setIsSearchOpen(false)
@@ -113,17 +104,16 @@ export function Navbar() {
 
   return (
     <>
-      {/* Main Navbar */}
-      <header
-        className="sticky top-0 left-0 right-0 z-50 bg-[#0B0A08] text-white border-b border-neutral-900 shadow-xl"
-      >
+      {/* Main Sticky Navbar Header */}
+      <header className="sticky top-0 left-0 right-0 z-50 bg-[#FAF8F5]/95 dark:bg-[#0B0A08]/95 backdrop-blur-md text-foreground border-b border-neutral-200 dark:border-neutral-900 shadow-md transition-colors duration-300">
+        <AnnouncementBar />
         <div className="container-raxie h-16 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 font-serif font-bold text-xl md:text-2xl tracking-[0.2em] text-[#C19A6B] hover:text-[#D97706] transition-colors"
+            className="flex items-center gap-2.5 font-serif font-bold text-xl md:text-2xl tracking-[0.2em] text-[#C19A6B] hover:opacity-80 transition-opacity"
           >
-            <div className="relative w-8 h-8 flex items-center justify-center border border-[#C19A6B]/40 rounded rotate-45 bg-black/40">
+            <div className="relative w-8 h-8 flex items-center justify-center border border-[#C19A6B]/50 rounded rotate-45 bg-[#C19A6B]/10">
               <span className="text-xs font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
             </div>
             <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
@@ -146,8 +136,8 @@ export function Navbar() {
                     'flex items-center gap-1 px-3 py-1.5 text-[12px] font-bold tracking-[0.15em] uppercase transition-colors',
                     'hover:text-[#C19A6B]',
                     pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-                      ? 'text-[#C19A6B] border-b border-[#C19A6B]'
-                      : 'text-neutral-300'
+                      ? 'text-[#C19A6B] border-b-2 border-[#C19A6B]'
+                      : 'text-neutral-700 dark:text-neutral-300'
                   )}
                 >
                   {link.label}
@@ -175,7 +165,7 @@ export function Navbar() {
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="flex items-center px-4 py-2.5 text-sm text-foreground/80 hover:text-tan-500 hover:bg-tan-50 dark:hover:bg-tan-900/10 transition-colors"
+                          className="flex items-center px-4 py-2.5 text-xs font-bold text-foreground/80 hover:text-[#C19A6B] hover:bg-muted transition-colors uppercase tracking-wider"
                         >
                           {child.label}
                         </Link>
@@ -195,7 +185,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
+              className="text-foreground hover:text-[#C19A6B] hover:bg-muted"
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -206,10 +196,13 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Toggle tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 hidden sm:flex"
+              className="text-foreground hover:text-[#C19A6B] hover:bg-muted hidden sm:flex"
             >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              {isMounted && theme === 'dark' ? (
+                <Sun className="h-5 w-5 text-amber-400" />
+              ) : (
+                <Moon className="h-5 w-5 text-neutral-800" />
+              )}
             </Button>
 
             {/* Wishlist */}
@@ -218,7 +211,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Wishlist"
               asChild
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative hidden sm:flex"
+              className="text-foreground hover:text-[#C19A6B] hover:bg-muted relative hidden sm:flex"
             >
               <Link href="/wishlist">
                 <Heart className="h-5 w-5" />
@@ -240,7 +233,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative"
+              className="text-foreground hover:text-[#C19A6B] hover:bg-muted relative"
             >
               <ShoppingBag className="h-5 w-5" />
               <AnimatePresence>
@@ -250,7 +243,7 @@ export function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-amber-500 text-slate-950 text-[10px] font-bold flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-[#C19A6B] text-black text-[10px] font-bold flex items-center justify-center"
                   >
                     {cartItems > 9 ? '9+' : cartItems}
                   </motion.span>
@@ -258,13 +251,13 @@ export function Navbar() {
               </AnimatePresence>
             </Button>
 
-            {/* Account — auth-aware */}
+            {/* Account */}
             <div className="relative hidden sm:block">
               {session ? (
                 <>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-amber-400 flex items-center justify-center bg-slate-900 text-amber-400 font-bold text-sm hover:border-amber-300 transition-colors"
+                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#C19A6B] flex items-center justify-center bg-card text-[#C19A6B] font-bold text-xs hover:opacity-80 transition-opacity"
                     aria-label="Menu akun"
                   >
                     {session.user?.image ? (
@@ -281,18 +274,18 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 shadow-2xl overflow-hidden py-1 z-50"
+                        className="absolute right-0 mt-2 w-56 rounded-xl bg-card border border-border text-card-foreground shadow-2xl overflow-hidden py-1 z-50"
                       >
-                        <div className="px-4 py-3 border-b border-slate-800">
-                          <p className="text-sm font-semibold text-white truncate">{session.user?.name}</p>
-                          <p className="text-xs text-slate-400 truncate">{session.user?.email}</p>
+                        <div className="px-4 py-3 border-b border-border">
+                          <p className="text-xs font-bold text-foreground truncate uppercase">{session.user?.name}</p>
+                          <p className="text-[11px] text-muted-foreground truncate">{session.user?.email}</p>
                         </div>
 
                         {(session.user as any)?.role === 'ADMIN' && (
                           <Link
                             href="/admin"
                             onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-amber-400 font-semibold hover:bg-slate-800 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#C19A6B] uppercase hover:bg-muted transition-colors"
                           >
                             ⚡ Dashboard Admin
                           </Link>
@@ -301,20 +294,20 @@ export function Navbar() {
                         <Link
                           href="/account"
                           onClick={() => setShowUserMenu(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-foreground hover:bg-muted transition-colors"
                         >
-                          <User className="w-4 h-4" /> Profil & Pesanan
+                          <User className="w-3.5 h-3.5" /> Profil & Pesanan
                         </Link>
 
-                        <div className="border-t border-slate-800 my-1">
+                        <div className="border-t border-border my-1">
                           <button
                             onClick={() => {
                               setShowUserMenu(false)
                               signOut({ callbackUrl: '/' })
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-slate-800 transition-colors"
+                            className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-red-500 hover:bg-muted transition-colors"
                           >
-                            <LogOut className="w-4 h-4" /> Keluar
+                            <LogOut className="w-3.5 h-3.5" /> Keluar
                           </button>
                         </div>
                       </motion.div>
@@ -327,7 +320,7 @@ export function Navbar() {
                   size="icon-sm"
                   aria-label="Login"
                   asChild
-                  className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
+                  className="text-foreground hover:text-[#C19A6B] hover:bg-muted"
                 >
                   <Link href="/login">
                     <User className="h-5 w-5" />
@@ -342,7 +335,7 @@ export function Navbar() {
               size="icon-sm"
               aria-label="Menu"
               onClick={() => setIsMobileOpen(true)}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 lg:hidden"
+              className="text-foreground hover:text-[#C19A6B] hover:bg-muted lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </Button>
@@ -376,7 +369,7 @@ export function Navbar() {
                     placeholder="Cari dompet, tas, sabuk..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent text-foreground text-lg placeholder:text-muted-foreground outline-none"
+                    className="flex-1 bg-transparent text-foreground text-base placeholder:text-muted-foreground outline-none"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && searchQuery) {
                         window.location.href = `/products?q=${encodeURIComponent(searchQuery)}`
@@ -388,6 +381,7 @@ export function Navbar() {
                     variant="ghost"
                     size="icon-sm"
                     onClick={() => setIsSearchOpen(false)}
+                    className="text-foreground hover:bg-muted"
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -406,8 +400,8 @@ export function Navbar() {
                     <div className="container-raxie max-h-[60vh] overflow-y-auto py-2">
                       {isSearching ? (
                         <div className="py-8 text-center flex flex-col items-center">
-                          <div className="w-6 h-6 border-2 border-tan-200 border-t-tan-500 rounded-full animate-spin mb-2" />
-                          <span className="text-sm text-muted-foreground">Mencari produk...</span>
+                          <div className="w-6 h-6 border-2 border-muted border-t-[#C19A6B] rounded-full animate-spin mb-2" />
+                          <span className="text-xs text-muted-foreground">Mencari produk...</span>
                         </div>
                       ) : searchResults.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 py-4">
@@ -416,26 +410,26 @@ export function Navbar() {
                               key={item.id} 
                               href={`/products/${item.slug}`}
                               onClick={() => setIsSearchOpen(false)}
-                              className="flex items-center gap-4 p-3 hover:bg-muted rounded-xl transition-colors group"
+                              className="flex items-center gap-4 p-3 hover:bg-muted rounded-xl transition-colors group border border-border"
                             >
-                              <div className="w-16 h-16 bg-tan-50 rounded-lg overflow-hidden border border-border relative flex-shrink-0">
+                              <div className="w-14 h-14 bg-muted rounded-lg overflow-hidden border border-border relative flex-shrink-0">
                                 {item.image ? (
                                   <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform" />
                                 ) : (
-                                  <div className="w-full h-full bg-muted flex items-center justify-center">No Img</div>
+                                  <div className="w-full h-full bg-muted flex items-center justify-center text-[10px]">No Img</div>
                                 )}
                               </div>
                               <div>
-                                <p className="font-semibold text-foreground text-sm group-hover:text-tan-600 transition-colors">{item.name}</p>
-                                <p className="text-xs text-muted-foreground">{item.category}</p>
-                                <p className="text-sm font-bold mt-1 text-tan-600">{formatPrice(item.price)}</p>
+                                <p className="font-bold text-foreground text-xs uppercase group-hover:text-[#C19A6B] transition-colors">{item.name}</p>
+                                <p className="text-[10px] text-muted-foreground uppercase">{item.category}</p>
+                                <p className="text-xs font-bold mt-1 text-[#C19A6B]">{formatPrice(item.price)}</p>
                               </div>
                             </Link>
                           ))}
                         </div>
                       ) : (
                         <div className="py-12 text-center">
-                          <p className="text-muted-foreground">Tidak ditemukan hasil untuk "{searchQuery}"</p>
+                          <p className="text-xs text-muted-foreground">Tidak ditemukan hasil untuk "{searchQuery}"</p>
                         </div>
                       )}
                       
@@ -444,7 +438,7 @@ export function Navbar() {
                           <Link 
                             href={`/products?q=${encodeURIComponent(searchQuery)}`}
                             onClick={() => setIsSearchOpen(false)}
-                            className="text-sm font-bold text-tan-600 hover:text-tan-500 flex items-center justify-center gap-2 group"
+                            className="text-xs font-bold text-[#C19A6B] hover:text-[#b08b5c] uppercase flex items-center justify-center gap-2 group tracking-wider"
                           >
                             Lihat Semua Hasil
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -460,100 +454,104 @@ export function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Side Drawer */}
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {isMobileOpen && (
-          <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md lg:hidden"
+            onClick={() => setIsMobileOpen(false)}
+          >
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
-              onClick={() => setIsMobileOpen(false)}
-            />
-            <motion.div
-              initial={{ x: '100%' }}
+              initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-[300px] bg-card shadow-2xl lg:hidden flex flex-col"
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-4/5 max-w-sm h-full bg-card border-r border-border p-6 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between p-5 border-b border-border">
-                <div className="flex items-center gap-2">
-                  <div className="relative w-8 h-8 rounded overflow-hidden">
-                    <Image src="https://i.imgur.com/LBsFsZC.png" alt="Raxie Logo" fill className="object-contain" />
-                  </div>
-                  <span className="font-serif font-bold text-xl">Raxie</span>
+              <div>
+                <div className="flex items-center justify-between pb-6 border-b border-border">
+                  <Link
+                    href="/"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="font-serif font-bold text-xl tracking-[0.2em] text-[#C19A6B] uppercase"
+                  >
+                    RAXIE
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={() => setIsMobileOpen(false)}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
+
+                <nav className="mt-6 space-y-3">
+                  {navLinks.map((link) => (
+                    <div key={link.href}>
+                      <Link
+                        href={link.href}
+                        onClick={() => setIsMobileOpen(false)}
+                        className={cn(
+                          'block py-2 text-sm font-bold tracking-wider uppercase transition-colors',
+                          pathname === link.href ? 'text-[#C19A6B]' : 'text-foreground/80'
+                        )}
+                      >
+                        {link.label}
+                      </Link>
+                      {link.children && (
+                        <div className="pl-4 space-y-2 mt-1 border-l border-border">
+                          {link.children.map((child: any) => (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              className="block text-xs font-semibold text-muted-foreground hover:text-[#C19A6B]"
+                              onClick={() => setIsMobileOpen(false)}
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </nav>
               </div>
 
-              <nav className="flex-1 overflow-y-auto py-4">
-                {navLinks.map((link) => (
-                  <div key={link.href}>
+              <div className="pt-6 border-t border-border">
+                {session ? (
+                  <div className="space-y-3">
+                    <p className="text-xs font-bold text-foreground uppercase">{session.user?.name}</p>
                     <Link
-                      href={link.href}
-                      className={cn(
-                        'flex items-center px-5 py-3 text-base font-medium transition-colors',
-                        pathname === link.href
-                          ? 'text-tan-500 bg-tan-50 dark:bg-tan-900/10'
-                          : 'text-foreground/80 hover:text-tan-500 hover:bg-muted'
-                      )}
+                      href="/account"
+                      onClick={() => setIsMobileOpen(false)}
+                      className="block text-xs text-[#C19A6B] font-bold uppercase"
                     >
-                      {link.label}
+                      Profil Saya &rarr;
                     </Link>
-                    {link.children && (
-                      <div className="pl-4 border-l-2 border-border ml-5 mb-1">
-                        {link.children.map((child: any) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className="flex items-center px-4 py-2 text-sm text-foreground/70 hover:text-tan-500 transition-colors"
-                          >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
                   </div>
-                ))}
-              </nav>
-
-              <div className="p-5 border-t border-border space-y-3">
-                <Link href="/account">
-                  <Button variant="outline" className="w-full justify-start gap-2">
-                    <User className="h-4 w-4" />
-                    Akun Saya
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-2"
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                >
-                  <Sun className="h-4 w-4 dark:hidden" />
-                  <Moon className="h-4 w-4 hidden dark:block" />
-                  {theme === 'dark' ? 'Mode Terang' : 'Mode Gelap'}
-                </Button>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileOpen(false)}
+                    className="block w-full text-center bg-[#C19A6B] text-black font-bold text-xs uppercase py-3 rounded-lg"
+                  >
+                    MASUK AKUN
+                  </Link>
+                )}
               </div>
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Spacer for fixed navbar */}
-      <div className={cn('transition-all duration-300', isScrolled ? 'h-14' : 'h-16')} />
     </>
   )
 }
-
-// ─── Mobile Bottom Navigation ─────────────────────────────────────────────────
 
 export function MobileBottomNav() {
   const pathname = usePathname()
@@ -576,7 +574,7 @@ export function MobileBottomNav() {
         <div className="relative">
           <ShoppingBag className="h-5 w-5" />
           {isMounted && cartItems > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-tan-400 text-white text-[10px] font-bold flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#C19A6B] text-black text-[10px] font-bold flex items-center justify-center">
               {cartItems > 9 ? '9+' : cartItems}
             </span>
           )}
@@ -589,17 +587,17 @@ export function MobileBottomNav() {
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-xl border-t border-border pb-safe lg:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-xl border-t border-border pb-safe lg:hidden text-foreground">
       <div className="flex items-center justify-around py-2">
         {navItems.map((item, idx) =>
           item.onClick ? (
             <button
               key={idx}
               onClick={item.onClick}
-              className="flex flex-col items-center gap-0.5 px-4 py-1.5 text-muted-foreground hover:text-tan-400 transition-colors"
+              className="flex flex-col items-center gap-0.5 px-4 py-1.5 text-muted-foreground hover:text-[#C19A6B] transition-colors"
             >
               {item.icon}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-bold uppercase">{item.label}</span>
             </button>
           ) : (
             <Link
@@ -608,12 +606,12 @@ export function MobileBottomNav() {
               className={cn(
                 'flex flex-col items-center gap-0.5 px-4 py-1.5 transition-colors',
                 pathname === item.href
-                  ? 'text-tan-400'
-                  : 'text-muted-foreground hover:text-tan-400'
+                  ? 'text-[#C19A6B]'
+                  : 'text-muted-foreground hover:text-[#C19A6B]'
               )}
             >
               {item.icon}
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-bold uppercase">{item.label}</span>
             </Link>
           )
         )}

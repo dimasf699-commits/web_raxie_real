@@ -101,9 +101,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   })
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-background text-foreground min-h-screen transition-colors duration-300">
       {/* Header Banner */}
-      <div className="bg-[#0B0A08] py-12 border-b border-neutral-900">
+      <div className="bg-muted py-12 border-b border-border transition-colors duration-300">
         <div className="container-raxie">
           <Breadcrumbs
             items={[
@@ -116,10 +116,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase">
               RAXIE CATALOGUE
             </span>
-            <h1 className="font-serif text-3xl md:text-5xl font-bold uppercase tracking-wider text-white">
+            <h1 className="font-serif text-3xl md:text-5xl font-bold uppercase tracking-wider text-foreground">
               {q ? `PENCARIAN: "${q}"` : category}
             </h1>
-            <p className="text-neutral-400 text-xs md:text-sm">
+            <p className="text-muted-foreground text-xs md:text-sm">
               Temukan dompet dan aksesoris kulit sintetis & asli bermutu tinggi untuk melengkapi gaya elegan Anda.
             </p>
           </div>

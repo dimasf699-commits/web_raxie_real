@@ -40,7 +40,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="bg-black text-white min-h-screen py-10">
+    <div className="bg-background text-foreground min-h-screen py-10 transition-colors duration-300">
       <div className="container-raxie">
         <Breadcrumbs
           items={[
@@ -54,7 +54,7 @@ export default function WishlistPage() {
             <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
               RAXIE FAVORITE ITEMS
             </span>
-            <h1 className="font-serif font-bold text-3xl uppercase tracking-wider text-white">
+            <h1 className="font-serif font-bold text-3xl uppercase tracking-wider text-foreground">
               WISHLIST SAYA{isMounted && items.length > 0 ? ` (${items.length})` : ''}
             </h1>
           </div>
@@ -65,11 +65,11 @@ export default function WishlistPage() {
             </div>
           ) : items.length === 0 ? (
             <div className="max-w-md mx-auto text-center py-16 space-y-4">
-              <div className="w-20 h-20 bg-neutral-900 border border-neutral-800 rounded-full flex items-center justify-center mx-auto text-neutral-500">
+              <div className="w-20 h-20 bg-muted border border-border rounded-full flex items-center justify-center mx-auto text-muted-foreground">
                 <Heart className="w-10 h-10" />
               </div>
-              <h2 className="text-xl font-bold uppercase tracking-wider text-white">Wishlist Masih Kosong</h2>
-              <p className="text-neutral-400 text-xs leading-relaxed">
+              <h2 className="text-xl font-bold uppercase tracking-wider text-foreground">Wishlist Masih Kosong</h2>
+              <p className="text-muted-foreground text-xs leading-relaxed">
                 Anda belum menyimpan produk apapun. Klik ikon hati ❤️ di kartu produk untuk menyimpannya di sini.
               </p>
               <Button asChild className="bg-[#C19A6B] text-black font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#b08b5c]">
@@ -83,54 +83,49 @@ export default function WishlistPage() {
                   ? getDiscountPercent(item.compareAtPrice, item.price)
                   : 0
                 return (
-                  <div key={item.productId} className="group relative bg-[#121212] border border-neutral-800 rounded-xl overflow-hidden shadow-md flex flex-col justify-between">
+                  <div key={item.productId} className="group relative bg-card border border-border rounded-xl overflow-hidden shadow-sm flex flex-col justify-between p-3">
                     {/* Remove btn */}
                     <button
                       onClick={() => {
                         removeItem(item.productId)
                         toast.success('Dihapus dari wishlist', item.name)
                       }}
-                      className="absolute top-3 right-3 z-10 w-8 h-8 bg-black/80 rounded-full flex items-center justify-center text-neutral-400 hover:text-red-400 transition-colors border border-neutral-800"
+                      className="absolute top-4 right-4 z-10 w-8 h-8 bg-card/80 rounded-full flex items-center justify-center text-muted-foreground hover:text-red-500 transition-colors border border-border shadow-sm"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
 
                     {discount > 0 && (
-                      <div className="absolute top-3 left-3 z-10 bg-red-950/80 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800/50 uppercase">
+                      <div className="absolute top-4 left-4 z-10 bg-red-950/80 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800/50 uppercase">
                         -{discount}% OFF
                       </div>
                     )}
 
                     <Link href={`/products/${item.slug}`} className="block">
-                      <div className="relative aspect-square bg-black overflow-hidden border-b border-neutral-800">
+                      <div className="relative aspect-product w-full bg-muted rounded-lg overflow-hidden border border-border mb-3">
                         <Image
-                          src={item.image}
+                          src={item.image || '/placeholder.jpg'}
                           alt={item.name}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          sizes="(max-width: 640px) 50vw, 25vw"
                         />
                       </div>
-                      <div className="p-4 space-y-1">
-                        <p className="font-bold text-xs uppercase tracking-wider text-white line-clamp-1 group-hover:text-[#C19A6B] transition-colors">{item.name}</p>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-[#C19A6B] text-xs">{formatPrice(item.price)}</span>
-                          {item.compareAtPrice && (
-                            <span className="text-[11px] text-neutral-500 line-through">{formatPrice(item.compareAtPrice)}</span>
-                          )}
-                        </div>
+                      <div className="space-y-1 text-center">
+                        <h3 className="font-bold text-xs uppercase tracking-wider text-foreground line-clamp-1 group-hover:text-[#C19A6B] transition-colors">
+                          {item.name}
+                        </h3>
+                        <p className="font-bold text-xs text-[#C19A6B]">
+                          {formatPrice(item.price)}
+                        </p>
                       </div>
                     </Link>
 
-                    <div className="px-4 pb-4">
-                      <button
-                        onClick={() => handleAddToCart(item)}
-                        className="w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider py-2.5 rounded-lg bg-[#C19A6B] text-black hover:bg-[#b08b5c] transition-colors"
-                      >
-                        <ShoppingBag className="w-3.5 h-3.5" />
-                        Keranjang
-                      </button>
-                    </div>
+                    <Button
+                      onClick={() => handleAddToCart(item)}
+                      className="w-full mt-3 bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-[11px] uppercase tracking-wider py-2 rounded-lg flex items-center justify-center gap-1.5"
+                    >
+                      <ShoppingBag className="w-3.5 h-3.5" /> + KERANJANG
+                    </Button>
                   </div>
                 )
               })}

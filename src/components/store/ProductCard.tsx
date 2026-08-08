@@ -1,12 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, ShoppingBag, Eye, Star, Scale } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Heart, ShoppingBag, Eye, Scale } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { formatPrice, getDiscountPercent, getCloudinaryUrl } from '@/lib/utils'
 import { useCartStore } from '@/store/cart.store'
@@ -116,7 +114,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
     >
       <div>
         {/* Image Container */}
-        <div className="relative overflow-hidden rounded-2xl aspect-product bg-ivory-200 dark:bg-charcoal-800">
+        <div className="relative overflow-hidden rounded-2xl aspect-product bg-muted">
           <Image
             src={getCloudinaryUrl(product.image, { width: 500, quality: 80 })}
             alt={product.name}
@@ -126,7 +124,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
           />
 
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
             {discount > 0 && (
               <Badge variant="sale">-{discount}%</Badge>
             )}
@@ -142,7 +140,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
           </div>
 
           {/* Action Buttons */}
-          <div className="absolute top-3 right-3 flex flex-col gap-2">
+          <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
             {/* Wishlist */}
             <motion.button
               initial={{ opacity: 0, x: 10 }}
@@ -150,7 +148,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               transition={{ duration: 0.2 }}
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-              className="w-9 h-9 rounded-full bg-white/90 dark:bg-charcoal-800/90 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
               <motion.div
                 animate={isWishlisted ? { scale: [1, 1.4, 1] } : {}}
@@ -173,9 +171,9 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               transition={{ duration: 0.2, delay: 0.05 }}
               onClick={handleCompare}
               aria-label="Bandingkan produk"
-              className="w-9 h-9 rounded-full bg-white/90 dark:bg-charcoal-800/90 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
-              <Scale className={`h-4 w-4 ${isCompared ? 'text-tan-500' : 'text-foreground/70'}`} />
+              <Scale className={`h-4 w-4 ${isCompared ? 'text-[#C19A6B]' : 'text-foreground/70'}`} />
             </motion.button>
 
             {/* Quick View */}
@@ -190,7 +188,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
                   onQuickView(product.productId)
                 }}
                 aria-label="Quick view"
-                className="w-9 h-9 rounded-full bg-white/90 dark:bg-charcoal-800/90 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
+                className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
               >
                 <Eye className="h-4 w-4 text-foreground/70" />
               </motion.button>
@@ -205,18 +203,18 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 5 }}
                 transition={{ duration: 0.2 }}
-                className="absolute bottom-3 left-3 right-3"
+                className="absolute bottom-3 left-3 right-3 z-10"
               >
                 <button
                   onClick={handleAddToCart}
                   disabled={addingCart || product.stock === 0}
-                  className="w-full flex items-center justify-center gap-2 bg-charcoal-900/90 hover:bg-charcoal-900 text-ivory-100 text-sm font-semibold py-2.5 rounded-xl backdrop-blur-sm transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl shadow-lg transition-colors disabled:opacity-50"
                 >
                   {addingCart ? (
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 0.8 }}
-                      className="w-4 h-4 border-2 border-ivory-100/30 border-t-ivory-100 rounded-full"
+                      className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
                     />
                   ) : (
                     <ShoppingBag className="h-4 w-4" />
@@ -234,17 +232,17 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
 
         {/* Product Info */}
         <div className="mt-3 px-1 text-center space-y-1">
-          <h3 className="font-bold text-xs uppercase tracking-wider text-white hover:text-[#C19A6B] transition-colors line-clamp-1">
+          <h3 className="font-bold text-xs uppercase tracking-wider text-foreground group-hover:text-[#C19A6B] transition-colors line-clamp-1">
             {product.name}
           </h3>
 
           {/* Price */}
           <div className="flex items-center justify-center gap-2">
-            <span className="font-medium text-xs text-neutral-300">
+            <span className="font-bold text-xs text-foreground">
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
-              <span className="text-[11px] line-through text-neutral-500">
+              <span className="text-[11px] line-through text-muted-foreground">
                 {formatPrice(product.compareAtPrice)}
               </span>
             )}
@@ -255,7 +253,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
             <div className="flex text-[#C19A6B] text-[10px]">
               ★ ★ ★ ★ ★
             </div>
-            <span className="text-[10px] text-neutral-400">
+            <span className="text-[10px] text-muted-foreground">
               ({product.reviewCount || 128})
             </span>
           </div>

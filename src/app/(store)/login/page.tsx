@@ -62,19 +62,19 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4 py-16">
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-4 py-16 transition-colors duration-300">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8 space-y-2">
           <Link href="/" className="inline-flex items-center gap-2.5 font-serif font-bold text-2xl tracking-[0.2em] text-[#C19A6B]">
-            <div className="w-8 h-8 flex items-center justify-center border border-[#C19A6B]/40 rounded rotate-45 bg-black">
+            <div className="w-8 h-8 flex items-center justify-center border border-[#C19A6B]/50 rounded rotate-45 bg-[#C19A6B]/10">
               <span className="text-xs font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
             </div>
             <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
               RAXIE
             </span>
           </Link>
-          <p className="text-neutral-400 text-xs uppercase tracking-wider">
+          <p className="text-muted-foreground text-xs uppercase tracking-wider">
             {mode === 'login' ? 'Masuk ke Akun Member Anda' : 'Buat Akun Member Baru'}
           </p>
         </div>
@@ -84,16 +84,16 @@ export default function AuthPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="bg-[#121212] border border-neutral-800 rounded-2xl p-8 shadow-2xl space-y-6"
+          className="bg-card border border-border rounded-2xl p-8 shadow-2xl space-y-6"
         >
           {/* Tab Toggle */}
-          <div className="flex bg-black p-1 rounded-lg border border-neutral-800">
+          <div className="flex bg-muted p-1 rounded-lg border border-border">
             {(['login', 'register'] as Mode[]).map((m) => (
               <button
                 key={m}
                 onClick={() => { setMode(m); setError('') }}
                 className={`flex-1 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all ${
-                  mode === m ? 'bg-[#C19A6B] text-black' : 'text-neutral-400 hover:text-white'
+                  mode === m ? 'bg-[#C19A6B] text-black' : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {m === 'login' ? 'Masuk' : 'Daftar'}
@@ -110,9 +110,9 @@ export default function AuthPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                 >
-                  <label className="block text-[10px] font-bold uppercase text-neutral-400 mb-1">NAMA LENGKAP</label>
+                  <label className="block text-[10px] font-bold uppercase text-muted-foreground mb-1">NAMA LENGKAP</label>
                   <div className="relative">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <input
                       type="text"
                       name="name"
@@ -120,7 +120,7 @@ export default function AuthPage() {
                       value={form.name}
                       onChange={handleChange}
                       required={mode === 'register'}
-                      className="w-full bg-black border border-neutral-800 rounded-lg pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                      className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                     />
                   </div>
                 </motion.div>
@@ -129,9 +129,9 @@ export default function AuthPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-[10px] font-bold uppercase text-neutral-400 mb-1">EMAIL</label>
+              <label className="block text-[10px] font-bold uppercase text-muted-foreground mb-1">EMAIL</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   type="email"
                   name="email"
@@ -139,7 +139,7 @@ export default function AuthPage() {
                   value={form.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-black border border-neutral-800 rounded-lg pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                  className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                 />
               </div>
             </div>
@@ -147,15 +147,15 @@ export default function AuthPage() {
             {/* Password */}
             <div>
               <div className="flex justify-between items-center mb-1">
-                <label className="text-[10px] font-bold uppercase text-neutral-400">PASSWORD</label>
+                <label className="text-[10px] font-bold uppercase text-muted-foreground">PASSWORD</label>
                 {mode === 'login' && (
-                  <Link href="/forgot-password" className="text-[#C19A6B] text-[10px] hover:underline">
+                  <Link href="/forgot-password" className="text-[#C19A6B] text-[10px] hover:underline font-semibold">
                     Lupa password?
                   </Link>
                 )}
               </div>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   type={showPass ? 'text' : 'password'}
                   name="password"
@@ -164,12 +164,12 @@ export default function AuthPage() {
                   onChange={handleChange}
                   required
                   minLength={mode === 'register' ? 8 : 1}
-                  className="w-full bg-black border border-neutral-800 rounded-lg pl-10 pr-10 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                  className="w-full bg-background border border-border rounded-lg pl-10 pr-10 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -177,7 +177,7 @@ export default function AuthPage() {
             </div>
 
             {error && (
-              <p className="text-xs text-red-400 bg-red-950/40 border border-red-800/50 p-2.5 rounded-lg">
+              <p className="text-xs text-red-500 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 p-2.5 rounded-lg">
                 {error}
               </p>
             )}
@@ -200,17 +200,17 @@ export default function AuthPage() {
 
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-neutral-800" />
+              <div className="w-full border-t border-border" />
             </div>
-            <div className="relative flex justify-center text-[10px] uppercase text-neutral-500 font-bold">
-              <span className="bg-[#121212] px-3">atau lanjutkan dengan</span>
+            <div className="relative flex justify-center text-[10px] uppercase text-muted-foreground font-bold">
+              <span className="bg-card px-3">atau lanjutkan dengan</span>
             </div>
           </div>
 
           <button
             type="button"
             onClick={() => signIn('google', { callbackUrl: '/account' })}
-            className="w-full flex items-center justify-center gap-3 py-2.5 border border-neutral-800 rounded-lg bg-black hover:border-neutral-600 transition-colors text-xs font-semibold text-white"
+            className="w-full flex items-center justify-center gap-3 py-2.5 border border-border rounded-lg bg-background hover:bg-muted transition-colors text-xs font-semibold text-foreground"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

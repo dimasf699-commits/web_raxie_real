@@ -16,32 +16,33 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[#070707] text-white border-t border-neutral-900 pt-16 pb-8">
+    <footer className="bg-[#FAF8F5] dark:bg-[#070707] text-foreground border-t border-border transition-colors duration-300 pt-16 pb-8">
       <div className="container-raxie">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-border">
           {/* Col 1: Brand Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2.5 font-serif font-bold text-xl tracking-[0.2em] text-[#C19A6B]">
-              <div className="w-7 h-7 flex items-center justify-center border border-[#C19A6B]/40 rounded rotate-45 bg-black/40">
+              <div className="w-7 h-7 flex items-center justify-center border border-[#C19A6B]/50 rounded rotate-45 bg-[#C19A6B]/10">
                 <span className="text-[10px] font-serif font-bold text-[#C19A6B] -rotate-45">RX</span>
               </div>
               <span className="font-serif tracking-[0.2em] text-[#C19A6B] font-extrabold uppercase">
                 RAXIE
               </span>
             </div>
-            <p className="text-xs text-neutral-400 leading-relaxed max-w-xs">
+            <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
               RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit premium dengan desain elegan dan kualitas terbaik.
-            </p>            <div className="flex items-center gap-3 pt-2">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
+            </p>
+            <div className="flex items-center gap-3 pt-2">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
+              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
                 🎵
               </a>
-              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
+              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
                 🛍️
               </a>
-              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
+              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
                 💬
               </a>
             </div>
@@ -49,8 +50,8 @@ export function Footer() {
 
           {/* Col 2: INFORMASI */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">INFORMASI</h3>
-            <ul className="space-y-2 text-xs text-neutral-400">
+            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-foreground">INFORMASI</h3>
+            <ul className="space-y-2 text-xs text-muted-foreground">
               <li><Link href="/about" className="hover:text-[#C19A6B] transition-colors">Tentang Kami</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-[#C19A6B] transition-colors">Kebijakan Privasi</Link></li>
               <li><Link href="/terms" className="hover:text-[#C19A6B] transition-colors">Syarat & Ketentuan</Link></li>
@@ -61,8 +62,8 @@ export function Footer() {
 
           {/* Col 3: KATEGORI */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">KATEGORI</h3>
-            <ul className="space-y-2 text-xs text-neutral-400">
+            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-foreground">KATEGORI</h3>
+            <ul className="space-y-2 text-xs text-muted-foreground">
               <li><Link href="/products?category=dompet" className="hover:text-[#C19A6B] transition-colors">Dompet</Link></li>
               <li><Link href="/products?category=tas" className="hover:text-[#C19A6B] transition-colors">Tas</Link></li>
               <li><Link href="/products?category=sabuk" className="hover:text-[#C19A6B] transition-colors">Belt</Link></li>
@@ -72,8 +73,8 @@ export function Footer() {
 
           {/* Col 4: NEWSLETTER */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">NEWSLETTER</h3>
-            <p className="text-xs text-neutral-400">
+            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-foreground">NEWSLETTER</h3>
+            <p className="text-xs text-muted-foreground">
               Dapatkan info terbaru dan promo eksklusif dari RAXIE.
             </p>
             <form onSubmit={handleSubscribe} className="flex gap-2">
@@ -82,7 +83,7 @@ export function Footer() {
                 placeholder="Masukkan email Anda"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
               />
               <button
                 type="submit"
@@ -96,14 +97,14 @@ export function Footer() {
         </div>
 
         {/* Bottom copyright & payment icons */}
-        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-muted-foreground">
           <p>© 2026 RAXIE. All Rights Reserved.</p>
-          <div className="flex items-center gap-3 font-semibold text-neutral-400 text-xs">
-            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">BCA</span>
-            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">Mandiri</span>
-            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">BRI</span>
-            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">VISA</span>
-            <span className="px-2 py-0.5 border border-neutral-800 rounded bg-black">Mastercard</span>
+          <div className="flex items-center gap-3">
+            <span>BCA</span>
+            <span>Mandiri</span>
+            <span>BRI</span>
+            <span>QRIS</span>
+            <span>Midtrans</span>
           </div>
         </div>
       </div>

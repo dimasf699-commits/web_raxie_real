@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, ShieldCheck, MapPin, Truck, CreditCard, Tag, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, MapPin, Tag, CheckCircle2 } from 'lucide-react'
 import { useCartStore } from '@/store/cart.store'
 import { Button } from '@/components/ui/Button'
 import { toast } from '@/components/ui/Toaster'
@@ -26,7 +26,7 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState({ name: '', email: '', phone: '', detail: '', areaId: '', postalCode: '', areaName: '' })
   const [shippingCost, setShippingCost] = useState(0)
   const [courierName, setCourierName] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState('midtrans')
+  const [paymentMethod] = useState('midtrans')
   const [isProcessing, setIsProcessing] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [shippingRates, setShippingRates] = useState<any[]>([])
@@ -245,18 +245,18 @@ export default function CheckoutPage() {
         strategy="lazyOnload"
       />
 
-      <div className="bg-black text-white min-h-screen py-10">
+      <div className="bg-background text-foreground min-h-screen py-10 transition-colors duration-300">
         <div className="container-raxie">
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
-            <Link href="/cart" className="text-neutral-400 hover:text-white transition-colors">
+            <Link href="/cart" className="text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <h1 className="font-serif text-2xl md:text-3xl font-bold uppercase tracking-wider text-white">CHECKOUT PESANAN</h1>
+            <h1 className="font-serif text-2xl md:text-3xl font-bold uppercase tracking-wider text-foreground">CHECKOUT PESANAN</h1>
           </div>
 
           {/* Step Indicator */}
-          <div className="flex items-center justify-between max-w-xl mx-auto mb-10 pb-4 border-b border-neutral-800">
+          <div className="flex items-center justify-between max-w-xl mx-auto mb-10 pb-4 border-b border-border">
             {[
               { num: 1, label: 'ALAMAT' },
               { num: 2, label: 'PENGIRIMAN' },
@@ -265,11 +265,11 @@ export default function CheckoutPage() {
               <div key={s.num} className="flex items-center gap-2">
                 <div className={cn(
                   "w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs",
-                  step >= s.num ? "bg-[#C19A6B] text-black" : "bg-neutral-800 text-neutral-400"
+                  step >= s.num ? "bg-[#C19A6B] text-black" : "bg-muted text-muted-foreground"
                 )}>
                   {s.num}
                 </div>
-                <span className={cn("text-xs font-bold tracking-wider", step >= s.num ? "text-white" : "text-neutral-500")}>
+                <span className={cn("text-xs font-bold tracking-wider", step >= s.num ? "text-foreground" : "text-muted-foreground")}>
                   {s.label}
                 </span>
               </div>
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
 
           <div className="flex flex-col lg:flex-row gap-10 items-start">
             {/* Left Main Section */}
-            <div className="flex-1 w-full bg-[#121212] p-6 md:p-8 rounded-2xl border border-neutral-800 space-y-6">
+            <div className="flex-1 w-full bg-card p-6 md:p-8 rounded-2xl border border-border space-y-6 shadow-sm">
               <AnimatePresence mode="wait">
                 {/* STEP 1: ALAMAT */}
                 {step === 1 && (
@@ -292,7 +292,7 @@ export default function CheckoutPage() {
                     <h2 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B]">INFORMASI PENGIRIMAN</h2>
 
                     {savedAddresses.length > 0 && (
-                      <div className="p-4 bg-black border border-neutral-800 rounded-xl space-y-2">
+                      <div className="p-4 bg-muted border border-border rounded-xl space-y-2">
                         <label className="text-xs font-bold text-[#C19A6B] flex items-center gap-2 uppercase">
                           <MapPin className="w-4 h-4 text-[#C19A6B]" />
                           Alamat Tersimpan
@@ -317,7 +317,7 @@ export default function CheckoutPage() {
                               setSearchArea(areaLabel)
                             }
                           }}
-                          className="w-full bg-[#121212] border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C19A6B]"
+                          className="w-full bg-card border border-border rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none focus:border-[#C19A6B]"
                         >
                           {savedAddresses.map((a) => (
                             <option key={a.id} value={a.id}>
@@ -330,40 +330,40 @@ export default function CheckoutPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">NAMA LENGKAP</label>
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">NAMA LENGKAP</label>
                         <input
                           type="text"
                           placeholder="Nama Lengkap Anda"
                           value={address.name}
                           onChange={(e) => setAddress({ ...address, name: e.target.value })}
-                          className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                          className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">NOMOR WHATSAPP / TELEPON</label>
+                        <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">NOMOR WHATSAPP / TELEPON</label>
                         <input
                           type="text"
                           placeholder="08123456789"
                           value={address.phone}
                           onChange={(e) => setAddress({ ...address, phone: e.target.value })}
-                          className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                          className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">EMAIL PESANAN</label>
+                      <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">EMAIL PESANAN</label>
                       <input
                         type="email"
                         placeholder="email@domain.com"
                         value={address.email}
                         onChange={(e) => setAddress({ ...address, email: e.target.value })}
-                        className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                        className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                       />
                     </div>
 
                     <div className="relative">
-                      <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">KECAMATAN / KOTA TUJUAN</label>
+                      <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">KECAMATAN / KOTA TUJUAN</label>
                       <input
                         type="text"
                         placeholder="Ketik nama kecamatan..."
@@ -373,16 +373,16 @@ export default function CheckoutPage() {
                           if (address.areaId) setAddress({ ...address, areaId: '', areaName: '', postalCode: '' })
                         }}
                         onFocus={() => { if (areaResults.length > 0) setShowAreaDropdown(true) }}
-                        className="w-full bg-black border border-neutral-800 rounded-lg px-3 py-2.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                        className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                       />
                       {isSearchingArea && <p className="text-[10px] text-[#C19A6B] mt-1 absolute right-3 top-8">Mencari...</p>}
                       
                       {showAreaDropdown && areaResults.length > 0 && (
-                        <div className="absolute z-50 w-full mt-1 bg-black border border-neutral-800 rounded-lg shadow-2xl max-h-56 overflow-y-auto">
+                        <div className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-2xl max-h-56 overflow-y-auto">
                           {areaResults.map((area) => (
                             <div
                               key={area.id}
-                              className="px-3 py-2.5 hover:bg-neutral-900 cursor-pointer border-b border-neutral-900 text-xs"
+                              className="px-3 py-2.5 hover:bg-muted cursor-pointer border-b border-border text-xs"
                               onClick={() => {
                                 const fullName = `${area.name}, ${area.administrative_division_level_2_name}, ${area.administrative_division_level_1_name}`
                                 setSearchArea(fullName)
@@ -395,8 +395,8 @@ export default function CheckoutPage() {
                                 setShowAreaDropdown(false)
                               }}
                             >
-                              <p className="font-bold text-white">{area.name}</p>
-                              <p className="text-[10px] text-neutral-400">{area.administrative_division_level_2_name}, {area.administrative_division_level_1_name} {area.postal_code}</p>
+                              <p className="font-bold text-foreground">{area.name}</p>
+                              <p className="text-[10px] text-muted-foreground">{area.administrative_division_level_2_name}, {area.administrative_division_level_1_name} {area.postal_code}</p>
                             </div>
                           ))}
                         </div>
@@ -404,13 +404,13 @@ export default function CheckoutPage() {
                     </div>
 
                     <div>
-                      <label className="text-[10px] uppercase font-bold text-neutral-400 block mb-1">ALAMAT LENGKAP</label>
+                      <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">ALAMAT LENGKAP</label>
                       <textarea
                         rows={3}
                         placeholder="Nama jalan, nomor rumah, RT/RW, patokan..."
                         value={address.detail}
                         onChange={(e) => setAddress({ ...address, detail: e.target.value })}
-                        className="w-full bg-black border border-neutral-800 rounded-lg p-3 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B]"
+                        className="w-full bg-background border border-border rounded-lg p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
                       />
                     </div>
 
@@ -439,14 +439,14 @@ export default function CheckoutPage() {
 
                     <div className="space-y-3">
                       {shippingRates.length === 0 ? (
-                        <p className="text-xs text-neutral-400 py-4">Gagal memuat tarif pengiriman. Silakan kembali dan cek kecamatan alamat Anda.</p>
+                        <p className="text-xs text-muted-foreground py-4">Gagal memuat tarif pengiriman. Silakan kembali dan cek kecamatan alamat Anda.</p>
                       ) : (
                         shippingRates.map((courier: any) => (
                           <label
                             key={courier.id}
                             className={cn(
                               "flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-colors text-xs",
-                              courierName === courier.name ? "border-[#C19A6B] bg-black" : "border-neutral-800 bg-black/40 hover:border-neutral-700"
+                              courierName === courier.name ? "border-[#C19A6B] bg-muted" : "border-border bg-background hover:border-foreground"
                             )}
                           >
                             <div className="flex items-center gap-3">
@@ -461,8 +461,8 @@ export default function CheckoutPage() {
                                 }}
                               />
                               <div>
-                                <p className="font-bold text-white uppercase">{courier.name}</p>
-                                <p className="text-[11px] text-neutral-400">{courier.courier} - {courier.estimated}</p>
+                                <p className="font-bold text-foreground uppercase">{courier.name}</p>
+                                <p className="text-[11px] text-muted-foreground">{courier.courier} - {courier.estimated}</p>
                               </div>
                             </div>
                             <span className="font-bold text-[#C19A6B]">{formatPrice(courier.price)}</span>
@@ -472,7 +472,7 @@ export default function CheckoutPage() {
                     </div>
 
                     <div className="flex items-center gap-4 pt-2">
-                      <Button variant="outline" onClick={() => setStep(1)} className="border-neutral-700 text-white text-xs">
+                      <Button variant="outline" onClick={() => setStep(1)} className="border-border text-foreground text-xs">
                         Kembali
                       </Button>
                       <Button
@@ -497,24 +497,24 @@ export default function CheckoutPage() {
                   >
                     <h2 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B]">PEMBAYARAN SECURE MIDTRANS</h2>
 
-                    <div className="p-4 bg-black border border-neutral-800 rounded-xl space-y-3 text-xs">
+                    <div className="p-4 bg-muted border border-border rounded-xl space-y-3 text-xs">
                       <div className="flex items-center gap-2 text-[#C19A6B]">
                         <CheckCircle2 className="w-5 h-5" />
                         <span className="font-bold uppercase tracking-wider">PEMBAYARAN OTOMATIS & 100% AMAN</span>
                       </div>
-                      <p className="text-neutral-400 text-[11px] leading-relaxed">
+                      <p className="text-muted-foreground text-[11px] leading-relaxed">
                         Anda dapat memilih metode pembayaran seperti **QRIS, Virtual Account BCA/Mandiri/BRI, Kartu Kredit, GoPay, atau ShopeePay** secara langsung melalui pop-up transaksi Midtrans yang aman.
                       </p>
                     </div>
 
                     {errorMsg && (
-                      <p className="text-xs text-red-400 bg-red-950/40 border border-red-800/50 p-3 rounded-lg">
+                      <p className="text-xs text-red-500 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/50 p-3 rounded-lg">
                         {errorMsg}
                       </p>
                     )}
 
                     <div className="flex items-center gap-4 pt-2">
-                      <Button variant="outline" onClick={() => setStep(2)} className="border-neutral-700 text-white text-xs">
+                      <Button variant="outline" onClick={() => setStep(2)} className="border-border text-foreground text-xs">
                         Kembali
                       </Button>
                       <Button
@@ -531,37 +531,37 @@ export default function CheckoutPage() {
             </div>
 
             {/* Right Sidebar - Order Summary */}
-            <div className="w-full lg:w-[360px] bg-[#121212] border border-neutral-800 rounded-2xl p-6 sticky top-24 space-y-4">
-              <h3 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B] pb-3 border-b border-neutral-800">
+            <div className="w-full lg:w-[360px] bg-card border border-border rounded-2xl p-6 sticky top-24 space-y-4 shadow-sm">
+              <h3 className="font-serif font-bold text-base uppercase tracking-wider text-[#C19A6B] pb-3 border-b border-border">
                 RINGKASAN ITEM
               </h3>
 
               <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1 custom-scrollbar">
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-3 text-xs">
-                    <div className="relative w-12 h-12 rounded bg-black border border-neutral-800 overflow-hidden shrink-0">
+                    <div className="relative w-12 h-12 rounded bg-muted border border-border overflow-hidden shrink-0">
                       <Image src={item.image || '/placeholder.jpg'} alt={item.name} fill className="object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-bold text-white truncate">{item.name}</p>
-                      <p className="text-[10px] text-neutral-400">{item.quantity}x @ {formatPrice(item.price)}</p>
+                      <p className="font-bold text-foreground truncate">{item.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{item.quantity}x @ {formatPrice(item.price)}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Voucher Input */}
-              <div className="pt-3 border-t border-neutral-800 space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 flex items-center gap-1">
+              <div className="pt-3 border-t border-border space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                   <Tag className="w-3 h-3 text-[#C19A6B]" /> Kode Voucher
                 </label>
                 {appliedVoucher ? (
-                  <div className="flex items-center justify-between p-2.5 bg-black border border-green-800 rounded-lg text-xs">
+                  <div className="flex items-center justify-between p-2.5 bg-muted border border-green-600 rounded-lg text-xs">
                     <div>
-                      <span className="font-bold text-green-400 uppercase">{appliedVoucher.code}</span>
-                      <p className="text-[10px] text-neutral-400">Potongan {formatPrice(appliedVoucher.discountAmount)}</p>
+                      <span className="font-bold text-green-600 dark:text-green-400 uppercase">{appliedVoucher.code}</span>
+                      <p className="text-[10px] text-muted-foreground">Potongan {formatPrice(appliedVoucher.discountAmount)}</p>
                     </div>
-                    <button onClick={handleRemoveVoucher} className="text-[10px] text-red-400 hover:underline">Hapus</button>
+                    <button onClick={handleRemoveVoucher} className="text-[10px] text-red-500 hover:underline">Hapus</button>
                   </div>
                 ) : (
                   <div className="flex gap-2">
@@ -570,7 +570,7 @@ export default function CheckoutPage() {
                       value={voucherCode}
                       onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
                       placeholder="KODE VOUCHER"
-                      className="flex-1 bg-black border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder:text-neutral-600 focus:outline-none focus:border-[#C19A6B] uppercase font-mono"
+                      className="flex-1 bg-background border border-border rounded-lg px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B] uppercase font-mono"
                     />
                     <button
                       type="button"
@@ -584,14 +584,14 @@ export default function CheckoutPage() {
                 )}
               </div>
 
-              <div className="space-y-2 text-xs border-t border-neutral-800 pt-3">
-                <div className="flex justify-between text-neutral-400">
+              <div className="space-y-2 text-xs border-t border-border pt-3">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal</span>
-                  <span className="font-bold text-white">{formatPrice(totalPrice)}</span>
+                  <span className="font-bold text-foreground">{formatPrice(totalPrice)}</span>
                 </div>
-                <div className="flex justify-between text-neutral-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Ongkir ({courierName || 'Belum dipilih'})</span>
-                  <span className="font-bold text-white">{shippingCost > 0 ? formatPrice(shippingCost) : '-'}</span>
+                  <span className="font-bold text-foreground">{shippingCost > 0 ? formatPrice(shippingCost) : '-'}</span>
                 </div>
                 {appliedVoucher && (
                   <div className="flex justify-between text-[#C19A6B]">
@@ -599,8 +599,8 @@ export default function CheckoutPage() {
                     <span>-{formatPrice(appliedVoucher.discountAmount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between items-center border-t border-neutral-800 pt-3 text-sm">
-                  <span className="font-bold text-white">TOTAL</span>
+                <div className="flex justify-between items-center border-t border-border pt-3 text-sm">
+                  <span className="font-bold text-foreground">TOTAL</span>
                   <span className="font-bold text-xl text-[#C19A6B]">
                     {formatPrice(Math.max(0, totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)))}
                   </span>
