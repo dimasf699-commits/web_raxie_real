@@ -108,16 +108,19 @@ export function Navbar() {
       <header className="sticky top-0 left-0 right-0 z-50 bg-[#0B0A08] text-white border-b border-neutral-900 shadow-xl">
         <AnnouncementBar />
         <div className="container-raxie h-16 flex items-center justify-between">
-          {/* Official Image Logo */}
-          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+          {/* Logo with Emblem Image + RAXIE Title */}
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity group">
             <Image
               src="https://i.imgur.com/SrBEKD5.png"
-              alt="RAXIE Logo"
-              width={140}
+              alt="RAXIE Emblem"
+              width={40}
               height={40}
-              className="h-8 md:h-9 w-auto object-contain"
+              className="h-8 md:h-9 w-auto object-contain shrink-0"
               priority
             />
+            <span className="font-serif font-extrabold text-xl md:text-2xl tracking-[0.2em] text-[#C19A6B] uppercase">
+              RAXIE
+            </span>
           </Link>
 
           {/* Desktop Nav */}
@@ -476,15 +479,18 @@ export function Navbar() {
                   <Link
                     href="/"
                     onClick={() => setIsMobileOpen(false)}
-                    className="flex items-center"
+                    className="flex items-center gap-2.5"
                   >
                     <Image
                       src="https://i.imgur.com/SrBEKD5.png"
-                      alt="RAXIE Logo"
-                      width={120}
+                      alt="RAXIE Emblem"
+                      width={32}
                       height={32}
-                      className="h-7 w-auto object-contain"
+                      className="h-7 w-auto object-contain shrink-0"
                     />
+                    <span className="font-serif font-extrabold text-xl tracking-[0.2em] text-[#C19A6B] uppercase">
+                      RAXIE
+                    </span>
                   </Link>
                   <Button
                     variant="ghost"

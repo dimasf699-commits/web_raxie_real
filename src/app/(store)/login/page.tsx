@@ -67,15 +67,18 @@ export default function AuthPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8 space-y-2">
-          <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
+          <Link href="/" className="inline-flex items-center gap-2.5 hover:opacity-80 transition-opacity">
             <Image
               src="https://i.imgur.com/SrBEKD5.png"
-              alt="RAXIE Logo"
-              width={140}
+              alt="RAXIE Emblem"
+              width={40}
               height={40}
-              className="h-10 w-auto object-contain mx-auto"
+              className="h-9 w-auto object-contain shrink-0"
               priority
             />
+            <span className="font-serif font-extrabold text-2xl tracking-[0.2em] text-[#C19A6B] uppercase">
+              RAXIE
+            </span>
           </Link>
           <p className="text-muted-foreground text-xs uppercase tracking-wider">
             {mode === 'login' ? 'Masuk ke Akun Member Anda' : 'Buat Akun Member Baru'}

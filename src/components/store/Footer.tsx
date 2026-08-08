@@ -22,17 +22,20 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-border">
           {/* Col 1: Brand Info */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
+            <Link href="/" className="inline-flex items-center gap-2.5 hover:opacity-80 transition-opacity">
               <Image
                 src="https://i.imgur.com/SrBEKD5.png"
-                alt="RAXIE Logo"
-                width={130}
+                alt="RAXIE Emblem"
+                width={36}
                 height={36}
-                className="h-8 w-auto object-contain"
+                className="h-7 w-auto object-contain shrink-0"
               />
+              <span className="font-serif font-extrabold text-xl tracking-[0.2em] text-[#C19A6B] uppercase">
+                RAXIE
+              </span>
             </Link>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
-              RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit premium dengan desain elegan dan kualitas terbaik.
+              RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit sintetis PU Leather premium dengan desain elegan dan kualitas terbaik.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
