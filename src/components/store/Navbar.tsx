@@ -390,7 +390,7 @@ export function Navbar() {
                   <input
                     ref={searchRef}
                     type="search"
-                    placeholder="Cari dompet, aksesoris kulit..."
+                    placeholder="Cari dompet, tas, sabuk..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="flex-1 bg-transparent text-foreground text-lg placeholder:text-muted-foreground outline-none"

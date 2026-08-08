@@ -19,11 +19,19 @@ async function main() {
     }
   })
 
-  const catAksesoris = await prisma.category.create({
+  const catTas = await prisma.category.create({
     data: {
-      name: 'Aksesoris',
-      slug: 'aksesoris',
-      description: 'Aksesoris kulit asli'
+      name: 'Tas',
+      slug: 'tas',
+      description: 'Koleksi tas kulit premium'
+    }
+  })
+
+  const catSabuk = await prisma.category.create({
+    data: {
+      name: 'Sabuk',
+      slug: 'sabuk',
+      description: 'Sabuk kulit premium'
     }
   })
 
@@ -91,7 +99,7 @@ async function main() {
       name: 'Gantungan Kunci Kulit Vintage',
       slug: 'gantungan-kunci-kulit-vintage',
       description: 'Aksesoris mungil namun elegan. Menggunakan sisa potongan kulit premium kami (zero waste) yang disatukan dengan ring kuningan antik.',
-      categoryId: catAksesoris.id,
+      categoryId: catSabuk.id,
       basePrice: 750000,
       avgRating: 4.5,
       reviewCount: 45,

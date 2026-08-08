@@ -115,8 +115,8 @@ export const DUMMY_PRODUCTS = [
     isNew: true,
     stock: 12,
     sku: 'RXE-WC-001',
-    categorySlug: 'aksesoris',
-    tags: ['clutch', 'aksesoris'],
+    categorySlug: 'tas',
+    tags: ['clutch', 'tas'],
   },
   {
     id: '8',
@@ -132,8 +132,8 @@ export const DUMMY_PRODUCTS = [
     isNew: false,
     stock: 45,
     sku: 'RXE-KO-001',
-    categorySlug: 'aksesoris',
-    tags: ['gantungan-kunci', 'aksesoris'],
+    categorySlug: 'sabuk',
+    tags: ['gantungan-kunci', 'sabuk'],
   },
   {
     id: '9',
@@ -149,7 +149,7 @@ export const DUMMY_PRODUCTS = [
     isNew: false,
     stock: 30,
     sku: 'RXE-LB-001',
-    categorySlug: 'aksesoris',
-    tags: ['belt', 'aksesoris'],
+    categorySlug: 'sabuk',
+    tags: ['belt', 'sabuk'],
   },
 ]
