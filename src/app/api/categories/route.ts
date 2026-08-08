@@ -9,21 +9,11 @@ const DEFAULT_CATEGORIES = [
 
 export async function GET() {
   try {
-    // Upsert default 3 categories to ensure they always exist in DB
-    for (const cat of DEFAULT_CATEGORIES) {
-      await prisma.category.upsert({
-        where: { slug: cat.slug },
-        update: { name: cat.name, isActive: true },
-        create: { name: cat.name, slug: cat.slug, isActive: true },
-      })
-    }
-
     const categories = await prisma.category.findMany({
       where: {
         isActive: true,
-        slug: { in: ['dompet', 'tas', 'sabuk'] },
       },
-      orderBy: { name: 'asc' },
+      orderBy: { sortOrder: 'asc' },
       select: { id: true, name: true, slug: true },
     })
 

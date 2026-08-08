@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { sendOrderEmail } from '@/lib/email'
 import { rateLimit } from '@/lib/redis'
+import { generateOrderNumber } from '@/lib/utils'
 
 const orderSchema = z.object({
   items: z.array(z.object({
@@ -32,12 +33,6 @@ const orderSchema = z.object({
   voucherId: z.string().optional(),
   discountAmount: z.number().optional(),
 })
-
-function generateOrderNumber() {
-  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '')
-  const random = Math.floor(1000 + Math.random() * 9000)
-  return `RXE-${date}-${random}`
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -144,7 +139,17 @@ export async function POST(req: NextRequest) {
           const isValidUsage = voucher.usageLimit === null || voucher.usageCount < voucher.usageLimit
           const isValidMinPurchase = verifiedSubtotal >= voucher.minPurchase
 
-          if (isValidTime && isValidUsage && isValidMinPurchase) {
+          let isPerUserValid = true
+          if (validUserId && voucher.perUserLimit) {
+            const userUsageCount = await tx.voucherUsage.count({
+              where: { voucherId: voucher.id, userId: validUserId }
+            })
+            if (userUsageCount >= voucher.perUserLimit) {
+              isPerUserValid = false
+            }
+          }
+
+          if (isValidTime && isValidUsage && isValidMinPurchase && isPerUserValid) {
             validVoucherId = voucher.id
             if (voucher.type === 'PERCENTAGE') {
               calculatedDiscount = (verifiedSubtotal * voucher.value) / 100
@@ -195,6 +200,17 @@ export async function POST(req: NextRequest) {
           }
         },
       })
+
+      // Record voucher usage for authenticated user
+      if (validVoucherId && validUserId) {
+        await tx.voucherUsage.create({
+          data: {
+            voucherId: validVoucherId,
+            userId: validUserId,
+            orderId: newOrder.id,
+          }
+        })
+      }
 
       // Atomic stock reduction to prevent race condition (overselling)
       for (const item of verifiedItems) {
@@ -265,10 +281,10 @@ export async function POST(req: NextRequest) {
         })
       }
 
-      if (data.discountAmount && data.discountAmount > 0) {
+      if (order.discountAmount && order.discountAmount > 0) {
         itemDetails.push({
           id: 'DISCOUNT',
-          price: -Math.round(data.discountAmount),
+          price: -Math.round(order.discountAmount),
           quantity: 1,
           name: 'Diskon Voucher',
         })

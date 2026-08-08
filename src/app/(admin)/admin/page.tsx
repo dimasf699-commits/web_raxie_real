@@ -26,10 +26,10 @@ export default async function AdminDashboardPage() {
   const totalRevenue = totalRevenueObj._sum.totalAmount || 0
 
   const STATS = [
-    { label: 'Total Pendapatan', value: formatPrice(totalRevenue), trend: '+15.2%', isUp: true, icon: DollarSign },
-    { label: 'Total Pesanan', value: totalOrders.toString(), trend: '+5.4%', isUp: true, icon: ShoppingBag },
-    { label: 'Total Pelanggan', value: totalCustomers.toString(), trend: '+1.2%', isUp: true, icon: Users },
-    { label: 'Konversi', value: '3.2%', trend: '+0.5%', isUp: true, icon: Activity },
+    { label: 'Total Pendapatan', value: formatPrice(totalRevenue), badge: 'Realtime', icon: DollarSign },
+    { label: 'Total Pesanan', value: totalOrders.toString(), badge: 'Total Order', icon: ShoppingBag },
+    { label: 'Total Pelanggan', value: totalCustomers.toString(), badge: 'Terdaftar', icon: Users },
+    { label: 'Status Toko', value: 'Aktif', badge: 'Production', icon: Activity },
   ]
 
   return (
@@ -41,10 +41,9 @@ export default async function AdminDashboardPage() {
               <div className="w-10 h-10 rounded-lg bg-tan-50 text-tan-600 flex items-center justify-center">
                 <stat.icon className="w-5 h-5" />
               </div>
-              <div className={`flex items-center gap-1 text-sm font-semibold ${stat.isUp ? 'text-green-600' : 'text-red-500'}`}>
-                {stat.isUp ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                {stat.trend}
-              </div>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                {stat.badge}
+              </span>
             </div>
             <div>
               <p className="text-sm font-medium text-slate-500 dark:text-muted-foreground">{stat.label}</p>

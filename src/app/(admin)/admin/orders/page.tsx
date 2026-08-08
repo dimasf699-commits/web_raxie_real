@@ -7,18 +7,7 @@ import { formatPrice } from '@/lib/utils'
 import { TrackingModal } from '@/components/admin/TrackingModal'
 import { toast } from '@/components/ui/Toaster'
 
-const statusMap: Record<string, { label: string; color: string }> = {
-  PENDING_PAYMENT:   { label: 'Menunggu Bayar', color: 'bg-yellow-100 text-yellow-700' },
-  PAYMENT_CONFIRMED: { label: 'Bayar Terkonfirmasi', color: 'bg-blue-100 text-blue-700' },
-  PROCESSING:        { label: 'Diproses', color: 'bg-indigo-100 text-indigo-700' },
-  PACKED:            { label: 'Dikemas', color: 'bg-purple-100 text-purple-700' },
-  SHIPPED:           { label: 'Dikirim', color: 'bg-cyan-100 text-cyan-700' },
-  DELIVERED:         { label: 'Terkirim', color: 'bg-teal-100 text-teal-700' },
-  COMPLETED:         { label: 'Selesai', color: 'bg-green-100 text-green-700' },
-  CANCELLED:         { label: 'Dibatalkan', color: 'bg-red-100 text-red-700' },
-  RETURN_REQUESTED:  { label: 'Return Diminta', color: 'bg-orange-100 text-orange-700' },
-  REFUNDED:          { label: 'Dikembalikan', color: 'bg-gray-100 text-gray-700' },
-}
+import { ORDER_STATUS_MAP as statusMap } from '@/lib/constants'
 
 const tabs = [
   { label: 'Semua', value: 'ALL' },

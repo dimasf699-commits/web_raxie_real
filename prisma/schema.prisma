@@ -368,6 +368,10 @@ model Order {
   voucher        Voucher?        @relation(fields: [voucherId], references: [id])
   returnRequests ReturnRequest[]
 
+  @@index([userId])
+  @@index([guestEmail])
+  @@index([status])
+  @@index([createdAt])
   @@map("orders")
 }
 
@@ -388,6 +392,8 @@ model OrderItem {
   product Product        @relation(fields: [productId], references: [id])
   variant ProductVariant? @relation(fields: [variantId], references: [id])
 
+  @@index([orderId])
+  @@index([productId])
   @@map("order_items")
 }
 
@@ -509,6 +515,7 @@ model VoucherUsage {
   voucher Voucher @relation(fields: [voucherId], references: [id])
   user    User    @relation(fields: [userId], references: [id])
 
+  @@index([voucherId, userId])
   @@map("voucher_usages")
 }
 
@@ -525,6 +532,7 @@ model LoyaltyTransaction {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("loyalty_transactions")
 }
 
@@ -541,6 +549,7 @@ model RestockAlert {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   user    User?   @relation(fields: [userId], references: [id])
 
+  @@index([email, productId])
   @@map("restock_alerts")
 }
 
@@ -558,6 +567,7 @@ model Notification {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("notifications")
 }
 

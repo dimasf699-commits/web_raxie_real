@@ -20,33 +20,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Kode voucher harus diisi' }, { status: 400 })
     }
 
-    // Since we don't have seed data for Vouchers yet, let's inject a mock one if they type 'RAXIE20' or 'FREESHIP'
-    // First, let's try to upsert our standard demo vouchers so they exist in DB
-    await prisma.voucher.upsert({
-      where: { code: 'RAXIE20' },
-      update: {},
-      create: {
-        code: 'RAXIE20',
-        name: 'Diskon 20%',
-        type: 'PERCENTAGE',
-        value: 20,
-        minPurchase: 300000,
-        maxDiscount: 100000,
-      }
-    })
-
-    await prisma.voucher.upsert({
-      where: { code: 'FREESHIP' },
-      update: {},
-      create: {
-        code: 'FREESHIP',
-        name: 'Gratis Ongkir',
-        type: 'FREE_SHIPPING',
-        value: 50000, // max free shipping value
-        minPurchase: 500000,
-      }
-    })
-
     const voucher = await prisma.voucher.findUnique({
       where: { code: code.toUpperCase() }
     })
