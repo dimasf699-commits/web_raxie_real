@@ -111,7 +111,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
     >
       <div>
         {/* Image Container */}
-        <div className="relative overflow-hidden rounded-2xl aspect-product bg-muted">
+        <div className="relative overflow-hidden rounded-none aspect-product bg-muted">
           <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
@@ -148,7 +148,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               transition={{ duration: 0.2 }}
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+              className="w-9 h-9 rounded-none bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
               <motion.div
                 animate={isWishlisted ? { scale: [1, 1.4, 1] } : {}}
@@ -171,7 +171,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               transition={{ duration: 0.2, delay: 0.05 }}
               onClick={handleCompare}
               aria-label="Bandingkan produk"
-              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+              className="w-9 h-9 rounded-none bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
               <Scale className={`h-4 w-4 ${isCompared ? 'text-[#8E6D4A] dark:text-[#C19A6B]' : 'text-foreground/70'}`} />
             </motion.button>
@@ -188,7 +188,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
                   onQuickView(product.productId)
                 }}
                 aria-label="Quick view"
-                className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+                className="w-9 h-9 rounded-none bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
               >
                 <Eye className="h-4 w-4 text-foreground/70" />
               </motion.button>
@@ -208,7 +208,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
                 <button
                   onClick={handleAddToCart}
                   disabled={addingCart || product.stock === 0}
-                  className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-wider py-2.5 rounded-xl shadow-lg transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-none shadow-lg transition-colors disabled:opacity-50"
                 >
                   {addingCart ? (
                     <motion.div
@@ -231,15 +231,15 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
         </div>
 
         {/* Product Info */}
-        <div className="mt-3 px-1 text-center space-y-1 relative z-10">
-          <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline rounded-md inline-block">
-            <h3 className="font-bold text-xs uppercase tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
+        <div className="mt-4 px-1 text-left space-y-1 relative z-10">
+          <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block">
+            <h3 className="font-bold text-xs uppercase tracking-widest text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
               {product.name}
             </h3>
           </Link>
 
           {/* Price */}
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-start gap-2 pt-0.5">
             <span className="font-bold text-xs text-foreground">
               {formatPrice(product.price)}
             </span>
@@ -251,11 +251,11 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
           </div>
 
           {/* Rating */}
-          <div className="flex items-center justify-center gap-1 text-[#8E6D4A] dark:text-[#C19A6B]">
+          <div className="flex items-center justify-start gap-1 text-[#8E6D4A] dark:text-[#C19A6B] pt-0.5">
             <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[10px]" aria-hidden="true">
               ★ ★ ★ ★ ★
             </div>
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-[10px] text-muted-foreground tracking-widest">
               ({product.reviewCount || 128})
             </span>
           </div>

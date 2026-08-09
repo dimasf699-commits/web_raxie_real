@@ -38,16 +38,16 @@ export function Footer() {
               RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit sintetis PU Leather premium dengan desain elegan dan kualitas terbaik.
             </p>
             <div className="flex items-center gap-3 pt-2">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
+              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
                 🎵
               </a>
-              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
+              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
                 🛍️
               </a>
-              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
+              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
                 💬
               </a>
             </div>
@@ -89,11 +89,11 @@ export function Footer() {
                 aria-label="Email untuk newsletter"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#121212] border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#C19A6B] focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
+                className="w-full bg-[#121212] border border-neutral-800 rounded-none px-3 py-2 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#C19A6B] focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
               />
               <button
                 type="submit"
-                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold rounded-lg px-3 py-2 flex items-center justify-center shrink-0 transition-colors"
+                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold rounded-none px-3 py-2 flex items-center justify-center shrink-0 transition-colors"
                 aria-label="Submit newsletter"
               >
                 <Send className="h-3.5 w-3.5" />

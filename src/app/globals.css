@@ -34,7 +34,7 @@
     --input: 36 22% 87%;
     --ring: 31 38% 59%;
 
-    --radius: 0.5rem;
+    --radius: 0rem;
 
     /* Custom brand variables */
     --brand-accent: #C19A6B;
@@ -136,16 +136,6 @@
     );
   }
 
-  /* Glass card */
-  .glass {
-    @apply bg-white/70 dark:bg-charcoal-800/70 backdrop-blur-xl border border-white/20 dark:border-white/5;
-  }
-
-  /* Brand gradient text */
-  .gradient-text {
-    @apply bg-gradient-to-r from-tan-500 to-tan-300 bg-clip-text text-transparent;
-  }
-
   /* Hover card lift */
   .card-hover {
     @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl;
@@ -163,12 +153,12 @@
 
   /* Badge pill */
   .badge-sale {
-    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400;
+    @apply inline-flex items-center px-2 py-0.5 text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400;
   }
 
   /* Input base */
   .input-base {
-    @apply flex w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors;
+    @apply flex w-full rounded-none border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors;
   }
 
   /* Aspect ratios */

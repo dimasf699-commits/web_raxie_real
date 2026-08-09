@@ -105,7 +105,7 @@ export function Navbar() {
   return (
     <>
       {/* Permanent Luxury Dark Sticky Navbar Header */}
-      <header className="sticky top-0 left-0 right-0 z-50 bg-[#0B0A08] text-white border-b border-neutral-900 shadow-xl">
+      <header className="sticky top-0 left-0 right-0 z-50 bg-black text-white border-b border-neutral-900">
         <AnnouncementBar />
         <div className="container-raxie h-16 flex items-center justify-between">
           {/* Logo with Emblem Image + RAXIE Title */}
@@ -161,7 +161,7 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-1 w-52 rounded-xl bg-[#121212] border border-neutral-800 shadow-xl overflow-hidden py-1"
+                      className="absolute top-full left-0 mt-1 w-52 rounded-none bg-black border border-neutral-800 shadow-2xl overflow-hidden py-1"
                     >
                       {link.children.map((child: any) => (
                         <Link
@@ -276,7 +276,7 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 rounded-xl bg-[#121212] border border-neutral-800 text-white shadow-2xl overflow-hidden py-1 z-50"
+                        className="absolute right-0 mt-2 w-56 rounded-none bg-black border border-neutral-800 text-white shadow-2xl overflow-hidden py-1 z-50"
                       >
                         <div className="px-4 py-3 border-b border-neutral-800">
                           <p className="text-xs font-bold text-white truncate uppercase">{session.user?.name}</p>
@@ -360,7 +360,7 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#121212] border-b border-neutral-800 shadow-2xl relative"
+              className="bg-black border-b border-neutral-800 shadow-2xl relative"
             >
               <div className="container-raxie py-4">
                 <div className="relative flex items-center gap-3">
@@ -399,7 +399,7 @@ export function Navbar() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="absolute top-full left-0 right-0 bg-[#121212] border-b border-neutral-800 shadow-2xl overflow-hidden z-50"
+                    className="absolute top-full left-0 right-0 bg-black border-b border-neutral-800 shadow-2xl overflow-hidden z-50"
                   >
                     <div className="container-raxie max-h-[60vh] overflow-y-auto py-2">
                       {isSearching ? (
@@ -414,9 +414,9 @@ export function Navbar() {
                               key={item.id} 
                               href={`/products/${item.slug}`}
                               onClick={() => setIsSearchOpen(false)}
-                              className="flex items-center gap-4 p-3 hover:bg-black rounded-xl transition-colors group border border-neutral-800/50"
+                              className="flex items-center gap-4 p-3 hover:bg-neutral-900 transition-colors group border-b border-neutral-900/50 last:border-b-0"
                             >
-                              <div className="w-14 h-14 bg-black rounded-lg overflow-hidden border border-neutral-800 relative flex-shrink-0">
+                              <div className="w-14 h-14 bg-neutral-900 overflow-hidden border border-neutral-800 relative flex-shrink-0">
                                 {item.image ? (
                                   <Image src={item.image} alt={item.name} fill sizes="56px" className="object-cover group-hover:scale-105 transition-transform" />
                                 ) : (
@@ -474,7 +474,7 @@ export function Navbar() {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-4/5 max-w-sm h-full bg-[#0B0A08] border-r border-neutral-800 p-6 flex flex-col justify-between"
+              className="w-4/5 max-w-sm h-full bg-black border-r border-neutral-800 p-6 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between pb-6 border-b border-neutral-800">
@@ -553,7 +553,7 @@ export function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setIsMobileOpen(false)}
-                    className="block w-full text-center bg-[#C19A6B] text-black font-bold text-xs uppercase py-3 rounded-lg"
+                    className="block w-full text-center bg-[#C19A6B] text-black font-bold text-xs uppercase py-3 rounded-none hover:bg-[#A8835A] transition-colors"
                   >
                     MASUK AKUN
                   </Link>
