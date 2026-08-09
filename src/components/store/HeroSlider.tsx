@@ -81,13 +81,13 @@ export function HeroSlider() {
   return (
     <section className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
       {/* 100% Crisp Uncropped Background Image Carousel */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={activeSlide.id}
-          initial={{ opacity: 0 }}
+          initial={false}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          transition={{ duration: 0.4, ease: 'easeInOut' }}
           className="absolute inset-0 z-0"
         >
           <Image
@@ -95,7 +95,8 @@ export function HeroSlider() {
             alt={activeSlide.title}
             fill
             priority={activeSlide.id === 1}
-            sizes="100vw"
+            fetchPriority={activeSlide.id === 1 ? 'high' : 'auto'}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
             className="object-contain md:object-cover object-center"
           />
         </motion.div>
@@ -103,13 +104,13 @@ export function HeroSlider() {
 
       {/* Content Container (Pushed tightly to left with clear readable badges & CTA) */}
       <div className="w-full relative z-10 py-10 md:py-16 px-6 sm:px-12 lg:px-20">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeSlide.id}
-            initial={{ opacity: 0, x: -30 }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
             className="max-w-md lg:max-w-xl space-y-4 md:space-y-5"
           >
             {/* Tag / Subtitle */}

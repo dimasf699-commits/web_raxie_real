@@ -122,7 +122,7 @@ export default async function HomePage() {
                   </span>
                 </div>
                 <div className="w-16 h-16 relative rounded-lg overflow-hidden shrink-0 border border-border">
-                  <Image src={cat.image} alt={cat.name} fill className="object-cover group-hover:scale-110 transition-transform duration-300" />
+                  <Image src={cat.image} alt={cat.name} fill sizes="64px" loading="lazy" className="object-cover group-hover:scale-110 transition-transform duration-300" />
                 </div>
               </Link>
             ))}
@@ -195,6 +195,8 @@ export default async function HomePage() {
                 src="https://i.imgur.com/1QtzAZ5.png"
                 alt="Pengrajin RAXIE"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                loading="lazy"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">

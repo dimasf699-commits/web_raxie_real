@@ -38,16 +38,16 @@ export function Footer() {
               RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit sintetis PU Leather premium dengan desain elegan dan kualitas terbaik.
             </p>
             <div className="flex items-center gap-3 pt-2">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
+              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
                 🎵
               </a>
-              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
+              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
                 🛍️
               </a>
-              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
+              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
                 💬
               </a>
             </div>

@@ -184,7 +184,7 @@ export function Navbar() {
             {/* Search */}
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
               className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
@@ -195,8 +195,8 @@ export function Navbar() {
             {/* Theme Toggle */}
             <Button
               variant="ghost"
-              size="icon-sm"
-              aria-label="Toggle tema"
+              size="icon"
+              aria-label="Toggle tema tampilan"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 hidden sm:flex"
             >
@@ -210,8 +210,8 @@ export function Navbar() {
             {/* Wishlist */}
             <Button
               variant="ghost"
-              size="icon-sm"
-              aria-label="Wishlist"
+              size="icon"
+              aria-label="Lihat wishlist simpanan"
               asChild
               className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative hidden sm:flex"
             >
@@ -232,7 +232,7 @@ export function Navbar() {
             {/* Cart */}
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               aria-label="Keranjang belanja"
               onClick={openCart}
               className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative"
@@ -334,8 +334,8 @@ export function Navbar() {
             {/* Mobile hamburger */}
             <Button
               variant="ghost"
-              size="icon-sm"
-              aria-label="Menu"
+              size="icon"
+              aria-label="Buka menu navigasi"
               onClick={() => setIsMobileOpen(true)}
               className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 lg:hidden"
             >
