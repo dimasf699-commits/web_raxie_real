@@ -15,7 +15,7 @@ interface Slide {
   description: string
   buttonText: string
   buttonLink: string
-  badges: { icon: any; title: string; desc: string }[]
+  badges?: { icon: any; title: string; desc: string }[]
 }
 
 const SLIDES: Slide[] = [
