@@ -1,8 +1,6 @@
 export default function StoreLoading() {
   return (
     <div className="container-raxie py-8 md:py-12 space-y-10 animate-pulse">
-      {/* Hero Skeleton */}
-      <div className="w-full h-[400px] md:h-[500px] bg-muted/60 rounded-3xl" />
 
       {/* Grid Skeleton */}
       <div className="space-y-4">

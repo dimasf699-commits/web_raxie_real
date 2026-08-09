@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -94,70 +95,16 @@ async function getHomepageData() {
   }
 }
 
-export default async function HomePage() {
-  const { bestSellers, categories } = await getHomepageData()
-
+export default function HomePage() {
   return (
     <div className="bg-background text-foreground min-h-screen overflow-x-hidden font-sans transition-colors duration-300">
       
       {/* ─── 1. HERO SLIDER CAROUSEL (FULL WIDTH BACKGROUND) ──────────────── */}
       <HeroSlider />
 
-      {/* ─── 2. CATEGORY CARDS ─────────────────────────────────────────────── */}
-      <section className="py-12 bg-background text-foreground transition-colors duration-300">
-        <div className="container-raxie">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <h2 className="sr-only">Kategori Produk</h2>
-            {categories.map((cat) => (
-              <Link
-                key={cat.name}
-                href={cat.href}
-                className="group relative bg-card rounded-xl p-6 flex items-center justify-between border border-border hover:border-[#8E6D4A] dark:hover:border-[#C19A6B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] transition-all shadow-sm hover:shadow-md"
-              >
-                <div>
-                  <h3 className="font-serif font-bold text-lg tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors">
-                    {cat.name}
-                  </h3>
-                  <span className="text-[11px] text-muted-foreground uppercase font-bold tracking-widest mt-1 block group-hover:underline">
-                    Lihat Produk &rarr;
-                  </span>
-                </div>
-                <div className="w-16 h-16 relative rounded-lg overflow-hidden shrink-0 border border-border">
-                  <Image src={cat.image} alt={cat.name} fill sizes="64px" loading="lazy" className="object-cover group-hover:scale-110 transform-gpu transition-transform duration-300" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── 3. BEST SELLERS ──────────────────────────────────────────────── */}
-      <section className="py-16 bg-muted/40 border-y border-border transition-colors duration-300">
-        <div className="container-raxie">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-            <div>
-              <span className="text-[#8E6D4A] dark:text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1">
-                PILIHAN TERFAVORIT
-              </span>
-              <h2 className="font-serif text-2xl md:text-4xl font-normal text-foreground uppercase tracking-wide">
-                PRODUK TERLARIS
-              </h2>
-            </div>
-            <Link
-              href="/products"
-              className="text-xs font-bold tracking-wider text-[#8E6D4A] dark:text-[#C19A6B] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] rounded-md flex items-center gap-1 uppercase"
-            >
-              LIHAT SEMUA PRODUK <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {bestSellers.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <Suspense fallback={<StoreGridSkeleton />}>
+        <DynamicStoreContent />
+      </Suspense>
 
       {/* ─── 4. TRUST BAR (PERMANENT LUXURY DARK BACKGROUND) ─────────────── */}
       <section className="py-12 bg-[#070707] text-white border-b border-neutral-900">
@@ -230,6 +177,83 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+    </div>
+  )
+}
+
+async function DynamicStoreContent() {
+  const { bestSellers, categories } = await getHomepageData()
+
+  return (
+    <>
+      {/* ─── 2. CATEGORY CARDS ─────────────────────────────────────────────── */}
+      <section className="py-12 bg-background text-foreground transition-colors duration-300">
+        <div className="container-raxie">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <h2 className="sr-only">Kategori Produk</h2>
+            {categories.map((cat) => (
+              <Link
+                key={cat.name}
+                href={cat.href}
+                className="group relative bg-card rounded-xl p-6 flex items-center justify-between border border-border hover:border-[#8E6D4A] dark:hover:border-[#C19A6B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] transition-all shadow-sm hover:shadow-md"
+              >
+                <div>
+                  <h3 className="font-serif font-bold text-lg tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors">
+                    {cat.name}
+                  </h3>
+                  <span className="text-[11px] text-muted-foreground uppercase font-bold tracking-widest mt-1 block group-hover:underline">
+                    Lihat Produk &rarr;
+                  </span>
+                </div>
+                <div className="w-16 h-16 relative rounded-lg overflow-hidden shrink-0 border border-border">
+                  <Image src={cat.image} alt={cat.name} fill sizes="64px" loading="lazy" className="object-cover group-hover:scale-110 transform-gpu transition-transform duration-300" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 3. BEST SELLERS ──────────────────────────────────────────────── */}
+      <section className="py-16 bg-muted/40 border-y border-border transition-colors duration-300">
+        <div className="container-raxie">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+              <span className="text-[#8E6D4A] dark:text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1">
+                PILIHAN TERFAVORIT
+              </span>
+              <h2 className="font-serif text-2xl md:text-4xl font-normal text-foreground uppercase tracking-wide">
+                PRODUK TERLARIS
+              </h2>
+            </div>
+            <Link
+              href="/products"
+              className="text-xs font-bold tracking-wider text-[#8E6D4A] dark:text-[#C19A6B] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] rounded-md flex items-center gap-1 uppercase"
+            >
+              LIHAT SEMUA PRODUK <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}
+
+function StoreGridSkeleton() {
+  return (
+    <div className="container-raxie py-12 space-y-10 animate-pulse">
+      <div className="h-8 w-48 bg-muted/60 rounded-xl" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-80 bg-muted/50 rounded-2xl" />
+        ))}
+      </div>
     </div>
   )
 }
