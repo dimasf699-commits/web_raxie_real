@@ -142,8 +142,6 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${fraunces.variable} ${manrope.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://i.imgur.com" />
-        <link rel="preconnect" href="https://res.cloudinary.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}

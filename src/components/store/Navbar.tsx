@@ -418,7 +418,7 @@ export function Navbar() {
                             >
                               <div className="w-14 h-14 bg-black rounded-lg overflow-hidden border border-neutral-800 relative flex-shrink-0">
                                 {item.image ? (
-                                  <Image src={item.image} alt={item.name} fill className="object-cover group-hover:scale-105 transition-transform" />
+                                  <Image src={item.image} alt={item.name} fill sizes="56px" className="object-cover group-hover:scale-105 transition-transform" />
                                 ) : (
                                   <div className="w-full h-full bg-neutral-900 flex items-center justify-center text-[10px]">No Img</div>
                                 )}

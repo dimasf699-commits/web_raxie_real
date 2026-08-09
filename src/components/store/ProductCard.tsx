@@ -119,7 +119,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               fill
               loading="lazy"
               className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-              sizes="(max-width: 640px) 160px, (max-width: 1024px) 250px, 250px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </Link>
 
