@@ -113,11 +113,12 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
         {/* Image Container */}
         <div className="relative overflow-hidden rounded-2xl aspect-product bg-muted">
           <Image
-            src={getCloudinaryUrl(product.image, { width: 500, quality: 80 })}
+            src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
             alt={product.name}
             fill
+            loading="lazy"
             className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="(max-width: 640px) 160px, (max-width: 1024px) 250px, 250px"
           />
 
           {/* Badges */}

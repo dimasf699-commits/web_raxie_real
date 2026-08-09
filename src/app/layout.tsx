@@ -95,18 +95,7 @@ export const viewport: Viewport = {
 import { Suspense } from 'react'
 import MetaPixel from '@/components/analytics/MetaPixel'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
-
-import dynamic from 'next/dynamic'
-
-const DynamicLiveChatWidget = dynamic(
-  () => import('@/components/store/LiveChatWidget').then((mod) => mod.LiveChatWidget),
-  { ssr: false }
-)
-
-const DynamicCookieConsent = dynamic(
-  () => import('@/components/ui/CookieConsent').then((mod) => mod.CookieConsent),
-  { ssr: false }
-)
+import { DeferredWidgets } from '@/components/providers/DeferredWidgets'
 
 const jsonLdOrganization = {
   '@context': 'https://schema.org',
@@ -183,8 +172,7 @@ export default function RootLayout({
             <QueryProvider>
               {children}
               <Toaster />
-              <DynamicLiveChatWidget />
-              <DynamicCookieConsent />
+              <DeferredWidgets />
             </QueryProvider>
           </AuthProvider>
         </ThemeProvider>

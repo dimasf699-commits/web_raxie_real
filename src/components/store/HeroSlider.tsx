@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+
 import { ChevronLeft, ChevronRight, Award, ShieldCheck, PackageCheck, Zap, Sparkles, Box, PhoneCall, Info } from 'lucide-react'
 
 interface Slide {
@@ -65,6 +65,17 @@ const SLIDES: Slide[] = [
 
 export function HeroSlider() {
   const [current, setCurrent] = useState(0)
+  const [visitedSlides, setVisitedSlides] = useState<Set<number>>(() => new Set([0]))
+
+  useEffect(() => {
+    // Record visited slides to defer non-LCP background image downloads
+    setVisitedSlides((prev) => {
+      if (prev.has(current)) return prev
+      const next = new Set(prev)
+      next.add(current)
+      return next
+    })
+  }, [current])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -79,39 +90,40 @@ export function HeroSlider() {
   const activeSlide = SLIDES[current]
 
   return (
-    <section className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
+    <section className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center transform-gpu">
       {/* 100% Crisp Uncropped Background Image Carousel */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {SLIDES.map((slide, idx) => (
-          <div
-            key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              current === idx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-            }`}
-          >
-            <Image
-              src={slide.bgImage}
-              alt={slide.title}
-              fill
-              priority={idx === 0}
-              fetchPriority={idx === 0 ? 'high' : 'auto'}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-              className="object-contain md:object-cover object-center"
-            />
-          </div>
-        ))}
+        {SLIDES.map((slide, idx) => {
+          const shouldRenderImage = idx === 0 || visitedSlides.has(idx)
+          return (
+            <div
+              key={slide.id}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out transform-gpu ${
+                current === idx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+              }`}
+            >
+              {shouldRenderImage && (
+                <Image
+                  src={slide.bgImage}
+                  alt={slide.title}
+                  fill
+                  priority={idx === 0}
+                  fetchPriority={idx === 0 ? 'high' : 'low'}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+                  className="object-contain md:object-cover object-center"
+                />
+              )}
+            </div>
+          )
+        })}
       </div>
 
       {/* Content Container (Pushed tightly to left with clear readable badges & CTA) */}
       <div className="w-full relative z-10 py-10 md:py-16 px-6 sm:px-12 lg:px-20">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
+        <div className="relative">
+          <div
             key={activeSlide.id}
-            initial={false}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-            className="max-w-md lg:max-w-xl space-y-4 md:space-y-5"
+            className="max-w-md lg:max-w-xl space-y-4 md:space-y-5 animate-in fade-in slide-in-from-right-8 duration-500 fill-mode-both"
           >
             {/* Tag / Subtitle */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#C19A6B]/50 bg-black/80">
@@ -160,8 +172,8 @@ export function HeroSlider() {
                 )
               })}
             </div>
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        </div>
       </div>
 
       {/* Navigation Controls */}
