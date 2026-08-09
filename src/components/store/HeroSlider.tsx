@@ -81,26 +81,26 @@ export function HeroSlider() {
   return (
     <section className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center">
       {/* 100% Crisp Uncropped Background Image Carousel */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={activeSlide.id}
-          initial={false}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4, ease: 'easeInOut' }}
-          className="absolute inset-0 z-0"
-        >
-          <Image
-            src={activeSlide.bgImage}
-            alt={activeSlide.title}
-            fill
-            priority={activeSlide.id === 1}
-            fetchPriority={activeSlide.id === 1 ? 'high' : 'auto'}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
-            className="object-contain md:object-cover object-center"
-          />
-        </motion.div>
-      </AnimatePresence>
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {SLIDES.map((slide, idx) => (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+              current === idx ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            }`}
+          >
+            <Image
+              src={slide.bgImage}
+              alt={slide.title}
+              fill
+              priority={idx === 0}
+              fetchPriority={idx === 0 ? 'high' : 'auto'}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 100vw"
+              className="object-contain md:object-cover object-center"
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Content Container (Pushed tightly to left with clear readable badges & CTA) */}
       <div className="w-full relative z-10 py-10 md:py-16 px-6 sm:px-12 lg:px-20">

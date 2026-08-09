@@ -1,0 +1,8 @@
+# Target modern browsers to eliminate legacy polyfills
+chrome >= 90
+firefox >= 88
+safari >= 14
+edge >= 90
+ios >= 14
+not dead
+not op_mini all
