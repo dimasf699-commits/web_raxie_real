@@ -78,6 +78,10 @@ export function HeroSlider() {
   }, [current])
 
   useEffect(() => {
+    // Respect prefers-reduced-motion
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (mediaQuery.matches) return
+
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % SLIDES.length)
     }, 6000)
@@ -90,9 +94,14 @@ export function HeroSlider() {
   const activeSlide = SLIDES[current]
 
   return (
-    <section className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center transform-gpu">
+    <section 
+      className="relative w-full aspect-[16/7] min-h-[380px] sm:min-h-[460px] md:min-h-[520px] max-h-[680px] bg-black text-white overflow-hidden border-b border-neutral-900 flex items-center transform-gpu"
+      role="region" 
+      aria-roledescription="carousel" 
+      aria-label="Koleksi Utama"
+    >
       {/* 100% Crisp Uncropped Background Image Carousel */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <div className="absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
         {SLIDES.map((slide, idx) => {
           const shouldRenderImage = idx === 0 || visitedSlides.has(idx)
           return (
@@ -120,7 +129,7 @@ export function HeroSlider() {
 
       {/* Content Container (Pushed tightly to left with clear readable badges & CTA) */}
       <div className="w-full relative z-10 py-10 md:py-16 px-6 sm:px-12 lg:px-20">
-        <div className="relative">
+        <div className="relative" role="group" aria-roledescription="slide" aria-label={`Slide ${current + 1} dari ${SLIDES.length}`}>
           <div
             key={activeSlide.id}
             className="max-w-md lg:max-w-xl space-y-4 md:space-y-5 animate-in fade-in slide-in-from-right-8 duration-500 fill-mode-both"
@@ -179,16 +188,16 @@ export function HeroSlider() {
       {/* Navigation Controls */}
       <button
         onClick={prevSlide}
-        aria-label="Previous slide"
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full border border-white/20 bg-black/80 text-white/80 hover:text-white hover:bg-black hover:border-white transition-all flex items-center justify-center"
+        aria-label="Slide sebelumnya"
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full border border-white/20 bg-black/80 text-white/80 hover:text-white hover:bg-black hover:border-white transition-all flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
 
       <button
         onClick={nextSlide}
-        aria-label="Next slide"
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full border border-white/20 bg-black/80 text-white/80 hover:text-white hover:bg-black hover:border-white transition-all flex items-center justify-center"
+        aria-label="Slide selanjutnya"
+        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full border border-white/20 bg-black/80 text-white/80 hover:text-white hover:bg-black hover:border-white transition-all flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
       >
         <ChevronRight className="w-5 h-5" />
       </button>

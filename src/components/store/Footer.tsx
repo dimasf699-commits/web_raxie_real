@@ -55,7 +55,7 @@ export function Footer() {
 
           {/* Col 2: INFORMASI */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">INFORMASI</h3>
+            <h2 className="text-xs font-bold tracking-[0.15em] uppercase text-white">INFORMASI</h2>
             <ul className="space-y-2 text-xs text-neutral-400">
               <li><Link href="/about" className="hover:text-[#C19A6B] transition-colors">Tentang Kami</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-[#C19A6B] transition-colors">Kebijakan Privasi</Link></li>
@@ -67,7 +67,7 @@ export function Footer() {
 
           {/* Col 3: KATEGORI */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">KATEGORI</h3>
+            <h2 className="text-xs font-bold tracking-[0.15em] uppercase text-white">KATEGORI</h2>
             <ul className="space-y-2 text-xs text-neutral-400">
               <li><Link href="/products?category=dompet" className="hover:text-[#C19A6B] transition-colors">Dompet</Link></li>
               <li><Link href="/products?category=tas" className="hover:text-[#C19A6B] transition-colors">Tas</Link></li>
@@ -78,7 +78,7 @@ export function Footer() {
 
           {/* Col 4: NEWSLETTER */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold tracking-[0.15em] uppercase text-white">NEWSLETTER</h3>
+            <h2 className="text-xs font-bold tracking-[0.15em] uppercase text-white">NEWSLETTER</h2>
             <p className="text-xs text-neutral-400">
               Dapatkan info terbaru dan promo eksklusif dari RAXIE.
             </p>
@@ -86,9 +86,10 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Masukkan email Anda"
+                aria-label="Email untuk newsletter"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#121212] border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#C19A6B]"
+                className="w-full bg-[#121212] border border-neutral-800 rounded-lg px-3 py-2 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#C19A6B] focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
               />
               <button
                 type="submit"

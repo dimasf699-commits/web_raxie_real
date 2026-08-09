@@ -107,17 +107,18 @@ export default async function HomePage() {
       <section className="py-12 bg-background text-foreground transition-colors duration-300">
         <div className="container-raxie">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <h2 className="sr-only">Kategori Produk</h2>
             {categories.map((cat) => (
               <Link
                 key={cat.name}
                 href={cat.href}
-                className="group relative bg-card rounded-xl p-6 flex items-center justify-between border border-border hover:border-[#C19A6B] transition-all shadow-sm hover:shadow-md"
+                className="group relative bg-card rounded-xl p-6 flex items-center justify-between border border-border hover:border-[#8E6D4A] dark:hover:border-[#C19A6B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] transition-all shadow-sm hover:shadow-md"
               >
                 <div>
-                  <h3 className="font-serif font-bold text-lg tracking-wider text-foreground group-hover:text-[#C19A6B] transition-colors">
+                  <h3 className="font-serif font-bold text-lg tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors">
                     {cat.name}
                   </h3>
-                  <span className="text-[11px] text-muted-foreground uppercase font-bold tracking-widest mt-1 block">
+                  <span className="text-[11px] text-muted-foreground uppercase font-bold tracking-widest mt-1 block group-hover:underline">
                     Lihat Produk &rarr;
                   </span>
                 </div>
@@ -135,7 +136,7 @@ export default async function HomePage() {
         <div className="container-raxie">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
             <div>
-              <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1">
+              <span className="text-[#8E6D4A] dark:text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1">
                 PILIHAN TERFAVORIT
               </span>
               <h2 className="font-serif text-2xl md:text-4xl font-normal text-foreground uppercase tracking-wide">
@@ -144,7 +145,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/products"
-              className="text-xs font-bold tracking-wider text-[#C19A6B] hover:underline flex items-center gap-1 uppercase"
+              className="text-xs font-bold tracking-wider text-[#8E6D4A] dark:text-[#C19A6B] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] rounded-md flex items-center gap-1 uppercase"
             >
               LIHAT SEMUA PRODUK <ArrowRight className="h-4 w-4" />
             </Link>
@@ -202,13 +203,13 @@ export default async function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8">
                 <div>
                   <span className="text-[#C19A6B] text-xs font-bold tracking-widest uppercase">RAXIE CRAFTSMANSHIP</span>
-                  <h3 className="font-serif text-2xl text-white font-normal uppercase mt-1">Dedikasi Pada Kualitas</h3>
+                  <p className="font-serif text-2xl text-white font-normal uppercase mt-1">Dedikasi Pada Kualitas</p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-6">
-              <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block">
+              <span className="text-[#8E6D4A] dark:text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block">
                 TENTANG BRAND RAXIE
               </span>
               <h2 className="font-serif text-3xl md:text-4xl font-normal text-foreground uppercase tracking-wide leading-tight">
@@ -220,7 +221,7 @@ export default async function HomePage() {
               <div className="pt-2">
                 <Link
                   href="/about"
-                  className="inline-flex items-center gap-2 border border-[#C19A6B] text-[#C19A6B] hover:bg-[#C19A6B] hover:text-black font-bold text-xs uppercase tracking-wider px-6 py-3 rounded transition-all"
+                  className="inline-flex items-center gap-2 border border-[#8E6D4A] dark:border-[#C19A6B] text-[#8E6D4A] dark:text-[#C19A6B] hover:bg-[#8E6D4A] dark:hover:bg-[#C19A6B] hover:text-white dark:hover:text-black font-bold text-xs uppercase tracking-wider px-6 py-3 rounded transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A]"
                 >
                   BACA SELENGKAPNYA <ArrowRight className="h-4 w-4" />
                 </Link>

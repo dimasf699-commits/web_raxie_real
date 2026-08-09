@@ -368,6 +368,7 @@ export function Navbar() {
                   <input
                     ref={searchRef}
                     type="search"
+                    aria-label="Cari produk"
                     placeholder="Cari dompet, tas, sabuk..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -382,8 +383,9 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
+                    aria-label="Tutup pencarian"
                     onClick={() => setIsSearchOpen(false)}
-                    className="text-white hover:bg-neutral-800"
+                    className="text-white hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -495,8 +497,9 @@ export function Navbar() {
                   <Button
                     variant="ghost"
                     size="icon-sm"
+                    aria-label="Tutup menu"
                     onClick={() => setIsMobileOpen(false)}
-                    className="text-neutral-400 hover:text-white"
+                    className="text-neutral-400 hover:text-white focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
                   >
                     <X className="h-5 w-5" />
                   </Button>

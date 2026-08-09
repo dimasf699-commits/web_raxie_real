@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, ShoppingBag, Eye, Scale } from 'lucide-react'
@@ -104,25 +105,26 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
 
   return (
     <div
-      className="group relative cursor-pointer block"
+      className="group relative block"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => router.push(`/products/${product.slug}`)}
     >
       <div>
         {/* Image Container */}
         <div className="relative overflow-hidden rounded-2xl aspect-product bg-muted">
-          <Image
-            src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
-            alt={product.name}
-            fill
-            loading="lazy"
-            className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-            sizes="(max-width: 640px) 160px, (max-width: 1024px) 250px, 250px"
-          />
+          <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
+            <Image
+              src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
+              alt={product.name}
+              fill
+              loading="lazy"
+              className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+              sizes="(max-width: 640px) 160px, (max-width: 1024px) 250px, 250px"
+            />
+          </Link>
 
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10 pointer-events-none">
             {discount > 0 && (
               <Badge variant="sale">-{discount}%</Badge>
             )}
@@ -171,7 +173,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               aria-label="Bandingkan produk"
               className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
-              <Scale className={`h-4 w-4 ${isCompared ? 'text-[#C19A6B]' : 'text-foreground/70'}`} />
+              <Scale className={`h-4 w-4 ${isCompared ? 'text-[#8E6D4A] dark:text-[#C19A6B]' : 'text-foreground/70'}`} />
             </motion.button>
 
             {/* Quick View */}
@@ -229,10 +231,12 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
         </div>
 
         {/* Product Info */}
-        <div className="mt-3 px-1 text-center space-y-1">
-          <h3 className="font-bold text-xs uppercase tracking-wider text-foreground group-hover:text-[#C19A6B] transition-colors line-clamp-1">
-            {product.name}
-          </h3>
+        <div className="mt-3 px-1 text-center space-y-1 relative z-10">
+          <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline rounded-md inline-block">
+            <h3 className="font-bold text-xs uppercase tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
+              {product.name}
+            </h3>
+          </Link>
 
           {/* Price */}
           <div className="flex items-center justify-center gap-2">
@@ -247,8 +251,8 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
           </div>
 
           {/* Rating */}
-          <div className="flex items-center justify-center gap-1 text-[#C19A6B]">
-            <div className="flex text-[#C19A6B] text-[10px]">
+          <div className="flex items-center justify-center gap-1 text-[#8E6D4A] dark:text-[#C19A6B]">
+            <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[10px]" aria-hidden="true">
               ★ ★ ★ ★ ★
             </div>
             <span className="text-[10px] text-muted-foreground">
