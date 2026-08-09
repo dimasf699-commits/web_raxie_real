@@ -122,7 +122,7 @@ export default async function HomePage() {
                   </span>
                 </div>
                 <div className="w-16 h-16 relative rounded-lg overflow-hidden shrink-0 border border-border">
-                  <Image src={cat.image} alt={cat.name} fill sizes="64px" loading="lazy" className="object-cover group-hover:scale-110 transition-transform duration-300" />
+                  <Image src={cat.image} alt={cat.name} fill sizes="64px" loading="lazy" className="object-cover group-hover:scale-110 transform-gpu transition-transform duration-300" />
                 </div>
               </Link>
             ))}
@@ -164,22 +164,22 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div className="p-4 space-y-2">
               <Truck className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white">GRATIS ONGKIR</h4>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white">GRATIS ONGKIR</h3>
               <p className="text-[11px] text-neutral-400">Seluruh Indonesia tanpa min. belanja</p>
             </div>
             <div className="p-4 space-y-2">
               <ShieldCheck className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white">GARANSI 1 TAHUN</h4>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white">GARANSI 1 TAHUN</h3>
               <p className="text-[11px] text-neutral-400">Jaminan kualitas & material</p>
             </div>
             <div className="p-4 space-y-2">
               <PackageCheck className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white">PEMBAYARAN AMAN</h4>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white">PEMBAYARAN AMAN</h3>
               <p className="text-[11px] text-neutral-400">BCA, Mandiri, QRIS & Midtrans</p>
             </div>
             <div className="p-4 space-y-2">
               <Zap className="h-6 w-6 text-[#C19A6B] mx-auto" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-white">PROSES FAST RESPONSE</h4>
+              <h3 className="text-xs font-bold uppercase tracking-wider text-white">PROSES FAST RESPONSE</h3>
               <p className="text-[11px] text-neutral-400">Dikirim pada hari yang sama</p>
             </div>
           </div>
