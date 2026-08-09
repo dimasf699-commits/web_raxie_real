@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
 
 import { ChevronLeft, ChevronRight, Award, ShieldCheck, PackageCheck, Zap, Sparkles, Box, PhoneCall, Info } from 'lucide-react'
 
@@ -130,58 +131,64 @@ export function HeroSlider() {
       {/* Content Container (Pushed tightly to left with clear readable badges & CTA) */}
       <div className="w-full relative z-10 py-10 md:py-16 px-6 sm:px-12 lg:px-20">
         <div className="relative" role="group" aria-roledescription="slide" aria-label={`Slide ${current + 1} dari ${SLIDES.length}`}>
-          <div
-            key={activeSlide.id}
-            className="max-w-md lg:max-w-xl space-y-4 md:space-y-5 animate-in fade-in slide-in-from-right-8 duration-500 fill-mode-both"
-          >
-            {/* Tag / Subtitle */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#C19A6B]/50 bg-black/80">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C19A6B] animate-pulse" />
-              <span className="text-[#C19A6B] text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase">
-                {activeSlide.subtitle}
-              </span>
-            </div>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={activeSlide.id}
+              initial={false}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              className="max-w-md lg:max-w-xl space-y-4 md:space-y-5"
+            >
+              {/* Tag / Subtitle */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded border border-[#C19A6B]/50 bg-black/80">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C19A6B] animate-pulse" />
+                <span className="text-[#C19A6B] text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase">
+                  {activeSlide.subtitle}
+                </span>
+              </div>
 
-            {/* Main Title */}
-            <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-normal text-white tracking-tight leading-[1.1] uppercase drop-shadow-md">
-              {activeSlide.title}
-            </h1>
+              {/* Main Title */}
+              <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-normal text-white tracking-tight leading-[1.1] uppercase drop-shadow-md">
+                {activeSlide.title}
+              </h1>
 
-            {/* Description */}
-            <p className="text-neutral-200 text-xs sm:text-sm max-w-md leading-relaxed font-normal drop-shadow hidden sm:block">
-              {activeSlide.description}
-            </p>
+              {/* Description */}
+              <p className="text-neutral-200 text-xs sm:text-sm max-w-md leading-relaxed font-normal drop-shadow hidden sm:block">
+                {activeSlide.description}
+              </p>
 
-            {/* Single Specific Action Button */}
-            <div className="pt-1">
-              <Link
-                href={activeSlide.buttonLink}
-                className="inline-block bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-7 py-3 rounded shadow-xl transition-all hover:scale-105"
-              >
-                {activeSlide.buttonText}
-              </Link>
-            </div>
+              {/* Single Specific Action Button */}
+              <div className="pt-1">
+                <Link
+                  href={activeSlide.buttonLink}
+                  className="inline-block bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-[0.15em] px-7 py-3 rounded shadow-xl transition-all hover:scale-105"
+                >
+                  {activeSlide.buttonText}
+                </Link>
+              </div>
 
-            {/* Sub-Badges (Clean solid background without blur) */}
-            <div className="grid grid-cols-2 gap-2.5 pt-4 border-t border-neutral-800/80 max-w-md hidden sm:grid">
-              {activeSlide.badges.map((badge, idx) => {
-                const IconComponent = badge.icon
-                return (
-                  <div key={idx} className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full border border-neutral-700 bg-black/80 flex items-center justify-center shrink-0">
-                      <IconComponent className="h-3.5 w-3.5 text-[#C19A6B]" />
+              {/* Sub-Badges (Clean solid background without blur) */}
+              <div className="grid grid-cols-2 gap-2.5 pt-4 border-t border-neutral-800/80 max-w-md hidden sm:grid">
+                {activeSlide.badges.map((badge, idx) => {
+                  const IconComponent = badge.icon
+                  return (
+                    <div key={idx} className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full border border-neutral-700 bg-black/80 flex items-center justify-center shrink-0">
+                        <IconComponent className="h-3.5 w-3.5 text-[#C19A6B]" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-white uppercase tracking-wider leading-tight">
+                          {badge.title}
+                        </p>
+                        <p className="text-[9px] text-neutral-400 leading-tight">{badge.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-white uppercase tracking-wider leading-tight">
-                        {badge.title}
-                      </p>
-                      <p className="text-[9px] text-neutral-400 leading-tight">{badge.desc}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+                  )
+                })}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
