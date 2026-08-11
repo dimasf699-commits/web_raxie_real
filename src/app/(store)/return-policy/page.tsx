@@ -8,7 +8,9 @@ export const metadata: Metadata = {
 
 export default function ReturnPolicyPage() {
   return (
-        <div className="mt-8 max-w-3xl space-y-6">
+    <div className="container-raxie py-12">
+      <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'Kebijakan Pengembalian', href: '/return-policy' }]} />
+      <div className="mt-8 max-w-3xl space-y-6">
           <div>
             <h1 className="font-serif font-extrabold text-3xl md:text-4xl mb-4 uppercase tracking-tight text-black dark:text-white">Kebijakan Pengembalian Dana & Garansi</h1>
           </div>
