@@ -25,8 +25,6 @@ export default function ProfilePage() {
           <h2 className="font-bold text-sm uppercase tracking-wider text-black dark:text-white">Biodata Diri</h2>
           <button
             onClick={() => setIsEditing(!isEditing)}
-          <button
-            onClick={() => setIsEditing(!isEditing)}
             className="text-[11px] font-bold uppercase tracking-wider text-[#C19A6B] hover:text-black dark:hover:text-white transition-colors"
           >
             {isEditing ? 'Batal' : 'Ubah'}
