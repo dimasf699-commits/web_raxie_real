@@ -48,36 +48,36 @@ export function Footer() {
 
           {/* Col 2: QUICK LINKS */}
           <div className="space-y-4">
-            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">QUICK LINKS</h2>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">TAUTAN CEPAT</h2>
             <ul className="space-y-3 text-[13px] text-neutral-500 font-medium">
-              <li><Link href="/" className="hover:text-black dark:hover:text-white transition-colors">Home</Link></li>
-              <li><Link href="/products" className="hover:text-black dark:hover:text-white transition-colors">Collections</Link></li>
-              <li><Link href="/about" className="hover:text-black dark:hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/why-raxie" className="hover:text-black dark:hover:text-white transition-colors">Why Raxie</Link></li>
+              <li><Link href="/" className="hover:text-black dark:hover:text-white transition-colors">Beranda</Link></li>
+              <li><Link href="/products" className="hover:text-black dark:hover:text-white transition-colors">Koleksi</Link></li>
+              <li><Link href="/about" className="hover:text-black dark:hover:text-white transition-colors">Tentang Kami</Link></li>
+              <li><Link href="/why-raxie" className="hover:text-black dark:hover:text-white transition-colors">Kenapa Raxie</Link></li>
             </ul>
           </div>
 
           {/* Col 3: HELP & SUPPORT */}
           <div className="space-y-4">
-            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">HELP & SUPPORT</h2>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">BANTUAN & DUKUNGAN</h2>
             <ul className="space-y-3 text-[13px] text-neutral-500 font-medium">
-              <li><Link href="/contact" className="hover:text-black dark:hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link href="/contact" className="hover:text-black dark:hover:text-white transition-colors">Hubungi Kami</Link></li>
               <li><Link href="/faq" className="hover:text-black dark:hover:text-white transition-colors">FAQ</Link></li>
-              <li><Link href="/shipping" className="hover:text-black dark:hover:text-white transition-colors">Shipping & Returns</Link></li>
-              <li><Link href="/size-guide" className="hover:text-black dark:hover:text-white transition-colors">Size Guide</Link></li>
+              <li><Link href="/shipping-policy" className="hover:text-black dark:hover:text-white transition-colors">Pengiriman & Retur</Link></li>
+              <li><Link href="/size-guide" className="hover:text-black dark:hover:text-white transition-colors">Panduan Ukuran</Link></li>
             </ul>
           </div>
 
           {/* Col 4: NEWSLETTER */}
           <div className="space-y-4 lg:pl-4">
-            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">NEWSLETTER</h2>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">BERLANGGANAN</h2>
             <p className="text-[13px] text-neutral-500 leading-relaxed font-medium">
               Dapatkan info terbaru dan promo menarik langsung ke email Anda.
             </p>
             <form onSubmit={handleSubscribe} className="flex gap-2 pt-2">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="Masukkan email Anda"
                 aria-label="Email untuk newsletter"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -96,10 +96,10 @@ export function Footer() {
 
         {/* Bottom copyright */}
         <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[12px] text-neutral-500 font-medium">
-          <p>© 2024 RAXIE. All Rights Reserved.</p>
+          <p>© 2026 RAXIE. Hak Cipta Dilindungi.</p>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="hover:text-black transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-black transition-colors">Terms & Conditions</Link>
+            <Link href="/privacy-policy" className="hover:text-black transition-colors">Kebijakan Privasi</Link>
+            <Link href="/terms" className="hover:text-black transition-colors">Syarat & Ketentuan</Link>
           </div>
         </div>
       </div>

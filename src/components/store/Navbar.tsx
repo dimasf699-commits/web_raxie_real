@@ -28,20 +28,20 @@ import { AnnouncementBar } from '@/components/store/AnnouncementBar'
 import { Button } from '@/components/ui/Button'
 
 const defaultNavLinks = [
-  { href: '/', label: 'Home' },
+  { href: '/', label: 'Beranda' },
   { 
     href: '/products', 
-    label: 'Collections',
+    label: 'Koleksi',
     children: [
-      { href: '/products?category=dompet', label: 'Wallet' },
-      { href: '/products?category=tas', label: 'Bag' },
-      { href: '/products?category=sabuk', label: 'Belt' },
+      { href: '/products?category=dompet', label: 'Dompet' },
+      { href: '/products?category=tas', label: 'Tas' },
+      { href: '/products?category=sabuk', label: 'Sabuk' },
     ]
   },
-  { href: '/about', label: 'About Us' },
-  { href: '/why-raxie', label: 'Why Raxie' },
-  { href: '/reviews', label: 'Reviews' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/about', label: 'Tentang Kami' },
+  { href: '/why-raxie', label: 'Kenapa Raxie' },
+  { href: '/reviews', label: 'Ulasan' },
+  { href: '/contact', label: 'Kontak' },
 ]
 
 export function Navbar() {
@@ -568,7 +568,7 @@ export function MobileBottomNav() {
   if (isAdmin) return null
 
   const navItems = [
-    { href: '/', icon: <HomeIcon />, label: 'Home' },
+    { href: '/', icon: <HomeIcon />, label: 'Beranda' },
     { href: '/products', icon: <Search className="h-5 w-5" />, label: 'Cari' },
     {
       icon: (

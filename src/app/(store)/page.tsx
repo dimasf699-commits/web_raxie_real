@@ -74,12 +74,12 @@ export default function HomePage() {
         <div className="w-full lg:w-[45%] flex flex-col justify-center py-16 px-6 lg:pl-16 xl:pl-32 lg:pr-12 z-10 relative">
           <div className="flex items-center gap-3 mb-6">
             <span className="w-8 h-[2px] bg-[#C19A6B]" />
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#C19A6B]">PREMIUM QUALITY</span>
+            <span className="text-[11px] font-bold tracking-[0.2em] text-[#C19A6B]">KUALITAS PREMIUM</span>
           </div>
           
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-black dark:text-white">
-            Designed<br/>
-            <span className="text-[#C19A6B]">For You.</span>
+            Didesain<br/>
+            <span className="text-[#C19A6B]">Untuk Anda.</span>
           </h1>
           
           <p className="text-neutral-500 text-[14px] leading-relaxed max-w-[380px] mb-10 font-medium">
@@ -91,13 +91,13 @@ export default function HomePage() {
               href="/products" 
               className="bg-[#121212] dark:bg-white text-white dark:text-black text-[12px] font-bold px-8 py-4 flex items-center gap-3 hover:bg-black dark:hover:bg-neutral-200 transition-colors rounded-sm"
             >
-              Shop Collection <ArrowRight className="w-4 h-4" />
+              Lihat Koleksi <ArrowRight className="w-4 h-4" />
             </Link>
             <Link 
               href="/about" 
               className="text-black dark:text-white text-[12px] font-bold flex items-center gap-2 hover:text-[#C19A6B] transition-colors"
             >
-              Explore More <ArrowRight className="w-4 h-4" />
+              Eksplorasi <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -130,19 +130,19 @@ export default function HomePage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4 py-14 px-6 sm:px-8 lg:pl-28 lg:pr-16 w-full relative z-10">
                 <div>
                   <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">975+</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Happy Customers</p>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Pelanggan Puas</p>
                 </div>
                 <div>
                   <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">320+</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Products Sold</p>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Produk Terjual</p>
                 </div>
                 <div>
                   <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">462+</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">5 Star Reviews</p>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Ulasan Bintang 5</p>
                 </div>
                 <div>
                   <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">98%</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Satisfaction Rate</p>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Tingkat Kepuasan</p>
                 </div>
               </div>
               
@@ -157,10 +157,10 @@ export default function HomePage() {
             <div className="xl:w-auto flex xl:-ml-6 xl:-mt-10 xl:-mb-10 xl:relative z-20 overflow-x-auto pb-6 px-4 xl:px-0">
               <div className="flex gap-4 min-w-max xl:min-w-0 xl:items-center xl:h-full py-4">
                 {[
-                  { icon: '💎', title: 'Premium\nMaterial' },
-                  { icon: '📐', title: 'Modern\nDesign' },
-                  { icon: '🛡️', title: 'Durable &\nLong Lasting' },
-                  { icon: '🏷️', title: 'Best Price\nGuarantee' }
+                  { icon: '💎', title: 'Material\nPremium' },
+                  { icon: '📐', title: 'Desain\nModern' },
+                  { icon: '🛡️', title: 'Kuat &\nTahan Lama' },
+                  { icon: '🏷️', title: 'Jaminan Harga\nTerbaik' }
                 ].map((feature, i) => (
                   <div 
                     key={i} 
@@ -188,29 +188,29 @@ export default function HomePage() {
             <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
               <Truck className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
               <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Free Shipping</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">Min. purchase 150K</p>
+                <h4 className="text-[13px] font-extrabold text-black mb-1">Gratis Ongkir</h4>
+                <p className="text-[11px] text-neutral-500 font-medium">Min. belanja 150Rb</p>
               </div>
             </div>
             <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
               <RefreshCcw className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
               <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Easy Return</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">14 days return</p>
+                <h4 className="text-[13px] font-extrabold text-black mb-1">Retur Mudah</h4>
+                <p className="text-[11px] text-neutral-500 font-medium">Garansi 14 hari</p>
               </div>
             </div>
             <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
               <Lock className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
               <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Secure Payment</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">100% protected</p>
+                <h4 className="text-[13px] font-extrabold text-black mb-1">Pembayaran Aman</h4>
+                <p className="text-[11px] text-neutral-500 font-medium">100% terlindungi</p>
               </div>
             </div>
             <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
               <HeadphonesIcon className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
               <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Customer Support</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">24/7 support</p>
+                <h4 className="text-[13px] font-extrabold text-black mb-1">Layanan Pelanggan</h4>
+                <p className="text-[11px] text-neutral-500 font-medium">Dukungan 24/7</p>
               </div>
             </div>
           </div>
@@ -226,9 +226,9 @@ async function DynamicStoreContent() {
   const { bestSellers, discounted } = await getHomepageData()
   
   const collectionCards = [
-    { title: 'WALLET', subtitle: 'Collection', image: 'https://i.imgur.com/X1YcH8c.jpeg', link: '/products?category=dompet' },
-    { title: 'BAG', subtitle: 'Collection', image: 'https://i.imgur.com/Y6g6vrp.jpeg', link: '/products?category=tas' },
-    { title: 'BELT', subtitle: 'Collection', image: 'https://i.imgur.com/kF5yKip.jpeg', link: '/products?category=sabuk' },
+    { title: 'DOMPET', subtitle: 'Koleksi', image: 'https://i.imgur.com/X1YcH8c.jpeg', link: '/products?category=dompet' },
+    { title: 'TAS', subtitle: 'Koleksi', image: 'https://i.imgur.com/Y6g6vrp.jpeg', link: '/products?category=tas' },
+    { title: 'SABUK', subtitle: 'Koleksi', image: 'https://i.imgur.com/kF5yKip.jpeg', link: '/products?category=sabuk' },
   ]
 
   return (
@@ -241,10 +241,10 @@ async function DynamicStoreContent() {
             <div className="max-w-[340px]">
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-6 h-[2px] bg-[#C19A6B]" />
-                <span className="text-[10px] font-bold tracking-[0.2em] text-neutral-500">EXPLORE COLLECTION</span>
+                <span className="text-[10px] font-bold tracking-[0.2em] text-neutral-500">EKSPLORASI KOLEKSI</span>
               </div>
               <h2 className="text-4xl lg:text-[42px] font-extrabold text-black dark:text-white leading-[1.1] tracking-tight">
-                Product That<br/>Elevates Your Style.
+                Produk Yang<br/>Meningkatkan Gaya Anda.
               </h2>
               <p className="text-neutral-500 text-[13px] mt-6 font-medium leading-relaxed">
                 RAXIE menyediakan berbagai pilihan produk premium yang dirancang untuk melengkapi gaya hidup modern Anda.
@@ -253,7 +253,7 @@ async function DynamicStoreContent() {
                 href="/products" 
                 className="mt-8 bg-[#121212] text-white text-[11px] font-bold tracking-wider px-7 py-3.5 flex items-center gap-3 hover:bg-black transition-colors w-fit uppercase rounded-sm"
               >
-                View All Collection <ArrowRight className="w-4 h-4" />
+                Lihat Semua Koleksi <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
             
