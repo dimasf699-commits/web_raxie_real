@@ -33,53 +33,48 @@ export default function HomePage() {
     <div className="bg-[#FAF9F6] text-black min-h-screen font-sans overflow-x-hidden">
       
       {/* ─── 1. HERO SECTION ──────────────── */}
-      <section className="relative w-full overflow-hidden bg-[#FAF9F6] lg:min-h-[650px] flex items-center">
-        {/* Diagonal split background for right side */}
-        <div 
-          className="absolute right-0 top-0 bottom-0 w-[55%] bg-[#121212] z-0 hidden lg:block"
-          style={{ clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0 100%)' }}
-        />
+      <section className="relative w-full bg-[#FAF9F6] flex flex-col lg:flex-row items-stretch lg:min-h-[650px] overflow-hidden">
         
-        <div className="container-raxie relative z-10 w-full flex flex-col lg:flex-row items-center py-12 lg:py-24">
-          {/* Left Text */}
-          <div className="w-full lg:w-[45%] lg:pr-12">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="w-8 h-[2px] bg-[#C19A6B]" />
-              <span className="text-[11px] font-bold tracking-[0.2em] text-[#C19A6B]">PREMIUM QUALITY</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-black">
-              Designed<br/>
-              <span className="text-[#C19A6B]">For You.</span>
-            </h1>
-            
-            <p className="text-neutral-500 text-[14px] leading-relaxed max-w-[380px] mb-10 font-medium">
-              RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
-            </p>
-            
-            <div className="flex items-center gap-8">
-              <Link 
-                href="/products" 
-                className="bg-[#121212] text-white text-[12px] font-bold px-8 py-4 flex items-center gap-3 hover:bg-black transition-colors rounded-sm"
-              >
-                Shop Collection <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link 
-                href="/about" 
-                className="text-black text-[12px] font-bold flex items-center gap-2 hover:text-[#C19A6B] transition-colors"
-              >
-                Explore More <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
+        {/* Left Text */}
+        <div className="w-full lg:w-[45%] flex flex-col justify-center py-16 px-6 lg:pl-16 xl:pl-32 lg:pr-12 z-10 relative">
+          <div className="flex items-center gap-3 mb-6">
+            <span className="w-8 h-[2px] bg-[#C19A6B]" />
+            <span className="text-[11px] font-bold tracking-[0.2em] text-[#C19A6B]">PREMIUM QUALITY</span>
           </div>
           
-          {/* Right Image */}
-          <div className="w-full lg:w-[55%] mt-16 lg:mt-0 flex justify-center lg:justify-end relative h-[350px] lg:h-[500px]">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-black">
+            Designed<br/>
+            <span className="text-[#C19A6B]">For You.</span>
+          </h1>
+          
+          <p className="text-neutral-500 text-[14px] leading-relaxed max-w-[380px] mb-10 font-medium">
+            RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
+          </p>
+          
+          <div className="flex items-center gap-6 flex-wrap">
+            <Link 
+              href="/products" 
+              className="bg-[#121212] text-white text-[12px] font-bold px-8 py-4 flex items-center gap-3 hover:bg-black transition-colors rounded-sm"
+            >
+              Shop Collection <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link 
+              href="/about" 
+              className="text-black text-[12px] font-bold flex items-center gap-2 hover:text-[#C19A6B] transition-colors"
+            >
+              Explore More <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+        
+        {/* Right Image Container - Clipped Diagonally */}
+        <div className="w-full lg:absolute lg:right-0 lg:top-0 lg:bottom-0 lg:w-[60%] h-[400px] lg:h-full z-0">
+          <div className="relative w-full h-full lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)]">
             <Image 
               src="https://i.imgur.com/1QtzAZ5.png"
               alt="Raxie Wallet Premium" 
               fill
-              className="object-contain lg:object-cover object-center lg:object-right scale-110 lg:scale-125 origin-center lg:origin-right drop-shadow-2xl translate-x-0 lg:-translate-x-10"
+              className="object-cover object-center lg:object-left"
               priority
             />
           </div>
@@ -87,7 +82,7 @@ export default function HomePage() {
       </section>
 
       {/* ─── 2. STATS & FEATURES ──────────────── */}
-      <section className="relative pt-16 pb-24 z-20">
+      <section className="relative pb-24 z-20">
         <div className="container-raxie max-w-[1400px] mx-auto px-0 md:px-6">
           <div className="flex flex-col xl:flex-row shadow-2xl">
             {/* Dark Stats Box */}

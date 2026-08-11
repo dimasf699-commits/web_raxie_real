@@ -189,34 +189,31 @@ export function Navbar() {
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Toggle tema tampilan"
+              aria-label="Ganti tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 hidden sm:flex"
+              className="text-black hover:bg-neutral-100 hidden md:flex"
             >
-              {isMounted && theme === 'dark' ? (
-                <Sun className="h-5 w-5 text-amber-400" />
-              ) : (
-                <Moon className="h-5 w-5 text-slate-200" />
-              )}
+              <Moon className="h-[18px] w-[18px] hidden dark:block" />
+              <Sun className="h-[18px] w-[18px] block dark:hidden" />
             </Button>
 
             {/* Wishlist */}
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Lihat wishlist simpanan"
+              aria-label="Wishlist"
               asChild
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative hidden sm:flex"
+              className="text-black hover:bg-neutral-100 relative"
             >
               <Link href="/wishlist">
-                <Heart className="h-5 w-5" />
-                {isMounted && wishlistItems > 0 && (
+                <Heart className="h-[18px] w-[18px]" />
+                {isMounted && wishlistItems.length > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center"
                   >
-                    {wishlistItems > 9 ? '9+' : wishlistItems}
+                    {wishlistItems.length > 9 ? '9+' : wishlistItems.length}
                   </motion.span>
                 )}
               </Link>
