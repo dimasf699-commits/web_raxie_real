@@ -207,13 +207,13 @@ export function Navbar() {
             >
               <Link href="/wishlist">
                 <Heart className="h-[18px] w-[18px]" />
-                {isMounted && wishlistItems.length > 0 && (
+                {isMounted && wishlistItems > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center"
                   >
-                    {wishlistItems.length > 9 ? '9+' : wishlistItems.length}
+                    {wishlistItems > 9 ? '9+' : wishlistItems}
                   </motion.span>
                 )}
               </Link>
