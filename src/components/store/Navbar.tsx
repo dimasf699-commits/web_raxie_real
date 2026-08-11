@@ -110,7 +110,7 @@ export function Navbar() {
         <AnnouncementBar />
         <div className="container-raxie h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity group w-[200px]">
+          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity group w-auto lg:w-[200px]">
             <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black dark:text-white uppercase">
               RAXIE
             </span>
@@ -172,7 +172,7 @@ export function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center justify-end gap-2 w-[200px]">
+          <div className="flex items-center justify-end gap-1 sm:gap-2 w-auto lg:w-[200px]">
             {/* Search */}
             <Button
               variant="ghost"

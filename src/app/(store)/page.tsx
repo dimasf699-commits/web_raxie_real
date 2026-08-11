@@ -77,7 +77,7 @@ export default function HomePage() {
             <span className="text-[11px] font-bold tracking-[0.2em] text-[#C19A6B]">PREMIUM QUALITY</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-black dark:text-white">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-black dark:text-white">
             Designed<br/>
             <span className="text-[#C19A6B]">For You.</span>
           </h1>
@@ -103,8 +103,8 @@ export default function HomePage() {
         </div>
         
         {/* Right Image Container - Clipped Diagonally */}
-        <div className="w-full lg:absolute lg:right-0 lg:top-0 lg:bottom-0 lg:w-[60%] h-[400px] lg:h-full z-0">
-          <div className="relative w-full h-full lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] bg-[#121212]">
+        <div className="w-full lg:absolute lg:right-0 lg:top-0 lg:bottom-0 lg:w-[60%] h-[400px] sm:h-[500px] lg:h-full z-0">
+          <div className="relative w-full h-full [clip-path:polygon(0_0,100%_0,100%_100%,0_92%)] lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] bg-[#121212]">
             <Image 
               src="https://i.imgur.com/1QtzAZ5.png"
               alt="Raxie Wallet Premium" 
@@ -127,22 +127,22 @@ export default function HomePage() {
                 OUR IMPACT
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4 py-14 px-8 lg:pl-28 lg:pr-16 w-full relative z-10">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4 py-14 px-6 sm:px-8 lg:pl-28 lg:pr-16 w-full relative z-10">
                 <div>
-                  <h3 className="text-[#C19A6B] text-4xl lg:text-5xl font-extrabold mb-3">975+</h3>
-                  <p className="text-[12px] text-neutral-400 font-semibold tracking-wide">Happy Customers</p>
+                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">975+</h3>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Happy Customers</p>
                 </div>
                 <div>
-                  <h3 className="text-[#C19A6B] text-4xl lg:text-5xl font-extrabold mb-3">320+</h3>
-                  <p className="text-[12px] text-neutral-400 font-semibold tracking-wide">Products Sold</p>
+                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">320+</h3>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Products Sold</p>
                 </div>
                 <div>
-                  <h3 className="text-[#C19A6B] text-4xl lg:text-5xl font-extrabold mb-3">462+</h3>
-                  <p className="text-[12px] text-neutral-400 font-semibold tracking-wide">5 Star Reviews</p>
+                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">462+</h3>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">5 Star Reviews</p>
                 </div>
                 <div>
-                  <h3 className="text-[#C19A6B] text-4xl lg:text-5xl font-extrabold mb-3">98%</h3>
-                  <p className="text-[12px] text-neutral-400 font-semibold tracking-wide">Satisfaction Rate</p>
+                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">98%</h3>
+                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Satisfaction Rate</p>
                 </div>
               </div>
               
@@ -258,7 +258,7 @@ async function DynamicStoreContent() {
             </div>
             
             {/* The 3 Cards */}
-            <div className="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {collectionCards.map((card, i) => (
                 <Link key={i} href={card.link} className="group relative bg-[#F4F4F4] aspect-[4/5] sm:aspect-auto sm:h-[340px] flex flex-col justify-end p-0 overflow-hidden shadow-sm rounded-sm">
                   <div className="absolute inset-0 pb-16 pt-8 px-6">
@@ -344,7 +344,7 @@ async function DynamicStoreContent() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
             {bestSellers.map((product: any) => {
               const mappedProduct = {
                 id: product.id,
@@ -380,7 +380,7 @@ async function DynamicStoreContent() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
             {discounted.map((product: any) => {
               const mappedProduct = {
                 id: product.id,
@@ -407,7 +407,7 @@ async function DynamicStoreContent() {
       <section className="bg-[#121212] text-white w-full max-w-[1920px] mx-auto overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:h-[480px]">
           {/* Left Text */}
-          <div className="w-full lg:w-[45%] p-12 lg:px-24 flex flex-col justify-center relative bg-gradient-to-br from-[#1A1A1A] to-[#121212]">
+          <div className="w-full lg:w-[45%] px-6 py-12 sm:p-12 lg:px-24 flex flex-col justify-center relative bg-gradient-to-br from-[#1A1A1A] to-[#121212]">
             <span className="text-[10px] font-bold tracking-[0.3em] text-neutral-400 mb-6 uppercase">NEW ARRIVAL</span>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-5 tracking-tight leading-[1.1]">
               New Product<br/>

@@ -19,7 +19,7 @@ export function Footer() {
   return (
     <footer className="bg-[#FAF9F6] dark:bg-neutral-950 text-black dark:text-white border-t border-neutral-200 dark:border-neutral-800 pt-16 pb-8 transition-colors">
       <div className="container-raxie">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 pb-12 border-b border-neutral-200">
           {/* Col 1: Brand Info */}
           <div className="space-y-4 lg:pr-8">
             <Link href="/" className="inline-flex items-center hover:opacity-80 transition-opacity">

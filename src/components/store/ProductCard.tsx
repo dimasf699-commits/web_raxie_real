@@ -128,49 +128,31 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
           </Link>
 
           {/* Clean Variant Action Buttons (Wishlist, Compare) */}
-          <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
-            <AnimatePresence>
-              {isHovered && (
-                <motion.button
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  onClick={handleWishlist}
-                  aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-                  className="w-8 h-8 rounded-sm bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
-                >
-                  <Heart className={`h-[14px] w-[14px] transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-neutral-600 dark:text-neutral-300'}`} />
-                </motion.button>
-              )}
-            </AnimatePresence>
+          <div className="absolute top-2 right-2 flex flex-col gap-2 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
+            <button
+              onClick={handleWishlist}
+              aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
+              className="w-8 h-8 rounded-sm bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+            >
+              <Heart className={`h-[14px] w-[14px] transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-neutral-600 dark:text-neutral-300'}`} />
+            </button>
           </div>
 
           {/* Clean Variant Add to Cart Overlay */}
-          <AnimatePresence>
-            {isHovered && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                transition={{ duration: 0.2 }}
-                className="absolute bottom-3 left-3 right-3 z-10"
-              >
-                <button
-                  onClick={handleAddToCart}
-                  disabled={addingCart || product.stock === 0}
-                  className="w-full flex items-center justify-center gap-2 bg-[#121212] dark:bg-white hover:bg-black dark:hover:bg-neutral-200 text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.1em] py-2.5 rounded-sm shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-                >
-                  {addingCart ? (
-                    <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full" />
-                  ) : (
-                    <ShoppingBag className="h-3 w-3" />
-                  )}
-                  {product.stock === 0 ? 'Stok Habis' : 'Add to Cart'}
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="absolute bottom-3 left-3 right-3 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 lg:translate-y-2 lg:group-hover:translate-y-0">
+            <button
+              onClick={handleAddToCart}
+              disabled={addingCart || product.stock === 0}
+              className="w-full flex items-center justify-center gap-2 bg-[#121212] dark:bg-white hover:bg-black dark:hover:bg-neutral-200 text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.1em] py-2.5 rounded-sm shadow-md transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {addingCart ? (
+                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full" />
+              ) : (
+                <ShoppingBag className="h-3 w-3" />
+              )}
+              {product.stock === 0 ? 'Stok Habis' : 'Add to Cart'}
+            </button>
+          </div>
         </div>
         
         <div>
@@ -231,48 +213,34 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
           </div>
 
           {/* Action Buttons */}
-          <div className="absolute top-3 right-3 flex flex-col gap-2 z-10">
+          <div className="absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
             {/* Wishlist */}
-            <motion.button
-              initial={{ opacity: 0, x: 10 }}
-              animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
-              transition={{ duration: 0.2 }}
+            <button
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
               className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
-              <motion.div
-                animate={isWishlisted ? { scale: [1, 1.4, 1] } : {}}
-                transition={{ duration: 0.3 }}
-              >
-                <Heart
-                  className={`h-4 w-4 transition-colors ${
-                    isWishlisted
-                      ? 'fill-red-500 text-red-500'
-                      : 'text-foreground/70'
-                  }`}
-                />
-              </motion.div>
-            </motion.button>
+              <Heart
+                className={`h-4 w-4 transition-colors ${
+                  isWishlisted
+                    ? 'fill-red-500 text-red-500'
+                    : 'text-foreground/70'
+                }`}
+              />
+            </button>
 
             {/* Compare */}
-            <motion.button
-              initial={{ opacity: 0, x: 10 }}
-              animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
-              transition={{ duration: 0.2, delay: 0.05 }}
+            <button
               onClick={handleCompare}
               aria-label="Bandingkan produk"
               className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
               <Scale className={`h-4 w-4 ${isCompared ? 'text-[#8E6D4A] dark:text-[#C19A6B]' : 'text-foreground/70'}`} />
-            </motion.button>
+            </button>
 
             {/* Quick View */}
             {onQuickView && (
-              <motion.button
-                initial={{ opacity: 0, x: 10 }}
-                animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
-                transition={{ duration: 0.2, delay: 0.05 }}
+              <button
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
@@ -282,43 +250,33 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
                 className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
               >
                 <Eye className="h-4 w-4 text-foreground/70" />
-              </motion.button>
+              </button>
             )}
           </div>
 
           {/* Add to Cart overlay on hover */}
-          <AnimatePresence>
-            {isHovered && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                transition={{ duration: 0.2 }}
-                className="absolute bottom-3 left-3 right-3 z-10"
-              >
-                <button
-                  onClick={handleAddToCart}
-                  disabled={addingCart || product.stock === 0}
-                  className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-                >
-                  {addingCart ? (
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 0.8 }}
-                      className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-                    />
-                  ) : (
-                    <ShoppingBag className="h-4 w-4" />
-                  )}
-                  {product.stock === 0
-                    ? 'Stok Habis'
-                    : addingCart
-                    ? 'Menambahkan...'
-                    : 'Tambah ke Keranjang'}
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="absolute bottom-3 left-3 right-3 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 lg:translate-y-2 lg:group-hover:translate-y-0">
+            <button
+              onClick={handleAddToCart}
+              disabled={addingCart || product.stock === 0}
+              className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-lg shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {addingCart ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
+                />
+              ) : (
+                <ShoppingBag className="h-4 w-4" />
+              )}
+              {product.stock === 0
+                ? 'Stok Habis'
+                : addingCart
+                ? 'Menambahkan...'
+                : 'Tambah ke Keranjang'}
+            </button>
+          </div>
         </div>
 
         {/* Product Info */}

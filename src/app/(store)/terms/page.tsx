@@ -8,6 +8,14 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
+    <div className="pt-24 pb-20 min-h-[70vh] bg-[#FAF9F6] dark:bg-[#121212] transition-colors duration-300">
+      <div className="container-raxie max-w-3xl">
+        <Breadcrumbs
+          items={[
+            { label: 'Beranda', href: '/' },
+            { label: 'Syarat & Ketentuan', href: '/terms' },
+          ]}
+        />
         <div className="mt-8 max-w-3xl space-y-6">
           <div>
             <h1 className="font-serif font-extrabold text-3xl md:text-4xl mb-2 uppercase tracking-tight text-black dark:text-white">Syarat & Ketentuan Layanan</h1>
@@ -79,6 +87,7 @@ export default function TermsPage() {
             </div>
           </div>
         </div>
+      </div>
     </div>
   )
 }

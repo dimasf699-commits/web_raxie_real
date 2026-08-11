@@ -126,7 +126,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
   return (
     <div className="text-black dark:text-white transition-colors duration-300">
       {/* ─── Main Product Section ────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-start">
         <ImageGallery images={images} alt={product.name} />
 
         <div className="flex flex-col bg-white dark:bg-[#151515] p-6 md:p-8 rounded-sm border border-neutral-200 dark:border-neutral-800 space-y-6 shadow-sm">
