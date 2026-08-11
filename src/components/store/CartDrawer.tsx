@@ -82,7 +82,7 @@ export function CartDrawer() {
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+            transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
             className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-card text-card-foreground shadow-2xl flex flex-col border-l border-border transition-colors duration-300"
           >
             {/* Drawer Header */}
@@ -120,7 +120,7 @@ export function CartDrawer() {
                   <Link
                     href="/products"
                     onClick={closeCart}
-                    className="inline-block bg-[#C19A6B] text-black font-bold text-xs uppercase px-6 py-2.5 rounded-lg mt-2 hover:bg-[#b08b5c]"
+                    className="inline-block bg-[#C19A6B] text-black font-bold text-xs uppercase px-6 py-2.5 rounded-lg mt-2 hover:bg-[#b08b5c] transition-all hover:scale-[1.02] active:scale-[0.98]"
                   >
                     Mulai Belanja
                   </Link>
@@ -228,7 +228,7 @@ export function CartDrawer() {
                 <Link
                   href="/checkout"
                   onClick={closeCart}
-                  className="w-full bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-lg"
+                  className="w-full bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg"
                 >
                   LANJUT KE PEMBAYARAN <ArrowRight className="w-4 h-4" />
                 </Link>

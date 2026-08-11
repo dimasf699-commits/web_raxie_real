@@ -111,7 +111,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
     >
       <div>
         {/* Image Container */}
-        <div className="relative overflow-hidden rounded-none aspect-product bg-muted">
+        <div className="relative overflow-hidden rounded-lg aspect-product bg-muted">
           <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
@@ -148,7 +148,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               transition={{ duration: 0.2 }}
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-              className="w-9 h-9 rounded-none bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
               <motion.div
                 animate={isWishlisted ? { scale: [1, 1.4, 1] } : {}}
@@ -171,7 +171,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
               transition={{ duration: 0.2, delay: 0.05 }}
               onClick={handleCompare}
               aria-label="Bandingkan produk"
-              className="w-9 h-9 rounded-none bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
             >
               <Scale className={`h-4 w-4 ${isCompared ? 'text-[#8E6D4A] dark:text-[#C19A6B]' : 'text-foreground/70'}`} />
             </motion.button>
@@ -188,7 +188,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
                   onQuickView(product.productId)
                 }}
                 aria-label="Quick view"
-                className="w-9 h-9 rounded-none bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+                className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
               >
                 <Eye className="h-4 w-4 text-foreground/70" />
               </motion.button>
@@ -208,7 +208,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
                 <button
                   onClick={handleAddToCart}
                   disabled={addingCart || product.stock === 0}
-                  className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-none shadow-lg transition-colors disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-lg shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
                 >
                   {addingCart ? (
                     <motion.div

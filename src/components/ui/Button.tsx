@@ -4,25 +4,25 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none rounded-none',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-semibold transition-all duration-300 ease-smooth focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 select-none rounded-lg',
   {
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.97]',
+          'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md active:scale-[0.98]',
         destructive:
-          'bg-destructive text-destructive-foreground hover:bg-destructive/90 active:scale-[0.97]',
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 active:scale-[0.98]',
         outline:
-          'border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground active:scale-[0.97]',
+          'border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground active:scale-[0.98]',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80 active:scale-[0.97]',
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80 active:scale-[0.98]',
         ghost:
-          'hover:bg-secondary hover:text-secondary-foreground active:scale-[0.97]',
+          'hover:bg-secondary hover:text-secondary-foreground active:scale-[0.98]',
         link: 'text-primary underline-offset-4 hover:underline p-0 h-auto',
         brand:
-          'bg-tan-400 text-white hover:bg-tan-500 active:scale-[0.97]',
+          'bg-tan-400 text-white hover:bg-tan-500 hover:shadow-md active:scale-[0.98]',
         'brand-outline':
-          'border border-tan-400 text-tan-400 hover:bg-tan-400 hover:text-white active:scale-[0.97] transition-colors',
+          'border border-tan-400 text-tan-400 hover:bg-tan-400 hover:text-white active:scale-[0.98] transition-colors',
       },
       size: {
         default: 'h-10 px-5 py-2',

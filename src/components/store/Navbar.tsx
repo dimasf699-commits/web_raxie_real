@@ -28,19 +28,20 @@ import { AnnouncementBar } from '@/components/store/AnnouncementBar'
 import { Button } from '@/components/ui/Button'
 
 const defaultNavLinks = [
-  { href: '/', label: 'BERANDA' },
+  { href: '/', label: 'Home' },
   { 
     href: '/products', 
-    label: 'KOLEKSI',
+    label: 'Collections',
     children: [
-      { href: '/products?category=dompet', label: 'Dompet' },
-      { href: '/products?category=tas', label: 'Tas' },
+      { href: '/products?category=dompet', label: 'Wallet' },
+      { href: '/products?category=tas', label: 'Bag' },
       { href: '/products?category=sabuk', label: 'Belt' },
     ]
   },
-  { href: '/about', label: 'TENTANG KAMI' },
-  { href: '/blog', label: 'JOURNAL' },
-  { href: '/contact', label: 'KONTAK' },
+  { href: '/about', label: 'About Us' },
+  { href: '/why-raxie', label: 'Why Raxie' },
+  { href: '/reviews', label: 'Reviews' },
+  { href: '/contact', label: 'Contact' },
 ]
 
 export function Navbar() {
@@ -104,49 +105,41 @@ export function Navbar() {
 
   return (
     <>
-      {/* Permanent Luxury Dark Sticky Navbar Header */}
-      <header className="sticky top-0 left-0 right-0 z-50 bg-black text-white border-b border-neutral-900">
+      {/* Permanent Light Sticky Navbar Header */}
+      <header className="sticky top-0 left-0 right-0 z-50 bg-[#FAF9F6] text-black border-b border-neutral-200">
         <AnnouncementBar />
-        <div className="container-raxie h-16 flex items-center justify-between">
-          {/* Logo with Emblem Image + RAXIE Title */}
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity group">
-            <Image
-              src="https://i.imgur.com/SrBEKD5.png"
-              alt="RAXIE Emblem"
-              width={40}
-              height={40}
-              className="h-8 md:h-9 w-auto object-contain shrink-0"
-              priority
-            />
-            <span className="font-serif font-extrabold text-xl md:text-2xl tracking-[0.2em] text-[#C19A6B] uppercase">
+        <div className="container-raxie h-20 flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity group w-[200px]">
+            <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black uppercase">
               RAXIE
             </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-1">
+          {/* Desktop Nav - Centered */}
+          <nav className="hidden lg:flex flex-1 items-center justify-center gap-6">
             {navLinks.map((link) => (
               <div
                 key={link.href}
-                className="relative"
+                className="relative group"
                 onMouseEnter={() => link.children && setOpenDropdown(link.href)}
                 onMouseLeave={() => setOpenDropdown(null)}
               >
                 <Link
                   href={link.href}
                   className={cn(
-                    'flex items-center gap-1 px-3 py-1.5 text-[12px] font-bold tracking-[0.15em] uppercase transition-colors',
-                    'hover:text-[#C19A6B]',
+                    'flex items-center gap-1 py-2 text-[13px] font-semibold text-neutral-800 transition-colors',
+                    'hover:text-black',
                     pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-                      ? 'text-[#C19A6B] border-b border-[#C19A6B]'
-                      : 'text-neutral-300'
+                      ? 'text-black font-bold'
+                      : ''
                   )}
                 >
                   {link.label}
                   {link.children && (
-                    <ChevronDown
+                      <ChevronDown
                       className={cn(
-                        'h-3.5 w-3.5 transition-transform duration-200',
+                        'h-3 w-3 ml-1 transition-transform duration-200',
                         openDropdown === link.href && 'rotate-180'
                       )}
                     />
@@ -161,13 +154,13 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 mt-1 w-52 rounded-none bg-black border border-neutral-800 shadow-2xl overflow-hidden py-1"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-48 rounded-xl bg-white border border-neutral-100 shadow-xl overflow-hidden py-2"
                     >
                       {link.children.map((child: any) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="flex items-center px-4 py-2.5 text-xs font-bold text-neutral-300 hover:text-[#C19A6B] hover:bg-neutral-900 transition-colors uppercase tracking-wider"
+                          className="block px-5 py-2 text-[13px] font-semibold text-neutral-600 hover:text-black hover:bg-neutral-50 transition-colors"
                         >
                           {child.label}
                         </Link>
@@ -180,16 +173,16 @@ export function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-end gap-2 w-[200px]">
             {/* Search */}
             <Button
               variant="ghost"
               size="icon"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
+              className="text-black hover:bg-neutral-100"
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-[18px] w-[18px]" />
             </Button>
 
             {/* Theme Toggle */}
@@ -235,9 +228,9 @@ export function Navbar() {
               size="icon"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 relative"
+              className="text-black hover:bg-neutral-100 relative"
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="h-[18px] w-[18px]" />
               <AnimatePresence>
                 {isMounted && cartItems > 0 && (
                   <motion.span
@@ -245,7 +238,7 @@ export function Navbar() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-[#C19A6B] text-black text-[10px] font-bold flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center"
                   >
                     {cartItems > 9 ? '9+' : cartItems}
                   </motion.span>
@@ -257,17 +250,15 @@ export function Navbar() {
             <div className="relative hidden sm:block">
               {session ? (
                 <>
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#C19A6B] flex items-center justify-center bg-black text-[#C19A6B] font-bold text-xs hover:border-amber-300 transition-colors"
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     aria-label="Menu akun"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="text-black hover:bg-neutral-100"
                   >
-                    {session.user?.image ? (
-                      <Image src={session.user.image} alt="Avatar" width={32} height={32} className="object-cover" />
-                    ) : (
-                      session.user?.name?.[0]?.toUpperCase() ?? 'U'
-                    )}
-                  </button>
+                    <User className="h-[18px] w-[18px]" />
+                  </Button>
 
                   <AnimatePresence>
                     {showUserMenu && (
@@ -276,18 +267,18 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 rounded-none bg-black border border-neutral-800 text-white shadow-2xl overflow-hidden py-1 z-50"
+                        className="absolute right-0 mt-2 w-56 rounded-xl bg-white border border-neutral-100 text-black shadow-xl overflow-hidden py-1 z-50"
                       >
-                        <div className="px-4 py-3 border-b border-neutral-800">
-                          <p className="text-xs font-bold text-white truncate uppercase">{session.user?.name}</p>
-                          <p className="text-[11px] text-neutral-400 truncate">{session.user?.email}</p>
+                        <div className="px-4 py-3 border-b border-neutral-100">
+                          <p className="text-[13px] font-bold text-black truncate">{session.user?.name}</p>
+                          <p className="text-[11px] text-neutral-500 truncate">{session.user?.email}</p>
                         </div>
 
                         {(session.user as any)?.role === 'ADMIN' && (
                           <Link
                             href="/admin"
                             onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#C19A6B] uppercase hover:bg-neutral-900 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-black hover:bg-neutral-50 transition-colors"
                           >
                             ⚡ Dashboard Admin
                           </Link>
@@ -296,20 +287,20 @@ export function Navbar() {
                         <Link
                           href="/account"
                           onClick={() => setShowUserMenu(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-neutral-300 hover:bg-neutral-900 hover:text-white transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-black transition-colors"
                         >
-                          <User className="w-3.5 h-3.5" /> Profil & Pesanan
+                          <User className="w-[14px] h-[14px]" /> Profil & Pesanan
                         </Link>
 
-                        <div className="border-t border-neutral-800 my-1">
+                        <div className="border-t border-neutral-100 my-1">
                           <button
                             onClick={() => {
                               setShowUserMenu(false)
                               signOut({ callbackUrl: '/' })
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase text-red-400 hover:bg-neutral-900 transition-colors"
+                            className="w-full flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors"
                           >
-                            <LogOut className="w-3.5 h-3.5" /> Keluar
+                            <LogOut className="w-[14px] h-[14px]" /> Keluar
                           </button>
                         </div>
                       </motion.div>
@@ -319,13 +310,13 @@ export function Navbar() {
               ) : (
                 <Button
                   variant="ghost"
-                  size="icon-sm"
+                  size="icon"
                   aria-label="Login"
                   asChild
-                  className="text-slate-200 hover:text-amber-400 hover:bg-slate-900"
+                  className="text-black hover:bg-neutral-100"
                 >
                   <Link href="/login">
-                    <User className="h-5 w-5" />
+                    <User className="h-[18px] w-[18px]" />
                   </Link>
                 </Button>
               )}

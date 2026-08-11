@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Instagram, Send } from 'lucide-react'
+import { Instagram, ArrowRight } from 'lucide-react'
 import { toast } from '@/components/ui/Toaster'
 
 export function Footer() {
@@ -17,100 +17,89 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[#0B0A08] text-white border-t border-neutral-900 pt-16 pb-8">
+    <footer className="bg-[#FAF9F6] text-black border-t border-neutral-200 pt-16 pb-8">
       <div className="container-raxie">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-200">
           {/* Col 1: Brand Info */}
-          <div className="space-y-4">
-            <Link href="/" className="inline-flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-              <Image
-                src="https://i.imgur.com/SrBEKD5.png"
-                alt="RAXIE Emblem"
-                width={36}
-                height={36}
-                className="h-7 w-auto object-contain shrink-0"
-              />
-              <span className="font-serif font-extrabold text-xl tracking-[0.2em] text-[#C19A6B] uppercase">
+          <div className="space-y-4 lg:pr-8">
+            <Link href="/" className="inline-flex items-center hover:opacity-80 transition-opacity">
+              <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black uppercase">
                 RAXIE
               </span>
             </Link>
-            <p className="text-xs text-neutral-400 leading-relaxed max-w-xs">
-              RAXIE adalah brand lokal yang berkomitmen untuk menghadirkan produk aksesoris kulit sintetis PU Leather premium dengan desain elegan dan kualitas terbaik.
+            <p className="text-[13px] text-neutral-500 leading-relaxed max-w-xs mt-2">
+              RAXIE hadir untuk memberikan produk premium dengan desain modern dan kualitas terbaik untuk Anda.
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors" aria-label="Instagram">
+            <div className="flex items-center gap-3 pt-4">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 bg-black text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors" aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="TikTok">
+              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-8 h-8 bg-black text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="TikTok">
                 🎵
               </a>
-              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="Shopee">
+              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-8 h-8 bg-black text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="Shopee">
                 🛍️
               </a>
-              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-10 h-10 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-[#C19A6B] hover:border-[#C19A6B] transition-colors text-xs font-bold" aria-label="WhatsApp">
+              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-8 h-8 bg-black text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="WhatsApp">
                 💬
               </a>
             </div>
           </div>
 
-          {/* Col 2: INFORMASI */}
-          <div className="space-y-3">
-            <h2 className="text-xs font-bold tracking-[0.15em] uppercase text-white">INFORMASI</h2>
-            <ul className="space-y-2 text-xs text-neutral-400">
-              <li><Link href="/about" className="hover:text-[#C19A6B] transition-colors">Tentang Kami</Link></li>
-              <li><Link href="/privacy-policy" className="hover:text-[#C19A6B] transition-colors">Kebijakan Privasi</Link></li>
-              <li><Link href="/terms" className="hover:text-[#C19A6B] transition-colors">Syarat & Ketentuan</Link></li>
-              <li><Link href="/return-policy" className="hover:text-[#C19A6B] transition-colors">Pengembalian Barang</Link></li>
-              <li><Link href="/faq" className="hover:text-[#C19A6B] transition-colors">FAQ</Link></li>
+          {/* Col 2: QUICK LINKS */}
+          <div className="space-y-4">
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black">QUICK LINKS</h2>
+            <ul className="space-y-3 text-[13px] text-neutral-500 font-medium">
+              <li><Link href="/" className="hover:text-black transition-colors">Home</Link></li>
+              <li><Link href="/products" className="hover:text-black transition-colors">Collections</Link></li>
+              <li><Link href="/about" className="hover:text-black transition-colors">About Us</Link></li>
+              <li><Link href="/why-raxie" className="hover:text-black transition-colors">Why Raxie</Link></li>
             </ul>
           </div>
 
-          {/* Col 3: KATEGORI */}
-          <div className="space-y-3">
-            <h2 className="text-xs font-bold tracking-[0.15em] uppercase text-white">KATEGORI</h2>
-            <ul className="space-y-2 text-xs text-neutral-400">
-              <li><Link href="/products?category=dompet" className="hover:text-[#C19A6B] transition-colors">Dompet</Link></li>
-              <li><Link href="/products?category=tas" className="hover:text-[#C19A6B] transition-colors">Tas</Link></li>
-              <li><Link href="/products?category=sabuk" className="hover:text-[#C19A6B] transition-colors">Belt</Link></li>
-              <li><Link href="/products" className="hover:text-[#C19A6B] transition-colors">Semua Produk</Link></li>
+          {/* Col 3: HELP & SUPPORT */}
+          <div className="space-y-4">
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black">HELP & SUPPORT</h2>
+            <ul className="space-y-3 text-[13px] text-neutral-500 font-medium">
+              <li><Link href="/contact" className="hover:text-black transition-colors">Contact Us</Link></li>
+              <li><Link href="/faq" className="hover:text-black transition-colors">FAQ</Link></li>
+              <li><Link href="/shipping" className="hover:text-black transition-colors">Shipping & Returns</Link></li>
+              <li><Link href="/size-guide" className="hover:text-black transition-colors">Size Guide</Link></li>
             </ul>
           </div>
 
           {/* Col 4: NEWSLETTER */}
-          <div className="space-y-3">
-            <h2 className="text-xs font-bold tracking-[0.15em] uppercase text-white">NEWSLETTER</h2>
-            <p className="text-xs text-neutral-400">
-              Dapatkan info terbaru dan promo eksklusif dari RAXIE.
+          <div className="space-y-4 lg:pl-4">
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black">NEWSLETTER</h2>
+            <p className="text-[13px] text-neutral-500 leading-relaxed font-medium">
+              Dapatkan info terbaru dan promo menarik langsung ke email Anda.
             </p>
-            <form onSubmit={handleSubscribe} className="flex gap-2">
+            <form onSubmit={handleSubscribe} className="flex gap-2 pt-2">
               <input
                 type="email"
-                placeholder="Masukkan email Anda"
+                placeholder="Enter your email"
                 aria-label="Email untuk newsletter"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#121212] border border-neutral-800 rounded-none px-3 py-2 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-[#C19A6B] focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
+                className="w-full bg-white border border-neutral-300 rounded-sm px-4 py-2.5 text-[13px] text-black placeholder:text-neutral-400 focus:outline-none focus:border-black focus-visible:ring-1 focus-visible:ring-black"
               />
               <button
                 type="submit"
-                className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold rounded-none px-3 py-2 flex items-center justify-center shrink-0 transition-colors"
+                className="bg-black hover:bg-neutral-800 text-white rounded-sm px-4 py-2.5 flex items-center justify-center shrink-0 transition-colors"
                 aria-label="Submit newsletter"
               >
-                <Send className="h-3.5 w-3.5" />
+                <ArrowRight className="h-4 w-4" />
               </button>
             </form>
           </div>
         </div>
 
-        {/* Bottom copyright & payment icons */}
-        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
-          <p>© 2026 RAXIE. All Rights Reserved.</p>
-          <div className="flex items-center gap-3">
-            <span>BCA</span>
-            <span>Mandiri</span>
-            <span>BRI</span>
-            <span>QRIS</span>
-            <span>Midtrans</span>
+        {/* Bottom copyright */}
+        <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[12px] text-neutral-500 font-medium">
+          <p>© 2024 RAXIE. All Rights Reserved.</p>
+          <div className="flex items-center gap-6">
+            <Link href="/privacy" className="hover:text-black transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-black transition-colors">Terms & Conditions</Link>
           </div>
         </div>
       </div>
