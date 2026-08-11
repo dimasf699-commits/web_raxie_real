@@ -1,11 +1,9 @@
-'use client'
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, ShoppingBag, Eye, Scale } from 'lucide-react'
+import { Heart, ShoppingBag, Eye, Scale, Star } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { formatPrice, getDiscountPercent, getCloudinaryUrl } from '@/lib/utils'
 import { useCartStore } from '@/store/cart.store'
@@ -13,7 +11,7 @@ import { useWishlistStore } from '@/store/wishlist.store'
 import { useCompareStore } from '@/store/compare.store'
 import { toast } from '@/components/ui/Toaster'
 
-interface ProductCardProduct {
+export interface ProductCardProduct {
   id: string
   productId: string
   name: string
@@ -36,9 +34,10 @@ interface ProductCardProps {
   product: ProductCardProduct
   onQuickView?: (productId: string) => void
   isDarkBg?: boolean
+  variant?: 'default' | 'clean'
 }
 
-export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductCardProps) {
+export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 'default' }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const addItem = useCartStore((s) => s.addItem)
   const toggleItem = useWishlistStore((s) => s.toggleItem)
@@ -103,6 +102,96 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
     toast.success('Ditambahkan ke perbandingan')
   }
 
+  if (variant === 'clean') {
+    return (
+      <div 
+        className="group flex flex-col relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="bg-[#F5F5F5] dark:bg-neutral-900 aspect-square relative mb-4 rounded-sm overflow-hidden flex items-center justify-center p-6">
+          {discount > 0 && (
+            <div className="absolute top-2 left-2 bg-[#C19A6B] text-white text-[10px] font-bold px-2 py-1 rounded-sm z-10">
+              -{discount}%
+            </div>
+          )}
+          
+          <Link href={`/products/${product.slug}`} className="relative w-full h-full mix-blend-multiply dark:mix-blend-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C19A6B]">
+            <Image 
+              src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })} 
+              alt={product.name} 
+              fill 
+              className="object-contain group-hover:scale-110 transition-transform duration-500" 
+            />
+          </Link>
+
+          {/* Clean Variant Action Buttons (Wishlist, Compare) */}
+          <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
+            <AnimatePresence>
+              {isHovered && (
+                <motion.button
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={handleWishlist}
+                  aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
+                  className="w-8 h-8 rounded-sm bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+                >
+                  <Heart className={`h-[14px] w-[14px] transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-neutral-600 dark:text-neutral-300'}`} />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Clean Variant Add to Cart Overlay */}
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 5 }}
+                transition={{ duration: 0.2 }}
+                className="absolute bottom-3 left-3 right-3 z-10"
+              >
+                <button
+                  onClick={handleAddToCart}
+                  disabled={addingCart || product.stock === 0}
+                  className="w-full flex items-center justify-center gap-2 bg-[#121212] dark:bg-white hover:bg-black dark:hover:bg-neutral-200 text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.1em] py-2.5 rounded-sm shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+                >
+                  {addingCart ? (
+                    <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full" />
+                  ) : (
+                    <ShoppingBag className="h-3 w-3" />
+                  )}
+                  {product.stock === 0 ? 'Stok Habis' : 'Add to Cart'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        
+        <div>
+          <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
+            <h3 className="text-[13px] font-extrabold text-black dark:text-white mb-1 truncate hover:text-[#C19A6B] transition-colors">{product.name}</h3>
+          </Link>
+          <div className="flex items-center gap-1 mb-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className={`w-3 h-3 ${i < Math.round(product.avgRating) ? 'fill-[#C19A6B] text-[#C19A6B]' : 'fill-neutral-200 text-neutral-200 dark:fill-neutral-700 dark:text-neutral-700'}`} />
+            ))}
+            <span className="text-[10px] text-neutral-500 ml-1">({product.reviewCount || 0})</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[14px] font-bold text-black dark:text-white">{formatPrice(product.price)}</span>
+            {product.compareAtPrice && product.compareAtPrice > product.price && (
+              <span className="text-[11px] text-neutral-400 line-through">{formatPrice(product.compareAtPrice)}</span>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className="group relative block"
@@ -112,7 +201,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
       <div>
         {/* Image Container */}
         <div className="relative overflow-hidden rounded-lg aspect-product bg-muted">
-          <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
+          <Link href={`/product/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
               alt={product.name}
@@ -232,7 +321,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false }: ProductC
 
         {/* Product Info */}
         <div className="mt-4 px-1 text-left space-y-1 relative z-10">
-          <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block">
+          <Link href={`/product/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block">
             <h3 className="font-bold text-xs uppercase tracking-widest text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
               {product.name}
             </h3>

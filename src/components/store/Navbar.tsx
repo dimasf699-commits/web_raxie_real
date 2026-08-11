@@ -106,12 +106,12 @@ export function Navbar() {
   return (
     <>
       {/* Permanent Light Sticky Navbar Header */}
-      <header className="sticky top-0 left-0 right-0 z-50 bg-[#FAF9F6] text-black border-b border-neutral-200">
+      <header className="sticky top-0 left-0 right-0 z-50 bg-[#FAF9F6] dark:bg-neutral-900 text-black dark:text-white border-b border-neutral-200 dark:border-neutral-800 transition-colors">
         <AnnouncementBar />
         <div className="container-raxie h-20 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity group w-[200px]">
-            <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black uppercase">
+            <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black dark:text-white uppercase">
               RAXIE
             </span>
           </Link>
@@ -128,11 +128,10 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   className={cn(
-                    'flex items-center gap-1 py-2 text-[13px] font-semibold text-neutral-800 transition-colors',
-                    'hover:text-black',
+                    'flex items-center gap-1 py-2 text-[13px] font-semibold transition-colors',
                     pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-                      ? 'text-black font-bold'
-                      : ''
+                      ? 'text-black dark:text-white font-bold'
+                      : 'text-neutral-800 dark:text-neutral-300 hover:text-black dark:hover:text-white'
                   )}
                 >
                   {link.label}
@@ -154,13 +153,13 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-48 rounded-xl bg-white border border-neutral-100 shadow-xl overflow-hidden py-2"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-48 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 shadow-xl overflow-hidden py-2"
                     >
                       {link.children.map((child: any) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-5 py-2 text-[13px] font-semibold text-neutral-600 hover:text-black hover:bg-neutral-50 transition-colors"
+                          className="block px-5 py-2 text-[13px] font-semibold text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
                         >
                           {child.label}
                         </Link>
@@ -180,7 +179,7 @@ export function Navbar() {
               size="icon"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-black hover:bg-neutral-100"
+              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
             >
               <Search className="h-[18px] w-[18px]" />
             </Button>
@@ -191,7 +190,7 @@ export function Navbar() {
               size="icon"
               aria-label="Ganti tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-black hover:bg-neutral-100 hidden md:flex"
+              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 hidden md:flex"
             >
               <Moon className="h-[18px] w-[18px] hidden dark:block" />
               <Sun className="h-[18px] w-[18px] block dark:hidden" />
@@ -203,7 +202,7 @@ export function Navbar() {
               size="icon"
               aria-label="Wishlist"
               asChild
-              className="text-black hover:bg-neutral-100 relative"
+              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 relative"
             >
               <Link href="/wishlist">
                 <Heart className="h-[18px] w-[18px]" />
@@ -211,7 +210,7 @@ export function Navbar() {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold flex items-center justify-center"
                   >
                     {wishlistItems > 9 ? '9+' : wishlistItems}
                   </motion.span>
@@ -225,37 +224,37 @@ export function Navbar() {
               size="icon"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-black hover:bg-neutral-100 relative"
+              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 relative"
             >
               <ShoppingBag className="h-[18px] w-[18px]" />
               <AnimatePresence>
                 {isMounted && cartItems > 0 && (
-                  <motion.span
-                    key={cartItems}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center"
-                  >
-                    {cartItems > 9 ? '9+' : cartItems}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </Button>
-
-            {/* Account */}
-            <div className="relative hidden sm:block">
-              {session ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Menu akun"
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="text-black hover:bg-neutral-100"
-                  >
-                    <User className="h-[18px] w-[18px]" />
-                  </Button>
+                    <motion.span
+                      key={cartItems}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold flex items-center justify-center"
+                    >
+                      {cartItems > 9 ? '9+' : cartItems}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </Button>
+  
+              {/* Account */}
+              <div className="relative hidden sm:block">
+                {session ? (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Menu akun"
+                      onClick={() => setShowUserMenu(!showUserMenu)}
+                      className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                    >
+                      <User className="h-[18px] w-[18px]" />
+                    </Button>
 
                   <AnimatePresence>
                     {showUserMenu && (
@@ -310,7 +309,7 @@ export function Navbar() {
                   size="icon"
                   aria-label="Login"
                   asChild
-                  className="text-black hover:bg-neutral-100"
+                  className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
                 >
                   <Link href="/login">
                     <User className="h-[18px] w-[18px]" />
@@ -325,7 +324,7 @@ export function Navbar() {
               size="icon"
               aria-label="Buka menu navigasi"
               onClick={() => setIsMobileOpen(true)}
-              className="text-slate-200 hover:text-amber-400 hover:bg-slate-900 lg:hidden"
+              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </Button>

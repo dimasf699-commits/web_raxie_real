@@ -17,13 +17,13 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[#FAF9F6] text-black border-t border-neutral-200 pt-16 pb-8">
+    <footer className="bg-[#FAF9F6] dark:bg-neutral-950 text-black dark:text-white border-t border-neutral-200 dark:border-neutral-800 pt-16 pb-8 transition-colors">
       <div className="container-raxie">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-neutral-200">
           {/* Col 1: Brand Info */}
           <div className="space-y-4 lg:pr-8">
             <Link href="/" className="inline-flex items-center hover:opacity-80 transition-opacity">
-              <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black uppercase">
+              <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black dark:text-white uppercase">
                 RAXIE
               </span>
             </Link>
@@ -48,29 +48,29 @@ export function Footer() {
 
           {/* Col 2: QUICK LINKS */}
           <div className="space-y-4">
-            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black">QUICK LINKS</h2>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">QUICK LINKS</h2>
             <ul className="space-y-3 text-[13px] text-neutral-500 font-medium">
-              <li><Link href="/" className="hover:text-black transition-colors">Home</Link></li>
-              <li><Link href="/products" className="hover:text-black transition-colors">Collections</Link></li>
-              <li><Link href="/about" className="hover:text-black transition-colors">About Us</Link></li>
-              <li><Link href="/why-raxie" className="hover:text-black transition-colors">Why Raxie</Link></li>
+              <li><Link href="/" className="hover:text-black dark:hover:text-white transition-colors">Home</Link></li>
+              <li><Link href="/products" className="hover:text-black dark:hover:text-white transition-colors">Collections</Link></li>
+              <li><Link href="/about" className="hover:text-black dark:hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/why-raxie" className="hover:text-black dark:hover:text-white transition-colors">Why Raxie</Link></li>
             </ul>
           </div>
 
           {/* Col 3: HELP & SUPPORT */}
           <div className="space-y-4">
-            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black">HELP & SUPPORT</h2>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">HELP & SUPPORT</h2>
             <ul className="space-y-3 text-[13px] text-neutral-500 font-medium">
-              <li><Link href="/contact" className="hover:text-black transition-colors">Contact Us</Link></li>
-              <li><Link href="/faq" className="hover:text-black transition-colors">FAQ</Link></li>
-              <li><Link href="/shipping" className="hover:text-black transition-colors">Shipping & Returns</Link></li>
-              <li><Link href="/size-guide" className="hover:text-black transition-colors">Size Guide</Link></li>
+              <li><Link href="/contact" className="hover:text-black dark:hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link href="/faq" className="hover:text-black dark:hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link href="/shipping" className="hover:text-black dark:hover:text-white transition-colors">Shipping & Returns</Link></li>
+              <li><Link href="/size-guide" className="hover:text-black dark:hover:text-white transition-colors">Size Guide</Link></li>
             </ul>
           </div>
 
           {/* Col 4: NEWSLETTER */}
           <div className="space-y-4 lg:pl-4">
-            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black">NEWSLETTER</h2>
+            <h2 className="text-[11px] font-bold tracking-[0.1em] uppercase text-black dark:text-white">NEWSLETTER</h2>
             <p className="text-[13px] text-neutral-500 leading-relaxed font-medium">
               Dapatkan info terbaru dan promo menarik langsung ke email Anda.
             </p>
@@ -81,11 +81,11 @@ export function Footer() {
                 aria-label="Email untuk newsletter"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white border border-neutral-300 rounded-sm px-4 py-2.5 text-[13px] text-black placeholder:text-neutral-400 focus:outline-none focus:border-black focus-visible:ring-1 focus-visible:ring-black"
+                className="w-full bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-sm px-4 py-2.5 text-[13px] text-black dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-black dark:focus:border-white focus-visible:ring-1 focus-visible:ring-black dark:focus-visible:ring-white"
               />
               <button
                 type="submit"
-                className="bg-black hover:bg-neutral-800 text-white rounded-sm px-4 py-2.5 flex items-center justify-center shrink-0 transition-colors"
+                className="bg-black dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-black rounded-sm px-4 py-2.5 flex items-center justify-center shrink-0 transition-colors"
                 aria-label="Submit newsletter"
               >
                 <ArrowRight className="h-4 w-4" />
