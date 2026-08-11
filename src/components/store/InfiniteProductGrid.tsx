@@ -80,9 +80,9 @@ export function InfiniteProductGrid({
   return (
     <>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-        <p className="text-sm text-muted-foreground">
-          Menampilkan <span className="font-semibold text-foreground">{products.length}</span> produk
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-200 dark:border-neutral-800">
+        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+          Menampilkan <span className="font-semibold text-black dark:text-white">{products.length}</span> produk
           {!cursor && ` (semua)`}
         </p>
         <ProductSort />
@@ -90,9 +90,9 @@ export function InfiniteProductGrid({
 
       {products.length === 0 ? (
         <div className="py-24 text-center flex flex-col items-center">
-          <PackageSearch className="w-16 h-16 text-muted-foreground/40 mb-4" />
-          <h3 className="text-lg font-semibold text-foreground">Tidak ada produk ditemukan</h3>
-          <p className="text-muted-foreground mt-2 text-sm">Coba sesuaikan filter atau kata kunci pencarian Anda.</p>
+          <PackageSearch className="w-16 h-16 text-neutral-300 dark:text-neutral-700 mb-4" />
+          <h3 className="text-lg font-semibold text-black dark:text-white">Tidak ada produk ditemukan</h3>
+          <p className="text-neutral-500 dark:text-neutral-400 mt-2 text-sm">Coba sesuaikan filter atau kata kunci pencarian Anda.</p>
         </div>
       ) : (
         <>
@@ -101,6 +101,7 @@ export function InfiniteProductGrid({
               <div key={`${product.id}-${idx}`}>
                 <ProductCard
                   product={product}
+                  variant="clean"
                   onQuickView={(productId) => setQuickViewId(productId)}
                 />
               </div>
@@ -111,9 +112,9 @@ export function InfiniteProductGrid({
           {cursor && (
             <div ref={sentinelRef} className="flex justify-center py-10">
               {isLoading && (
-                <div className="flex items-center gap-3 text-muted-foreground">
+                <div className="flex items-center gap-3 text-neutral-500 dark:text-neutral-400">
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  <span className="text-sm">Memuat lebih banyak produk...</span>
+                  <span className="text-sm font-medium">Memuat lebih banyak produk...</span>
                 </div>
               )}
             </div>
@@ -121,7 +122,7 @@ export function InfiniteProductGrid({
 
           {!cursor && products.length > 0 && (
             <div className="py-10 text-center">
-              <p className="text-sm text-muted-foreground">Semua produk telah ditampilkan</p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 font-medium">Semua produk telah ditampilkan</p>
             </div>
           )}
         </>

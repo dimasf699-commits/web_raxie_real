@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { formatPrice, getDiscountPercent } from '@/lib/utils'
 import { toast } from '@/components/ui/Toaster'
 import { Button } from '@/components/ui/Button'
+import { ProductCard } from '@/components/store/ProductCard'
 
 export default function WishlistPage() {
   const [isMounted, setIsMounted] = useState(false)
@@ -40,7 +41,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="bg-background text-foreground min-h-screen py-10 transition-colors duration-300">
+    <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen py-10 transition-colors duration-300">
       <div className="container-raxie">
         <Breadcrumbs
           items={[
@@ -54,7 +55,7 @@ export default function WishlistPage() {
             <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
               RAXIE FAVORITE ITEMS
             </span>
-            <h1 className="font-serif font-bold text-3xl uppercase tracking-wider text-foreground">
+            <h1 className="font-serif font-extrabold text-3xl md:text-4xl uppercase tracking-tight text-black dark:text-white">
               WISHLIST SAYA{isMounted && items.length > 0 ? ` (${items.length})` : ''}
             </h1>
           </div>
@@ -65,70 +66,47 @@ export default function WishlistPage() {
             </div>
           ) : items.length === 0 ? (
             <div className="max-w-md mx-auto text-center py-16 space-y-4">
-              <div className="w-20 h-20 bg-muted border border-border rounded-full flex items-center justify-center mx-auto text-muted-foreground">
+              <div className="w-20 h-20 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-full flex items-center justify-center mx-auto text-neutral-400">
                 <Heart className="w-10 h-10" />
               </div>
-              <h2 className="text-xl font-bold uppercase tracking-wider text-foreground">Wishlist Masih Kosong</h2>
-              <p className="text-muted-foreground text-xs leading-relaxed">
+              <h2 className="text-xl font-bold uppercase tracking-wider text-black dark:text-white">Wishlist Masih Kosong</h2>
+              <p className="text-neutral-500 dark:text-neutral-400 text-xs leading-relaxed font-medium">
                 Anda belum menyimpan produk apapun. Klik ikon hati ❤️ di kartu produk untuk menyimpannya di sini.
               </p>
-              <Button asChild className="bg-[#C19A6B] text-black font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-[#b08b5c]">
+              <Button asChild className="bg-[#121212] dark:bg-white hover:bg-black dark:hover:bg-neutral-200 text-white dark:text-black font-bold text-xs uppercase tracking-wider px-8 py-3.5 rounded-sm transition-colors mt-4">
                 <Link href="/products">Jelajahi Koleksi</Link>
               </Button>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-              {items.map((item) => {
-                const discount = item.compareAtPrice
-                  ? getDiscountPercent(item.compareAtPrice, item.price)
-                  : 0
-                return (
-                  <div key={item.productId} className="group relative bg-card border border-border rounded-xl overflow-hidden shadow-sm flex flex-col justify-between p-3">
-                    {/* Remove btn */}
-                    <button
-                      onClick={() => {
-                        removeItem(item.productId)
-                        toast.success('Dihapus dari wishlist', item.name)
-                      }}
-                      className="absolute top-4 right-4 z-10 w-8 h-8 bg-card/80 rounded-full flex items-center justify-center text-muted-foreground hover:text-red-500 transition-colors border border-border shadow-sm"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-
-                    {discount > 0 && (
-                      <div className="absolute top-4 left-4 z-10 bg-red-950/80 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800/50 uppercase">
-                        -{discount}% OFF
-                      </div>
-                    )}
-
-                    <Link href={`/products/${item.slug}`} className="block">
-                      <div className="relative aspect-product w-full bg-muted rounded-lg overflow-hidden border border-border mb-3">
-                        <Image
-                          src={item.image || '/placeholder.jpg'}
-                          alt={item.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                      <div className="space-y-1 text-center">
-                        <h3 className="font-bold text-xs uppercase tracking-wider text-foreground line-clamp-1 group-hover:text-[#C19A6B] transition-colors">
-                          {item.name}
-                        </h3>
-                        <p className="font-bold text-xs text-[#C19A6B]">
-                          {formatPrice(item.price)}
-                        </p>
-                      </div>
-                    </Link>
-
-                    <Button
-                      onClick={() => handleAddToCart(item)}
-                      className="w-full mt-3 bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-[11px] uppercase tracking-wider py-2 rounded-lg flex items-center justify-center gap-1.5"
-                    >
-                      <ShoppingBag className="w-3.5 h-3.5" /> + KERANJANG
-                    </Button>
-                  </div>
-                )
-              })}
+              {items.map((item) => (
+                <div key={item.productId} className="relative group">
+                  <ProductCard
+                    variant="clean"
+                    product={{
+                      ...item,
+                      id: item.productId,
+                      avgRating: 5,
+                      reviewCount: 0,
+                      isBestSeller: false,
+                      isNew: false,
+                      stock: 99,
+                      sku: ''
+                    }}
+                  />
+                  {/* Remove override for wishlist page */}
+                  <button
+                    onClick={() => {
+                      removeItem(item.productId)
+                      toast.success('Dihapus dari wishlist', item.name)
+                    }}
+                    className="absolute top-3 left-3 z-20 w-8 h-8 bg-white dark:bg-black rounded-full flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm opacity-0 group-hover:opacity-100 border border-neutral-200 dark:border-neutral-800"
+                    title="Hapus dari Wishlist"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>

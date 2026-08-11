@@ -71,12 +71,12 @@ export function FilterSidebar() {
   }
 
   return (
-    <div className="space-y-6 text-foreground bg-card p-5 rounded-2xl border border-border shadow-sm transition-colors duration-300">
-      <div className="flex items-center justify-between pb-3 border-b border-border">
-        <h3 className="font-serif font-bold text-base tracking-wider uppercase text-[#C19A6B]">FILTER</h3>
+    <div className="space-y-6 bg-white dark:bg-[#151515] text-black dark:text-white p-6 rounded-sm border border-neutral-200 dark:border-neutral-800 shadow-sm transition-colors duration-300">
+      <div className="flex items-center justify-between pb-4 border-b border-neutral-200 dark:border-neutral-800">
+        <h3 className="font-serif font-bold text-base tracking-[0.1em] uppercase text-black dark:text-white">FILTER</h3>
         <button
           onClick={clearFilters}
-          className="text-xs text-muted-foreground hover:text-[#C19A6B] transition-colors underline"
+          className="text-[11px] font-bold tracking-wider text-neutral-500 hover:text-[#C19A6B] transition-colors underline uppercase"
         >
           Reset Semua
         </button>
@@ -84,10 +84,10 @@ export function FilterSidebar() {
 
       <Accordion type="multiple" defaultValue={['kategori', 'harga', 'material']} className="w-full">
         {/* Kategori */}
-        <AccordionItem value="kategori" className="border-b border-border">
-          <AccordionTrigger className="text-xs font-bold uppercase tracking-wider text-foreground hover:text-[#C19A6B]">Kategori</AccordionTrigger>
+        <AccordionItem value="kategori" className="border-b border-neutral-200 dark:border-neutral-800">
+          <AccordionTrigger className="text-[11px] font-bold uppercase tracking-wider text-black dark:text-white hover:text-[#C19A6B]">Kategori</AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-3 pt-2">
               {categories.map((kat) => {
                 const isSelected = currentCategory === kat.toLowerCase()
                 return (
@@ -98,14 +98,14 @@ export function FilterSidebar() {
                       checked={isSelected}
                       onChange={() => handleCategoryChange(kat)}
                     />
-                    <div className={`h-4 w-4 rounded border transition-all flex items-center justify-center ${isSelected ? 'bg-[#C19A6B] border-[#C19A6B]' : 'border-border bg-background group-hover:border-foreground'}`}>
+                    <div className={`h-4 w-4 rounded-sm border transition-all flex items-center justify-center ${isSelected ? 'bg-[#C19A6B] border-[#C19A6B]' : 'border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 group-hover:border-black dark:group-hover:border-white'}`}>
                       {isSelected && (
-                        <svg className="w-3 h-3 text-black" viewBox="0 0 14 14" fill="none">
+                        <svg className="w-3 h-3 text-white" viewBox="0 0 14 14" fill="none">
                           <path d="M3 8L6 11L11 3.5" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"></path>
                         </svg>
                       )}
                     </div>
-                    <span className={`text-xs ${isSelected ? 'text-[#C19A6B] font-bold' : 'text-foreground/80 group-hover:text-foreground'}`}>
+                    <span className={`text-[12px] font-medium ${isSelected ? 'text-[#C19A6B]' : 'text-neutral-600 dark:text-neutral-400 group-hover:text-black dark:group-hover:text-white'}`}>
                       {kat}
                     </span>
                   </label>
@@ -116,41 +116,41 @@ export function FilterSidebar() {
         </AccordionItem>
 
         {/* Custom Price Range Filter */}
-        <AccordionItem value="harga" className="border-b border-border">
-          <AccordionTrigger className="text-xs font-bold uppercase tracking-wider text-foreground hover:text-[#C19A6B]">Filter Harga (Rp)</AccordionTrigger>
+        <AccordionItem value="harga" className="border-b border-neutral-200 dark:border-neutral-800">
+          <AccordionTrigger className="text-[11px] font-bold uppercase tracking-wider text-black dark:text-white hover:text-[#C19A6B]">Filter Harga (Rp)</AccordionTrigger>
           <AccordionContent>
-            <form onSubmit={handleApplyPriceFilter} className="space-y-3 pt-1">
+            <form onSubmit={handleApplyPriceFilter} className="space-y-4 pt-2">
               <div>
-                <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">MIN PRICE</label>
+                <label className="text-[10px] uppercase font-bold text-neutral-500 dark:text-neutral-400 block mb-1">MIN HARGA</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-xs text-muted-foreground">Rp</span>
+                  <span className="absolute left-3 top-2 text-xs text-neutral-400">Rp</span>
                   <input
                     type="number"
                     placeholder="0"
                     value={minPriceInput}
                     onChange={(e) => setMinPriceInput(e.target.value)}
-                    className="w-full bg-background border border-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
+                    className="w-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-sm pl-9 pr-3 py-2 text-xs text-black dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-[#C19A6B] transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">MAX PRICE</label>
+                <label className="text-[10px] uppercase font-bold text-neutral-500 dark:text-neutral-400 block mb-1">MAX HARGA</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-xs text-muted-foreground">Rp</span>
+                  <span className="absolute left-3 top-2 text-xs text-neutral-400">Rp</span>
                   <input
                     type="number"
                     placeholder="1.000.000"
                     value={maxPriceInput}
                     onChange={(e) => setMaxPriceInput(e.target.value)}
-                    className="w-full bg-background border border-border rounded-lg pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
+                    className="w-full bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-sm pl-9 pr-3 py-2 text-xs text-black dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-[#C19A6B] transition-colors"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-2 rounded-lg transition-colors mt-2"
+                className="w-full bg-[#121212] dark:bg-white hover:bg-black dark:hover:bg-neutral-200 text-white dark:text-black font-bold text-[11px] uppercase tracking-wider py-3 rounded-sm transition-colors mt-2"
               >
                 TERAPKAN FILTER
               </button>
@@ -160,17 +160,17 @@ export function FilterSidebar() {
 
         {/* Material */}
         <AccordionItem value="material" className="border-b-0">
-          <AccordionTrigger className="text-xs font-bold uppercase tracking-wider text-foreground hover:text-[#C19A6B]">Material</AccordionTrigger>
+          <AccordionTrigger className="text-[11px] font-bold uppercase tracking-wider text-black dark:text-white hover:text-[#C19A6B]">Material</AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-3 pt-2">
               {['PU Leather Premium'].map((mat) => (
                 <div key={mat} className="flex items-center gap-3">
-                  <div className="h-4 w-4 rounded border border-[#C19A6B] bg-[#C19A6B] flex items-center justify-center">
-                    <svg className="w-3 h-3 text-black" viewBox="0 0 14 14" fill="none">
+                  <div className="h-4 w-4 rounded-sm border border-[#C19A6B] bg-[#C19A6B] flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" viewBox="0 0 14 14" fill="none">
                       <path d="M3 8L6 11L11 3.5" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" stroke="currentColor"></path>
                     </svg>
                   </div>
-                  <span className="text-xs font-medium text-[#C19A6B]">
+                  <span className="text-[12px] font-medium text-[#C19A6B]">
                     {mat}
                   </span>
                 </div>

@@ -85,7 +85,7 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
     <div className="space-y-6">
       <Script src={snapScriptUrl} data-client-key={clientKey} strategy="lazyOnload" />
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-2xl font-bold text-foreground">Pesanan Saya</h1>
+        <h1 className="font-serif text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-black dark:text-white">Pesanan Saya</h1>
       </div>
 
       {/* Filter Tabs */}
@@ -97,10 +97,10 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
               key={tab.key}
               href={tab.href}
               className={cn(
-                'px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors',
+                'px-4 py-2.5 rounded-sm text-[11px] font-bold uppercase tracking-wider whitespace-nowrap transition-colors',
                 isActive
-                  ? 'bg-tan-500 text-white shadow-sm'
-                  : 'border border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'bg-[#121212] dark:bg-white text-white dark:text-black shadow-sm'
+                  : 'border border-neutral-200 dark:border-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white'
               )}
             >
               {tab.label}
@@ -112,38 +112,38 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
       {/* Orders List */}
       <div className="space-y-4">
         {orders.length === 0 ? (
-          <div className="text-center py-12 bg-card rounded-xl border border-border">
-            <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="font-semibold text-lg mb-1">Belum ada pesanan</h3>
-            <p className="text-muted-foreground text-sm mb-4">
+          <div className="text-center py-12 bg-neutral-50 dark:bg-neutral-900 rounded-sm border border-neutral-200 dark:border-neutral-800">
+            <Package className="w-12 h-12 text-neutral-400 mx-auto mb-4" />
+            <h3 className="font-bold text-sm uppercase tracking-wider text-black dark:text-white mb-2">Belum ada pesanan</h3>
+            <p className="text-neutral-500 dark:text-neutral-400 text-xs mb-6 font-medium">
               {activeStatus === 'ALL'
                 ? 'Anda belum pernah melakukan pemesanan.'
                 : 'Tidak ada pesanan di kategori ini.'}
             </p>
             <Link href="/products">
-              <Button>Mulai Belanja</Button>
+              <Button className="bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-6 py-4 rounded-sm transition-colors">MULAI BELANJA</Button>
             </Link>
           </div>
         ) : (
           orders.map(order => {
-            const status = statusMap[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700' }
+            const status = statusMap[order.status] || { label: order.status, color: 'bg-neutral-100 text-neutral-700' }
             const firstItem = order.items[0]
             const isShipped = order.status === 'SHIPPED' || order.status === 'DELIVERED'
             const trackingUrl = order.courierName ? courierTrackingLinks[order.courierName] : null
             
             return (
-              <div key={order.id} className="bg-card border border-border rounded-xl p-4 md:p-6 shadow-sm">
-                <div className="flex items-center justify-between border-b border-border pb-4 mb-4">
+              <div key={order.id} className="bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm p-4 md:p-6 shadow-sm">
+                <div className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 pb-4 mb-4">
                   <div className="flex items-center gap-3">
-                    <Package className="w-5 h-5 text-muted-foreground" />
+                    <Package className="w-5 h-5 text-neutral-400" />
                     <div>
-                      <p className="text-sm font-medium text-foreground">{order.orderNumber}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs font-bold text-black dark:text-white uppercase tracking-wider">{order.orderNumber}</p>
+                      <p className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400 mt-0.5">
                         {new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(order.createdAt)}
                       </p>
                     </div>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${status.color}`}>
+                  <span className={`px-3 py-1.5 rounded-sm text-[10px] uppercase font-bold tracking-wider ${status.color}`}>
                     {status.label}
                   </span>
                 </div>
@@ -174,25 +174,25 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
                 {firstItem && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted border border-border">
+                      <div className="relative w-16 h-16 rounded-sm overflow-hidden bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
                         <Image src={firstItem.image} alt={firstItem.productName} fill className="object-cover" />
                       </div>
                       <div>
-                        <p className="font-semibold text-foreground text-sm line-clamp-1">{firstItem.productName}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">
+                        <p className="font-bold text-black dark:text-white text-xs uppercase tracking-wider line-clamp-1">{firstItem.productName}</p>
+                        <p className="text-[10px] text-neutral-500 dark:text-neutral-400 mt-1 font-medium">
                           {firstItem.variantName ? `Warna/Ukuran: ${firstItem.variantName}` : '1 Item'}
                           {order.items.length > 1 && ` (+${order.items.length - 1} produk lainnya)`}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">Total Belanja</p>
-                      <p className="font-bold text-foreground">{formatPrice(order.totalAmount)}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1">Total Belanja</p>
+                      <p className="font-bold text-sm text-[#C19A6B]">{formatPrice(order.totalAmount)}</p>
                     </div>
                   </div>
                 )}
 
-                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border">
+                <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-800">
                   <Link href={`/account/orders/${order.id}`}>
                     <Button variant="outline" size="sm">Detail &amp; Invoice</Button>
                   </Link>

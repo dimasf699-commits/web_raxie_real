@@ -124,34 +124,34 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       ]
 
   return (
-    <div className="text-foreground transition-colors duration-300">
+    <div className="text-black dark:text-white transition-colors duration-300">
       {/* ─── Main Product Section ────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
         <ImageGallery images={images} alt={product.name} />
 
-        <div className="flex flex-col bg-card p-6 md:p-8 rounded-2xl border border-border space-y-6 shadow-sm">
+        <div className="flex flex-col bg-white dark:bg-[#151515] p-6 md:p-8 rounded-sm border border-neutral-200 dark:border-neutral-800 space-y-6 shadow-sm">
           {/* Brand & Header Info */}
           <div>
             <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
               RAXIE LEATHER GOODS
             </span>
-            <h1 className="font-serif text-2xl md:text-4xl font-normal text-foreground tracking-wide uppercase leading-tight">
+            <h1 className="font-serif text-3xl md:text-5xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-[1.1]">
               {product.name}
             </h1>
             
-            <div className="flex items-center gap-4 mt-3 pt-3 border-t border-border text-xs">
+            <div className="flex items-center gap-4 mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-800 text-xs">
               <div className="flex items-center gap-1 text-[#C19A6B]">
                 <span>★ ★ ★ ★ ★</span>
-                <span className="font-bold ml-1 text-foreground">{product.avgRating ? product.avgRating.toFixed(1) : '5.0'}</span>
+                <span className="font-bold ml-1 text-black dark:text-white">{product.avgRating ? product.avgRating.toFixed(1) : '5.0'}</span>
               </div>
-              <span className="text-muted-foreground">|</span>
-              <span className="text-muted-foreground">{product.reviewCount || 128} Ulasan</span>
-              <span className="text-muted-foreground">|</span>
-              <span className="text-muted-foreground">{product.totalSold || 0} Terjual</span>
+              <span className="text-neutral-400">|</span>
+              <span className="text-neutral-500 dark:text-neutral-400 font-medium">{product.reviewCount || 128} Ulasan</span>
+              <span className="text-neutral-400">|</span>
+              <span className="text-neutral-500 dark:text-neutral-400 font-medium">{product.totalSold || 0} Terjual</span>
 
               <button
                 onClick={handleShare}
-                className="ml-auto flex items-center gap-1 text-muted-foreground hover:text-[#C19A6B] transition-colors"
+                className="ml-auto flex items-center gap-1 font-bold text-neutral-500 dark:text-neutral-400 hover:text-[#C19A6B] transition-colors"
               >
                 <Share2 className="h-3.5 w-3.5" /> Bagikan
               </button>
@@ -159,24 +159,24 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           </div>
 
           {/* Price Block */}
-          <div className="p-4 rounded-xl bg-muted border border-border flex items-center gap-4">
+          <div className="p-4 rounded-sm bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center gap-4">
             <span className="text-2xl md:text-3xl font-bold text-[#C19A6B]">
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
               <>
-                <span className="text-sm text-muted-foreground line-through">
+                <span className="text-sm text-neutral-400 line-through">
                   {formatPrice(product.compareAtPrice)}
                 </span>
-                <span className="bg-red-950/80 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800/50 uppercase">
-                  -{discount}% OFF
+                <span className="bg-[#121212] text-white text-[10px] font-bold px-2 py-1 rounded-sm border border-neutral-800 uppercase">
+                  -{discount}%
                 </span>
               </>
             )}
           </div>
 
           {/* Guarantee Badges */}
-          <div className="grid grid-cols-2 gap-3 text-xs text-muted-foreground py-2 border-y border-border">
+          <div className="grid grid-cols-2 gap-3 text-xs text-neutral-500 dark:text-neutral-400 py-3 border-y border-neutral-200 dark:border-neutral-800 font-medium">
             <div className="flex items-center gap-2">
               <Truck className="h-4 w-4 text-[#C19A6B] shrink-0" />
               <span>Gratis Ongkir Seluruh Indonesia</span>
@@ -204,31 +204,31 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           {/* Quantity & CTA */}
           <div className="space-y-4 pt-2">
             <div className="flex items-center gap-4">
-              <span className="text-xs uppercase font-bold text-muted-foreground">Kuantitas</span>
-              <div className="flex items-center border border-border rounded-lg bg-background px-2 py-1">
+              <span className="text-xs uppercase font-bold text-neutral-500 dark:text-neutral-400">Kuantitas</span>
+              <div className="flex items-center border border-neutral-200 dark:border-neutral-700 rounded-sm bg-white dark:bg-neutral-900 px-2 py-1">
                 <button
                   onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                  className="w-7 h-7 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white"
                 >
                   -
                 </button>
-                <span className="w-8 text-center text-xs font-bold text-foreground">{qty}</span>
+                <span className="w-8 text-center text-xs font-bold text-black dark:text-white">{qty}</span>
                 <button
                   onClick={() => setQty(Math.min(selectedVariant.stock, qty + 1))}
                   disabled={qty >= selectedVariant.stock}
-                  className="w-7 h-7 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30"
+                  className="w-7 h-7 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white disabled:opacity-30"
                 >
                   +
                 </button>
               </div>
-              <span className="text-xs text-muted-foreground">
-                Stok: <span className="font-bold text-foreground">{selectedVariant.stock}</span>
+              <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                Stok: <span className="font-bold text-black dark:text-white">{selectedVariant.stock}</span>
               </span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Button
-                className="flex-1 bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg flex items-center justify-center gap-2"
+                className="flex-1 bg-[#C19A6B] hover:bg-[#b08b5c] text-white font-bold text-xs uppercase tracking-wider py-4 rounded-sm flex items-center justify-center gap-2"
                 onClick={handleAddToCart}
                 disabled={addingCart || selectedVariant.stock === 0}
               >
@@ -237,7 +237,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </Button>
 
               <Button
-                className="flex-1 border border-border hover:border-foreground text-foreground font-bold text-xs uppercase tracking-wider py-3.5 rounded-lg"
+                className="flex-1 bg-transparent border border-neutral-300 dark:border-neutral-700 hover:border-black dark:hover:border-white text-black dark:text-white font-bold text-xs uppercase tracking-wider py-4 rounded-sm"
                 onClick={() => {
                   handleAddToCart()
                 }}
@@ -249,7 +249,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               <div className="flex gap-2">
                 <button
                   onClick={() => toggleWishlist(product)}
-                  className={`p-3 rounded-lg border flex items-center justify-center ${isWishlisted ? 'border-red-500 bg-red-950/20 text-red-400' : 'border-border bg-background text-muted-foreground hover:text-foreground'}`}
+                  className={`p-3.5 rounded-sm border flex items-center justify-center transition-colors ${isWishlisted ? 'border-red-500 bg-red-500 text-white' : 'border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white'}`}
                   aria-label="Wishlist"
                 >
                   <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
@@ -265,26 +265,26 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       </div>
 
       {/* ─── Details & Specs Tabs ─────────────────────────────────────────── */}
-      <div className="mt-16 bg-card rounded-2xl border border-border p-6 md:p-10 shadow-sm">
+      <div className="mt-16 bg-white dark:bg-[#151515] rounded-sm border border-neutral-200 dark:border-neutral-800 p-6 md:p-10 shadow-sm">
         <Tabs defaultValue="deskripsi">
-          <TabsList className="w-full justify-start h-auto p-0 bg-transparent border-b border-border rounded-none gap-6">
+          <TabsList className="w-full justify-start h-auto p-0 bg-transparent border-b border-neutral-200 dark:border-neutral-800 rounded-none gap-6">
             {['Deskripsi', 'Spesifikasi', 'Ulasan'].map((tab) => (
               <TabsTrigger
                 key={tab}
                 value={tab.toLowerCase()}
-                className="px-2 py-3 rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#C19A6B] data-[state=active]:text-[#C19A6B] text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                className="px-2 py-3 rounded-none data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-[#C19A6B] data-[state=active]:text-[#C19A6B] text-[11px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400"
               >
                 {tab} {tab === 'Ulasan' && `(${product.reviewCount || 0})`}
               </TabsTrigger>
             ))}
           </TabsList>
           
-          <div className="pt-6 text-xs leading-relaxed text-foreground">
-            <TabsContent value="deskripsi" className="space-y-4 max-w-2xl">
-              <p>
+          <div className="pt-8 text-xs leading-relaxed text-black dark:text-white">
+            <TabsContent value="deskripsi" className="space-y-4 max-w-2xl font-medium">
+              <p className="text-neutral-600 dark:text-neutral-400 leading-loose">
                 {product.description || 'Terbuat dari material PU Leather Premium pilihan yang tahan lama, tahan air, dan mudah dibersihkan. Didesain dengan presisi tinggi oleh pengrajin berpengalaman untuk menampung kebutuhan harian Anda dengan rapi.'}
               </p>
-              <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
+              <ul className="list-disc pl-4 space-y-2 text-neutral-600 dark:text-neutral-400">
                 <li>Material PU Leather Premium sintetis berkualitas tinggi</li>
                 <li>Jahitan presisi dan benang tahan lama</li>
                 <li>Desain modern & maskulin</li>
@@ -292,30 +292,30 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </ul>
             </TabsContent>
 
-            <TabsContent value="spesifikasi" className="space-y-3 max-w-md">
-              <div className="flex justify-between py-2 border-b border-border">
-                <span className="text-muted-foreground">Material</span>
-                <span className="font-semibold text-foreground">{product.material || 'PU Leather Premium'}</span>
+            <TabsContent value="spesifikasi" className="space-y-4 max-w-md font-medium">
+              <div className="flex justify-between py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <span className="text-neutral-500 dark:text-neutral-400 uppercase text-[10px] tracking-wider">Material</span>
+                <span className="font-bold text-black dark:text-white">{product.material || 'PU Leather Premium'}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-border">
-                <span className="text-muted-foreground">Dimensi</span>
-                <span className="font-semibold text-foreground">{product.dimensions || '11 x 9 x 2 cm'}</span>
+              <div className="flex justify-between py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <span className="text-neutral-500 dark:text-neutral-400 uppercase text-[10px] tracking-wider">Dimensi</span>
+                <span className="font-bold text-black dark:text-white">{product.dimensions || '11 x 9 x 2 cm'}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-border">
-                <span className="text-muted-foreground">Berat</span>
-                <span className="font-semibold text-foreground">{product.weight || 200} gram</span>
+              <div className="flex justify-between py-3 border-b border-neutral-200 dark:border-neutral-800">
+                <span className="text-neutral-500 dark:text-neutral-400 uppercase text-[10px] tracking-wider">Berat</span>
+                <span className="font-bold text-black dark:text-white">{product.weight || 200} gram</span>
               </div>
             </TabsContent>
 
             <TabsContent value="ulasan" className="space-y-6">
-              <form onSubmit={handleSubmitReview} className="space-y-3 max-w-lg bg-background p-4 rounded-xl border border-border">
-                <h4 className="font-bold text-xs uppercase tracking-wider text-[#C19A6B]">TULIS ULASAN</h4>
+              <form onSubmit={handleSubmitReview} className="space-y-4 max-w-lg bg-neutral-50 dark:bg-neutral-900 p-6 rounded-sm border border-neutral-200 dark:border-neutral-800">
+                <h4 className="font-bold text-[11px] uppercase tracking-wider text-[#C19A6B]">TULIS ULASAN</h4>
                 <div>
-                  <label className="text-[10px] text-muted-foreground uppercase font-bold block mb-1">Rating</label>
+                  <label className="text-[10px] text-neutral-500 dark:text-neutral-400 uppercase font-bold block mb-2">Rating</label>
                   <select
                     value={rating}
                     onChange={(e) => setRating(Number(e.target.value))}
-                    className="bg-card border border-border text-foreground rounded text-xs px-3 py-1.5 focus:outline-none"
+                    className="bg-white dark:bg-black border border-neutral-200 dark:border-neutral-700 text-black dark:text-white rounded-sm text-xs px-3 py-2.5 focus:outline-none w-full"
                   >
                     <option value={5}>★★★★★ (5 Bintang)</option>
                     <option value={4}>★★★★ (4 Bintang)</option>
@@ -324,18 +324,18 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
                 </div>
                 <div>
                   <textarea
-                    rows={3}
+                    rows={4}
                     placeholder="Tulis ulasan Anda mengenai produk ini..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     required
-                    className="w-full bg-card border border-border rounded p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-[#C19A6B]"
+                    className="w-full bg-white dark:bg-black border border-neutral-200 dark:border-neutral-700 rounded-sm p-4 text-xs text-black dark:text-white placeholder:text-neutral-400 focus:outline-none focus:border-[#C19A6B] transition-colors resize-none"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-[#C19A6B] text-black font-bold text-xs uppercase tracking-wider px-4 py-2 rounded hover:bg-[#b08b5c]"
+                  className="bg-[#121212] dark:bg-white text-white dark:text-black font-bold text-[11px] uppercase tracking-wider px-6 py-3 rounded-sm hover:bg-black dark:hover:bg-neutral-200 transition-colors w-full"
                 >
                   KIRIM ULASAN
                 </button>
@@ -348,16 +348,16 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       {/* ─── Related Products Section ─────────────────────────────────────── */}
       {relatedProducts && relatedProducts.length > 0 && (
         <div className="mt-16">
-          <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase block mb-1 text-center">
+          <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1 text-center">
             REKOMENDASI
           </span>
-          <h2 className="font-serif text-2xl md:text-3xl font-normal tracking-wide text-foreground uppercase text-center mb-8">
+          <h2 className="font-serif text-3xl md:text-4xl font-extrabold tracking-tight text-black dark:text-white uppercase text-center mb-10">
             PRODUK SERUPA
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {relatedProducts.slice(0, 4).map((rp: any) => (
-              <div key={rp.id} className="bg-card p-3 rounded-xl border border-border shadow-sm">
-                <ProductCard product={rp} />
+              <div key={rp.id}>
+                <ProductCard product={rp} variant="clean" />
               </div>
             ))}
           </div>

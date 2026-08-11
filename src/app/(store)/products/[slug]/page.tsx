@@ -120,7 +120,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   })
 
   return (
-    <div className="bg-background text-foreground min-h-screen py-10 transition-colors duration-300">
+    <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen py-10 transition-colors duration-300">
       <div className="container-raxie">
         <Breadcrumbs
           items={[

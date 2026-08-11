@@ -101,9 +101,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   })
 
   return (
-    <div className="bg-background text-foreground min-h-screen transition-colors duration-300">
+    <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen transition-colors duration-300">
       {/* Header Banner */}
-      <div className="bg-muted py-12 border-b border-border transition-colors duration-300">
+      <div className="bg-[#F5E6DE] dark:bg-stone-900 py-16 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
         <div className="container-raxie">
           <Breadcrumbs
             items={[
@@ -116,10 +116,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <span className="text-[#C19A6B] text-xs font-extrabold tracking-[0.2em] uppercase">
               RAXIE CATALOGUE
             </span>
-            <h1 className="font-serif text-3xl md:text-5xl font-bold uppercase tracking-wider text-foreground">
+            <h1 className="font-serif text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-black dark:text-white">
               {q ? `PENCARIAN: "${q}"` : category}
             </h1>
-            <p className="text-muted-foreground text-xs md:text-sm">
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium max-w-md mx-auto mt-4 leading-relaxed">
               Temukan dompet dan aksesoris PU Leather premium bermutu tinggi untuk melengkapi gaya elegan Anda.
             </p>
           </div>

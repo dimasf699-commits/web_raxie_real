@@ -27,7 +27,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   if (status === 'loading') {
     return (
-      <div className="bg-background text-foreground min-h-[70vh] flex items-center justify-center">
+      <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-[70vh] flex items-center justify-center transition-colors duration-300">
         <Loader2 className="w-8 h-8 animate-spin text-[#C19A6B]" />
       </div>
     )
@@ -36,23 +36,23 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const user = session?.user
 
   return (
-    <div className="bg-background text-foreground min-h-screen py-10 transition-colors duration-300">
+    <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen py-10 transition-colors duration-300">
       <div className="container-raxie">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
           {/* Sidebar Nav */}
           <aside className="w-full lg:w-64 shrink-0">
-            <div className="bg-card border border-border rounded-2xl p-6 sticky top-24 space-y-6 shadow-sm">
-              <div className="flex items-center gap-4 pb-4 border-b border-border">
+            <div className="bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm p-6 sticky top-24 space-y-6 shadow-sm">
+              <div className="flex items-center gap-4 pb-4 border-b border-neutral-200 dark:border-neutral-800">
                 {user?.image ? (
                   <Image src={user.image} alt={user.name || 'User'} width={44} height={44} className="rounded-full object-cover border-2 border-[#C19A6B]" />
                 ) : (
-                  <div className="w-11 h-11 bg-muted border border-[#C19A6B] text-[#C19A6B] rounded-full flex items-center justify-center font-serif font-bold text-lg uppercase">
+                  <div className="w-11 h-11 bg-neutral-50 dark:bg-neutral-900 border border-[#C19A6B] text-[#C19A6B] rounded-full flex items-center justify-center font-serif font-bold text-lg uppercase">
                     {user?.name?.[0] || 'U'}
                   </div>
                 )}
                 <div className="overflow-hidden">
-                  <p className="font-bold text-xs uppercase tracking-wider text-foreground truncate">{user?.name}</p>
-                  <p className="text-[11px] text-muted-foreground truncate">{user?.email}</p>
+                  <p className="font-bold text-xs uppercase tracking-wider text-black dark:text-white truncate">{user?.name}</p>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 truncate">{user?.email}</p>
                 </div>
               </div>
 
@@ -65,10 +65,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                       key={item.href}
                       href={item.href}
                       className={cn(
-                        "flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors",
+                        "flex items-center gap-3 px-4 py-3 rounded-sm text-[11px] font-bold uppercase tracking-wider transition-colors",
                         isActive 
-                          ? "bg-[#C19A6B] text-black" 
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          ? "bg-[#121212] dark:bg-white text-white dark:text-black" 
+                          : "text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-black dark:hover:text-white"
                       )}
                     >
                       <Icon className="w-4 h-4" />
@@ -77,10 +77,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   )
                 })}
                 
-                <div className="pt-4 border-t border-border">
+                <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800">
                   <button 
                     onClick={() => signOut({ callbackUrl: '/' })}
-                    className="flex w-full items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-bold uppercase tracking-wider text-red-500 hover:bg-muted transition-colors"
+                    className="flex w-full items-center gap-3 px-4 py-3 rounded-sm text-[11px] font-bold uppercase tracking-wider text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
                     Keluar
@@ -91,7 +91,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </aside>
 
           {/* Main Content Area */}
-          <main className="flex-1 w-full bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm">
+          <main className="flex-1 w-full bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm p-6 md:p-8 shadow-sm">
             {children}
           </main>
         </div>

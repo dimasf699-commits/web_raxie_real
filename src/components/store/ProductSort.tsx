@@ -16,9 +16,9 @@ export function ProductSort() {
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <span className="text-muted-foreground hidden sm:inline">Urutkan:</span>
+      <span className="text-neutral-500 dark:text-neutral-400 hidden sm:inline font-medium">Urutkan:</span>
       <select
-        className="bg-transparent border border-border rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-tan-400 font-medium"
+        className="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 text-black dark:text-white rounded-sm px-3 py-1.5 text-sm focus:outline-none focus:border-[#C19A6B] font-medium transition-colors"
         value={currentSort}
         onChange={handleSortChange}
       >
