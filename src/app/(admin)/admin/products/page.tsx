@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
-import { Plus, Search, Edit, Trash, Loader2, RefreshCw, PackageOpen, Upload } from 'lucide-react'
+import { Plus, Search, Edit, Trash, Loader2, RefreshCw, PackageOpen, Upload, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { formatPrice } from '@/lib/utils'
 import { toast } from '@/components/ui/Toaster'
@@ -30,6 +30,7 @@ export default function AdminProductsPage() {
   const [isUploading, setIsUploading] = useState(false)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [isBulkDeleting, setIsBulkDeleting] = useState(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,7 +238,10 @@ export default function AdminProductsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
+                          <div 
+                            className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => product.images[0] && setPreviewImage(product.images[0].url)}
+                          >
                             {product.images[0] ? (
                               <Image src={product.images[0].url} alt={product.name} fill className="object-cover" />
                             ) : (
@@ -327,6 +331,29 @@ export default function AdminProductsPage() {
         onClose={() => { setShowForm(false); setEditProduct(null) }}
         onSuccess={() => { setShowForm(false); setEditProduct(null); fetchProducts() }}
       />
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="relative max-w-3xl w-full max-h-[90vh] flex flex-col items-center justify-center" onClick={e => e.stopPropagation()}>
+            <button 
+              className="absolute -top-12 right-0 md:-right-12 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 p-2 rounded-full transition-all"
+              onClick={() => setPreviewImage(null)}
+            >
+              <X className="w-6 h-6" />
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={previewImage} 
+              alt="Preview" 
+              className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl ring-1 ring-white/10"
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
