@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/store/ProductCard'
+import { BrandVideo } from '@/components/store/BrandVideo'
 
 export const revalidate = 60 // ISR revalidate every 60 seconds
 
@@ -434,26 +435,12 @@ async function DynamicStoreContent() {
             </div>
           </div>
           
-          {/* Right Image */}
-          <div className="w-full lg:w-[55%] h-[400px] lg:h-full relative bg-neutral-900 group cursor-pointer overflow-hidden">
-            <Image 
-              src="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=1470" // Guy walking with bag placeholder
-              alt="Brand Story"
-              fill
-              className="object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-500 group-hover:scale-105 transform-gpu grayscale"
-              loading="lazy"
-              decoding="async"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+          {/* Right Image / Video */}
+          <div className="w-full lg:w-[55%] h-[400px] lg:h-full relative">
+            <BrandVideo 
+              videoUrl="https://i.imgur.com/4gy9tYa.mp4" 
+              thumbnailUrl="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=1470" 
             />
-            {/* Play Button Overlay */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="w-16 h-16 rounded-full border border-white/40 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20 transition-colors mb-4 shadow-xl">
-                <Play className="w-6 h-6 text-white ml-1" fill="currentColor" />
-              </div>
-              <span className="text-white text-[11px] font-bold tracking-[0.2em] text-center uppercase">
-                Watch<br/>Brand Story
-              </span>
-            </div>
           </div>
         </div>
       </section>
