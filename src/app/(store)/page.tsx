@@ -439,7 +439,7 @@ async function DynamicStoreContent() {
           <div className="w-full lg:w-[55%] h-[400px] lg:h-full relative">
             <BrandVideo 
               videoUrl="https://i.imgur.com/4gy9tYa.mp4" 
-              thumbnailUrl="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=1470" 
+              thumbnailUrl="https://i.imgur.com/gHgS61d.png" 
             />
           </div>
         </div>
