@@ -107,11 +107,11 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
   if (variant === 'clean') {
     return (
       <div 
-        className="group flex flex-col relative"
+        className="group flex flex-col relative bg-white dark:bg-[#1A1A1A] border border-[#E5D5C5] dark:border-[#C19A6B]/30 rounded-tl-[16px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] p-2.5 sm:p-3 shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_4px_10px_rgba(0,0,0,0.03)] hover:shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_8px_20px_rgba(0,0,0,0.06)] transition-all duration-300 h-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="bg-[#F5F5F5] dark:bg-neutral-900 aspect-square relative mb-4 rounded-sm overflow-hidden flex items-center justify-center p-6">
+        <div className="bg-[#F9F7F5] dark:bg-neutral-900 aspect-square relative mb-3 rounded-tl-[12px] rounded-br-[12px] rounded-tr-[2px] rounded-bl-[2px] overflow-hidden flex items-center justify-center p-6 border border-neutral-100 dark:border-neutral-800">
           {discount > 0 && (
             <div className="absolute top-2 left-2 bg-[#C19A6B] text-white text-[10px] font-bold px-2 py-1 rounded-sm z-10">
               -{discount}%
@@ -155,17 +155,19 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
           </div>
         </div>
         
-        <div>
-          <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
-            <h3 className="text-[13px] font-extrabold text-black dark:text-white mb-1 truncate hover:text-[#C19A6B] transition-colors">{product.name}</h3>
-          </Link>
-          <div className="flex items-center gap-1 mb-2">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`w-3 h-3 ${i < Math.round(product.avgRating) ? 'fill-[#C19A6B] text-[#C19A6B]' : 'fill-neutral-200 text-neutral-200 dark:fill-neutral-700 dark:text-neutral-700'}`} />
-            ))}
-            <span className="text-[10px] text-neutral-500 ml-1">({product.reviewCount || 0})</span>
+        <div className="flex-1 flex flex-col justify-between px-1">
+          <div>
+            <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
+              <h3 className="text-[13px] font-extrabold text-black dark:text-white mb-1 truncate hover:text-[#C19A6B] transition-colors">{product.name}</h3>
+            </Link>
+            <div className="flex items-center gap-1 mb-2">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className={`w-3 h-3 ${i < Math.round(product.avgRating) ? 'fill-[#C19A6B] text-[#C19A6B]' : 'fill-neutral-200 text-neutral-200 dark:fill-neutral-700 dark:text-neutral-700'}`} />
+              ))}
+              <span className="text-[10px] text-neutral-500 ml-1">({product.reviewCount || 0})</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-auto pt-1">
             <span className="text-[14px] font-bold text-black dark:text-white">{formatPrice(product.price)}</span>
             {product.compareAtPrice && product.compareAtPrice > product.price && (
               <span className="text-[11px] text-neutral-400 line-through">{formatPrice(product.compareAtPrice)}</span>
@@ -178,13 +180,13 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
 
   return (
     <div
-      className="group relative block bg-white dark:bg-card border border-[#E5E5E5] dark:border-border rounded-[20px] p-2.5 sm:p-3 shadow-sm hover:shadow-md transition-all"
+      className="group relative block bg-white dark:bg-[#1A1A1A] border border-[#E5D5C5] dark:border-[#C19A6B]/30 rounded-tl-[16px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] p-2.5 sm:p-3 shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_4px_10px_rgba(0,0,0,0.03)] hover:shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_8px_20px_rgba(0,0,0,0.06)] transition-all duration-300 h-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex flex-col h-full">
         {/* Image Container */}
-        <div className="relative overflow-hidden rounded-2xl aspect-product bg-muted">
+        <div className="relative overflow-hidden rounded-tl-[12px] rounded-br-[12px] rounded-tr-[2px] rounded-bl-[2px] aspect-product bg-[#F9F7F5] dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800">
           <Link href={`/product/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
