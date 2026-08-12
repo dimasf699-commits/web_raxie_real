@@ -31,6 +31,14 @@ export default function AdminProductsPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [isBulkDeleting, setIsBulkDeleting] = useState(false)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
+  
+  // Bulk Edit State
+  const [showBulkEditModal, setShowBulkEditModal] = useState(false)
+  const [isBulkEditing, setIsBulkEditing] = useState(false)
+  const [bulkStatus, setBulkStatus] = useState<string>('keep')
+  const [bulkCategory, setBulkCategory] = useState<string>('keep')
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([])
+
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,6 +142,55 @@ export default function AdminProductsPage() {
     }
   }
 
+  const openBulkEdit = async () => {
+    setBulkStatus('keep')
+    setBulkCategory('keep')
+    setShowBulkEditModal(true)
+    if (categories.length === 0) {
+      try {
+        const res = await fetch('/api/categories')
+        const data = await res.json()
+        setCategories(data)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  }
+
+  const handleBulkEditSubmit = async () => {
+    if (bulkStatus === 'keep' && bulkCategory === 'keep') {
+      toast.error('Pilih setidaknya satu opsi untuk diubah')
+      return
+    }
+
+    setIsBulkEditing(true)
+    try {
+      const dataToUpdate: any = {}
+      if (bulkStatus !== 'keep') dataToUpdate.isActive = bulkStatus === 'active'
+      if (bulkCategory !== 'keep') dataToUpdate.categoryId = bulkCategory
+
+      const res = await fetch('/api/admin/products/bulk', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds, data: dataToUpdate }),
+      })
+
+      if (res.ok) {
+        toast.success('Produk berhasil diperbarui')
+        setSelectedIds([])
+        setShowBulkEditModal(false)
+        fetchProducts()
+      } else {
+        const data = await res.json().catch(() => ({}))
+        toast.error(data.message || 'Gagal memperbarui produk')
+      }
+    } catch (e) {
+      toast.error('Terjadi kesalahan koneksi')
+    } finally {
+      setIsBulkEditing(false)
+    }
+  }
+
   const totalPages = Math.ceil(total / 20)
 
   return (
@@ -168,6 +225,10 @@ export default function AdminProductsPage() {
               {selectedIds.length} produk terpilih
             </span>
             <div className="flex gap-2">
+              <Button variant="outline" className="border-slate-200 text-slate-700 hover:bg-slate-50" onClick={openBulkEdit} disabled={isBulkDeleting}>
+                <Edit className="w-4 h-4 mr-2" />
+                Edit Terpilih
+              </Button>
               <Button variant="outline" className="border-red-200 text-red-600 hover:bg-red-100" onClick={() => setSelectedIds([])} disabled={isBulkDeleting}>Batal</Button>
               <Button className="bg-red-600 hover:bg-red-700 text-white border-0" onClick={handleBulkDelete} disabled={isBulkDeleting}>
                 {isBulkDeleting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Trash className="w-4 h-4 mr-2" />}
@@ -331,6 +392,52 @@ export default function AdminProductsPage() {
         onClose={() => { setShowForm(false); setEditProduct(null) }}
         onSuccess={() => { setShowForm(false); setEditProduct(null); fetchProducts() }}
       />
+
+      {/* Bulk Edit Modal */}
+      {showBulkEditModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-card w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-slate-200 dark:border-border flex justify-between items-center">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-foreground">Edit {selectedIds.length} Produk</h3>
+              <button onClick={() => setShowBulkEditModal(false)} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5"/></button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Status Produk</label>
+                <select 
+                  value={bulkStatus}
+                  onChange={(e) => setBulkStatus(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-muted border border-slate-200 dark:border-border rounded-lg text-sm focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400"
+                >
+                  <option value="keep">- Biarkan Tidak Berubah -</option>
+                  <option value="active">Aktifkan (Tampilkan)</option>
+                  <option value="inactive">Nonaktifkan (Sembunyikan)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Kategori Baru</label>
+                <select 
+                  value={bulkCategory}
+                  onChange={(e) => setBulkCategory(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-muted border border-slate-200 dark:border-border rounded-lg text-sm focus:outline-none focus:border-tan-400 focus:ring-1 focus:ring-tan-400"
+                >
+                  <option value="keep">- Biarkan Tidak Berubah -</option>
+                  {categories.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="p-6 border-t border-slate-200 dark:border-border bg-slate-50 dark:bg-muted/50 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setShowBulkEditModal(false)} disabled={isBulkEditing}>Batal</Button>
+              <Button onClick={handleBulkEditSubmit} disabled={isBulkEditing} className="bg-tan-600 hover:bg-tan-700 text-white border-0">
+                {isBulkEditing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Simpan Perubahan
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Image Preview Modal */}
       {previewImage && (
