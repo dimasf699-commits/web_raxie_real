@@ -28,6 +28,8 @@ export default function AdminProductsPage() {
   const [editProduct, setEditProduct] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +95,44 @@ export default function AdminProductsPage() {
     }
   }
 
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(products.map(p => p.id))
+    } else {
+      setSelectedIds([])
+    }
+  }
+
+  const handleSelectOne = (id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    )
+  }
+
+  const handleBulkDelete = async () => {
+    if (!confirm(`Hapus ${selectedIds.length} produk terpilih? Tindakan ini tidak bisa dibatalkan.`)) return
+    setIsBulkDeleting(true)
+    try {
+      const res = await fetch('/api/admin/products/bulk', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds }),
+      })
+      if (res.ok) {
+        toast.success('Produk berhasil dihapus')
+        setSelectedIds([])
+        fetchProducts()
+      } else {
+        const data = await res.json().catch(() => ({}))
+        toast.error(data.message || 'Gagal menghapus produk')
+      }
+    } catch (e) {
+      toast.error('Terjadi kesalahan koneksi')
+    } finally {
+      setIsBulkDeleting(false)
+    }
+  }
+
   const totalPages = Math.ceil(total / 20)
 
   return (
@@ -120,6 +160,22 @@ export default function AdminProductsPage() {
       </div>
 
       <div className="bg-white dark:bg-card border border-slate-200 dark:border-border rounded-2xl shadow-sm overflow-hidden">
+        {/* Bulk Action Toolbar */}
+        {selectedIds.length > 0 && (
+          <div className="p-4 bg-red-50 dark:bg-red-950/20 border-b border-red-100 dark:border-red-900/30 flex items-center justify-between">
+            <span className="text-sm font-medium text-red-800 dark:text-red-400">
+              {selectedIds.length} produk terpilih
+            </span>
+            <div className="flex gap-2">
+              <Button variant="outline" className="border-red-200 text-red-600 hover:bg-red-100" onClick={() => setSelectedIds([])} disabled={isBulkDeleting}>Batal</Button>
+              <Button className="bg-red-600 hover:bg-red-700 text-white border-0" onClick={handleBulkDelete} disabled={isBulkDeleting}>
+                {isBulkDeleting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Trash className="w-4 h-4 mr-2" />}
+                Hapus Terpilih
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Search Toolbar */}
         <div className="p-4 border-b border-slate-200 dark:border-border flex items-center gap-4">
           <div className="relative flex-1 max-w-md">
@@ -150,6 +206,14 @@ export default function AdminProductsPage() {
             <table className="w-full text-left text-sm whitespace-nowrap">
               <thead className="bg-slate-50 dark:bg-muted/50 text-slate-500 uppercase tracking-wider text-xs">
                 <tr>
+                  <th className="px-4 py-4 w-10">
+                    <input 
+                      type="checkbox" 
+                      className="rounded border-slate-300 text-tan-600 focus:ring-tan-500 w-4 h-4"
+                      checked={products.length > 0 && selectedIds.length === products.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
                   <th className="px-6 py-4 font-semibold">Info Produk</th>
                   <th className="px-6 py-4 font-semibold">Kategori</th>
                   <th className="px-6 py-4 font-semibold">Harga</th>
@@ -163,6 +227,14 @@ export default function AdminProductsPage() {
                   const totalStock = product.variants.reduce((s, v) => s + v.stock, 0)
                   return (
                     <tr key={product.id} className="hover:bg-slate-50/50 dark:hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-4">
+                        <input 
+                          type="checkbox" 
+                          className="rounded border-slate-300 text-tan-600 focus:ring-tan-500 w-4 h-4"
+                          checked={selectedIds.includes(product.id)}
+                          onChange={() => handleSelectOne(product.id)}
+                        />
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 shrink-0">
