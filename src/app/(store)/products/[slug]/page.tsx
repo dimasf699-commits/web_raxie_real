@@ -119,20 +119,58 @@ export default async function ProductPage({ params }: ProductPageProps) {
     }
   })
 
+  const jsonLdProduct = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.images[0] || 'https://raxie.id/og-image.jpg',
+    description: product.description,
+    sku: product.sku,
+    brand: {
+      '@type': 'Brand',
+      name: 'Raxie',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://raxie.id/products/${product.slug}`,
+      priceCurrency: 'IDR',
+      price: product.price,
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Raxie Official Store',
+      },
+    },
+    ...(product.avgRating > 0 && product.reviewCount > 0 ? {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: product.avgRating,
+        reviewCount: product.reviewCount,
+      }
+    } : {})
+  }
+
   return (
-    <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen py-10 transition-colors duration-300">
-      <div className="container-raxie">
-        <Breadcrumbs
-          items={[
-            { label: 'Koleksi', href: '/products' },
-            { label: product.categoryName, href: `/products?category=${product.categoryName.toLowerCase()}` },
-            { label: product.name, href: `#` },
-          ]}
-        />
-        <div className="mt-6">
-          <ProductDetail product={product} relatedProducts={relatedProducts} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProduct) }}
+      />
+      <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen py-10 transition-colors duration-300">
+        <div className="container-raxie">
+          <Breadcrumbs
+            items={[
+              { label: 'Koleksi', href: '/products' },
+              { label: product.categoryName, href: `/products?category=${product.categoryName.toLowerCase()}` },
+              { label: product.name, href: `#` },
+            ]}
+          />
+          <div className="mt-6">
+            <ProductDetail product={product} relatedProducts={relatedProducts} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
