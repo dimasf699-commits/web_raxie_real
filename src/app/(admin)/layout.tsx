@@ -1,10 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { LayoutDashboard, PackageSearch, ShoppingCart, Users, Tag, Settings, LogOut, MessageSquare } from 'lucide-react'
+import { LayoutDashboard, PackageSearch, ShoppingCart, Users, Tag, Settings, LogOut, MessageSquare, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const adminNav = [
@@ -20,15 +21,35 @@ const adminNav = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-[#F8F9FA] dark:bg-background overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F8F9FA] dark:bg-background overflow-hidden font-sans relative">
       
+      {/* Mobile Sidebar Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm" 
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col transition-all duration-300">
-        <div className="h-16 flex items-center px-6 border-b border-slate-800 shrink-0">
-          <span className="font-serif font-bold text-2xl tracking-widest text-white">RAXIE<span className="text-tan-500">.</span></span>
-          <span className="ml-2 text-[10px] font-bold tracking-widest uppercase bg-tan-500/20 text-tan-400 px-2 py-0.5 rounded">Admin</span>
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex flex-col transition-transform duration-300 lg:relative lg:translate-x-0 shadow-2xl lg:shadow-none",
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+      )}>
+        <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800 shrink-0">
+          <div>
+            <span className="font-serif font-bold text-2xl tracking-widest text-white">RAXIE<span className="text-tan-500">.</span></span>
+            <span className="ml-2 text-[10px] font-bold tracking-widest uppercase bg-tan-500/20 text-tan-400 px-2 py-0.5 rounded">Admin</span>
+          </div>
+          <button 
+            className="lg:hidden text-slate-400 hover:text-white p-1"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar">
@@ -40,6 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive 
@@ -84,10 +106,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar */}
-        <header className="h-16 bg-white dark:bg-card border-b border-slate-200 dark:border-border flex items-center justify-between px-6 lg:px-8 shrink-0">
-          <h2 className="font-bold text-slate-800 dark:text-white truncate">
-            {adminNav.find(n => pathname === n.href || (n.href !== '/admin' && pathname.startsWith(n.href)))?.label || 'Dashboard'}
-          </h2>
+        <header className="h-16 bg-white dark:bg-card border-b border-slate-200 dark:border-border flex items-center justify-between px-4 lg:px-8 shrink-0 relative z-10">
+          <div className="flex items-center gap-3">
+            <button 
+              className="lg:hidden p-2 -ml-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <h2 className="font-bold text-slate-800 dark:text-white truncate">
+              {adminNav.find(n => pathname === n.href || (n.href !== '/admin' && pathname.startsWith(n.href)))?.label || 'Dashboard'}
+            </h2>
+          </div>
           
           <div className="flex items-center gap-4">
             <Link href="/" target="_blank" className="text-sm font-medium text-tan-600 hover:underline">
