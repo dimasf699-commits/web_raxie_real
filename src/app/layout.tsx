@@ -19,7 +19,7 @@ const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.my.id'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://raxie.id'),
   title: {
     default: 'Raxie — Premium Leather Wallets & Accessories',
     template: '%s | Raxie',
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'id_ID',
-    url: 'https://raxie.my.id',
+    url: 'https://raxie.id',
     siteName: 'Raxie',
     title: 'Raxie — Dompet PU Leather Premium',
     description:
@@ -102,12 +102,12 @@ const jsonLdOrganization = {
   '@type': 'Organization',
   name: 'Raxie',
   alternateName: 'Raxie Official Store',
-  url: 'https://raxie.my.id',
+  url: 'https://raxie.id',
   logo: 'https://i.imgur.com/X1YcH8c.jpeg',
   description: 'Brand fashion Indonesia terkemuka untuk dompet PU Leather premium, tas, & aksesoris pria modern.',
   sameAs: [
     'https://www.instagram.com/raxie.official',
-    'https://raxie.my.id'
+    'https://raxie.id'
   ],
 }
 
@@ -115,10 +115,10 @@ const jsonLdWebSite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'Raxie Official Store',
-  url: 'https://raxie.my.id',
+  url: 'https://raxie.id',
   potentialAction: {
     '@type': 'SearchAction',
-    target: 'https://raxie.my.id/products?q={search_term_string}',
+    target: 'https://raxie.id/products?q={search_term_string}',
     'query-input': 'required name=search_term_string'
   }
 }
@@ -128,7 +128,7 @@ const jsonLdStore = {
   '@type': 'OnlineStore',
   name: 'Raxie Official Store',
   description: 'Jual dompet PU Leather premium, tas, & aksesoris pria elegan berkualitas tinggi.',
-  url: 'https://raxie.my.id',
+  url: 'https://raxie.id',
   priceRange: 'Rp100.000 - Rp500.000',
   currenciesAccepted: 'IDR',
   paymentAccepted: 'Bank Transfer, QRIS, Credit Card, E-Wallet',

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/account/', '/checkout/', '/api/'],
     },
-    sitemap: 'https://raxie.my.id/sitemap.xml',
+    sitemap: 'https://raxie.id/sitemap.xml',
   }
 }
