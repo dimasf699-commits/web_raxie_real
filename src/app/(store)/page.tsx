@@ -111,6 +111,8 @@ export default function HomePage() {
               fill
               className="object-cover object-center lg:object-left mix-blend-lighten"
               priority
+              fetchPriority="high"
+              sizes="(max-width: 1024px) 100vw, 60vw"
             />
           </div>
         </div>
@@ -268,6 +270,9 @@ async function DynamicStoreContent() {
                         alt={card.title} 
                         fill 
                         className="object-contain group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply" 
+                        loading="lazy"
+                        decoding="async"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     </div>
                   </div>
@@ -300,7 +305,7 @@ async function DynamicStoreContent() {
               </Link>
               {/* Image Placeholder */}
               <div className="absolute right-[-20%] top-1/2 -translate-y-1/2 w-[250px] h-[250px] mix-blend-multiply dark:mix-blend-normal opacity-50 pointer-events-none">
-                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Dompet Pria" fill className="object-contain" />
+                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Dompet Pria" fill className="object-contain" loading="lazy" decoding="async" sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
             </div>
             
@@ -313,7 +318,7 @@ async function DynamicStoreContent() {
               </Link>
               {/* Image Placeholder */}
               <div className="absolute right-[-10%] bottom-0 w-[200px] h-[200px] mix-blend-multiply dark:mix-blend-normal opacity-50 pointer-events-none">
-                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Dompet Wanita" fill className="object-contain" />
+                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Dompet Wanita" fill className="object-contain" loading="lazy" decoding="async" sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
             </div>
             
@@ -324,7 +329,7 @@ async function DynamicStoreContent() {
               <p className="text-[10px] text-neutral-400 font-medium mb-6">Kualitas, gaya, & fungsi dalam satu produk.</p>
               {/* Image Placeholder */}
               <div className="absolute right-0 bottom-0 top-0 w-[50%] opacity-40 pointer-events-none">
-                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Crafted" fill className="object-cover" />
+                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Crafted" fill className="object-cover" loading="lazy" decoding="async" sizes="(max-width: 768px) 100vw, 33vw" />
               </div>
             </div>
           </div>
@@ -425,7 +430,7 @@ async function DynamicStoreContent() {
             
             {/* Faded background image */}
             <div className="absolute right-[-10%] bottom-[-20%] opacity-[0.03] pointer-events-none hidden md:block">
-               <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Wallet Silhouette" width={400} height={400} className="object-contain" />
+               <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Wallet Silhouette" width={400} height={400} className="object-contain" loading="lazy" decoding="async" />
             </div>
           </div>
           
@@ -436,6 +441,9 @@ async function DynamicStoreContent() {
               alt="Brand Story"
               fill
               className="object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-500 group-hover:scale-105 transform-gpu grayscale"
+              loading="lazy"
+              decoding="async"
+              sizes="(max-width: 1024px) 100vw, 50vw"
             />
             {/* Play Button Overlay */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">

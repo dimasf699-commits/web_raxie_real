@@ -116,6 +116,8 @@ export function Navbar() {
               alt="RAXIE Logo"
               width={32}
               height={32}
+              priority
+              fetchPriority="high"
               className="h-8 w-auto object-contain shrink-0"
             />
             <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-white uppercase">
