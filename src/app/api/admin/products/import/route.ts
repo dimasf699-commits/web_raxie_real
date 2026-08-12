@@ -115,7 +115,11 @@ export async function POST(req: Request) {
         
         const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
         const varName = row[varNameIdx] || 'Default'
-        const sku = row[varSkuIdx] || ''
+        let sku = row[varSkuIdx] || ''
+        if (!sku || sku.trim() === '') {
+          sku = `SKU-${Math.floor(Math.random() * 1000000)}-${i}`
+        }
+        
         const priceStr = row[priceIdx]?.toString() || '0'
         const stockStr = row[stockIdx]?.toString() || '0'
         
