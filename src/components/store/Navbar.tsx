@@ -39,8 +39,6 @@ const defaultNavLinks = [
     ]
   },
   { href: '/about', label: 'Tentang Kami' },
-  { href: '/why-raxie', label: 'Kenapa Raxie' },
-  { href: '/reviews', label: 'Ulasan' },
   { href: '/contact', label: 'Kontak' },
 ]
 

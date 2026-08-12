@@ -53,7 +53,6 @@ export function Footer() {
               <li><Link href="/" className="hover:text-white transition-colors">Beranda</Link></li>
               <li><Link href="/products" className="hover:text-white transition-colors">Koleksi</Link></li>
               <li><Link href="/about" className="hover:text-white transition-colors">Tentang Kami</Link></li>
-              <li><Link href="/why-raxie" className="hover:text-white transition-colors">Kenapa Raxie</Link></li>
             </ul>
           </div>
 
