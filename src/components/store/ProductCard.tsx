@@ -178,13 +178,13 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
 
   return (
     <div
-      className="group relative block"
+      className="group relative block bg-white dark:bg-card border border-[#E5E5E5] dark:border-border rounded-[20px] p-2.5 sm:p-3 shadow-sm hover:shadow-md transition-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div>
+      <div className="flex flex-col h-full">
         {/* Image Container */}
-        <div className="relative overflow-hidden rounded-lg aspect-product bg-muted">
+        <div className="relative overflow-hidden rounded-2xl aspect-product bg-muted">
           <Link href={`/product/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}

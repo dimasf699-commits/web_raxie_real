@@ -105,13 +105,20 @@ export function Navbar() {
 
   return (
     <>
-      {/* Permanent Light Sticky Navbar Header */}
-      <header className="sticky top-0 left-0 right-0 z-50 bg-[#FAF9F6] dark:bg-neutral-900 text-black dark:text-white border-b border-neutral-200 dark:border-neutral-800 transition-colors">
+      {/* Permanent Dark Sticky Navbar Header */}
+      <header className="sticky top-0 left-0 right-0 z-50 bg-[#121212] text-white border-b border-neutral-800 transition-colors">
         <AnnouncementBar />
         <div className="container-raxie h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity group w-auto lg:w-[200px]">
-            <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-black dark:text-white uppercase">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity group w-auto lg:w-[200px]">
+            <Image
+              src="https://i.imgur.com/8YvnCvE.png"
+              alt="RAXIE Logo"
+              width={32}
+              height={32}
+              className="h-8 w-auto object-contain shrink-0"
+            />
+            <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-white uppercase">
               RAXIE
             </span>
           </Link>
@@ -130,8 +137,8 @@ export function Navbar() {
                   className={cn(
                     'flex items-center gap-1 py-2 text-[13px] font-semibold transition-colors',
                     pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href))
-                      ? 'text-black dark:text-white font-bold'
-                      : 'text-neutral-800 dark:text-neutral-300 hover:text-black dark:hover:text-white'
+                      ? 'text-white font-bold'
+                      : 'text-neutral-400 hover:text-white'
                   )}
                 >
                   {link.label}
@@ -153,13 +160,13 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4, scale: 0.97 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-48 rounded-xl bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 shadow-xl overflow-hidden py-2"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-48 rounded-xl bg-[#1A1A1A] border border-neutral-800 shadow-xl overflow-hidden py-2"
                     >
                       {link.children.map((child: any) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-5 py-2 text-[13px] font-semibold text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                          className="block px-5 py-2 text-[13px] font-semibold text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
                         >
                           {child.label}
                         </Link>
@@ -179,7 +186,7 @@ export function Navbar() {
               size="icon"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              className="text-white hover:bg-neutral-800"
             >
               <Search className="h-[18px] w-[18px]" />
             </Button>
@@ -190,7 +197,7 @@ export function Navbar() {
               size="icon"
               aria-label="Ganti tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 hidden md:flex"
+              className="text-white hover:bg-neutral-800 hidden md:flex"
             >
               <Moon className="h-[18px] w-[18px] hidden dark:block" />
               <Sun className="h-[18px] w-[18px] block dark:hidden" />
@@ -202,7 +209,7 @@ export function Navbar() {
               size="icon"
               aria-label="Wishlist"
               asChild
-              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 relative"
+              className="text-white hover:bg-neutral-800 relative"
             >
               <Link href="/wishlist">
                 <Heart className="h-[18px] w-[18px]" />
@@ -210,7 +217,7 @@ export function Navbar() {
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold flex items-center justify-center"
+                    className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-white text-black text-[10px] font-bold flex items-center justify-center"
                   >
                     {wishlistItems > 9 ? '9+' : wishlistItems}
                   </motion.span>
@@ -224,7 +231,7 @@ export function Navbar() {
               size="icon"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 relative"
+              className="text-white hover:bg-neutral-800 relative"
             >
               <ShoppingBag className="h-[18px] w-[18px]" />
               <AnimatePresence>
@@ -234,7 +241,7 @@ export function Navbar() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold flex items-center justify-center"
+                      className="absolute -top-0.5 -right-0.5 h-4 w-4 rounded-full bg-white text-black text-[10px] font-bold flex items-center justify-center"
                     >
                       {cartItems > 9 ? '9+' : cartItems}
                     </motion.span>
@@ -251,9 +258,13 @@ export function Navbar() {
                       size="icon"
                       aria-label="Menu akun"
                       onClick={() => setShowUserMenu(!showUserMenu)}
-                      className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                      className="text-white hover:bg-neutral-800 relative overflow-hidden rounded-full"
                     >
-                      <User className="h-[18px] w-[18px]" />
+                      {session.user?.image ? (
+                        <Image src={session.user.image} alt={session.user.name || "User"} fill className="object-cover" />
+                      ) : (
+                        <User className="h-[18px] w-[18px]" />
+                      )}
                     </Button>
 
                   <AnimatePresence>
@@ -263,18 +274,18 @@ export function Navbar() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 mt-2 w-56 rounded-xl bg-white border border-neutral-100 text-black shadow-xl overflow-hidden py-1 z-50"
+                        className="absolute right-0 mt-2 w-56 rounded-xl bg-[#1A1A1A] border border-neutral-800 text-white shadow-xl overflow-hidden py-1 z-50"
                       >
-                        <div className="px-4 py-3 border-b border-neutral-100">
-                          <p className="text-[13px] font-bold text-black truncate">{session.user?.name}</p>
-                          <p className="text-[11px] text-neutral-500 truncate">{session.user?.email}</p>
+                        <div className="px-4 py-3 border-b border-neutral-800">
+                          <p className="text-[13px] font-bold text-white truncate">{session.user?.name}</p>
+                          <p className="text-[11px] text-neutral-400 truncate">{session.user?.email}</p>
                         </div>
 
                         {(session.user as any)?.role === 'ADMIN' && (
                           <Link
                             href="/admin"
                             onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-black hover:bg-neutral-50 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-white hover:bg-neutral-800 transition-colors"
                           >
                             ⚡ Dashboard Admin
                           </Link>
@@ -283,18 +294,18 @@ export function Navbar() {
                         <Link
                           href="/account"
                           onClick={() => setShowUserMenu(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-neutral-600 hover:bg-neutral-50 hover:text-black transition-colors"
+                          className="flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-neutral-400 hover:bg-neutral-800 hover:text-white transition-colors"
                         >
                           <User className="w-[14px] h-[14px]" /> Profil & Pesanan
                         </Link>
 
-                        <div className="border-t border-neutral-100 my-1">
+                        <div className="border-t border-neutral-800 my-1">
                           <button
                             onClick={() => {
                               setShowUserMenu(false)
                               signOut({ callbackUrl: '/' })
                             }}
-                            className="w-full flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-red-600 hover:bg-red-50 transition-colors"
+                            className="w-full flex items-center gap-2 px-4 py-2 text-[13px] font-semibold text-red-500 hover:bg-neutral-800 transition-colors"
                           >
                             <LogOut className="w-[14px] h-[14px]" /> Keluar
                           </button>
@@ -309,7 +320,7 @@ export function Navbar() {
                   size="icon"
                   aria-label="Login"
                   asChild
-                  className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  className="text-white hover:bg-neutral-800"
                 >
                   <Link href="/login">
                     <User className="h-[18px] w-[18px]" />
@@ -324,7 +335,7 @@ export function Navbar() {
               size="icon"
               aria-label="Buka menu navigasi"
               onClick={() => setIsMobileOpen(true)}
-              className="text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 lg:hidden"
+              className="text-white hover:bg-neutral-800 lg:hidden"
             >
               <Menu className="h-5 w-5" />
             </Button>

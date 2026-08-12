@@ -260,7 +260,7 @@ async function DynamicStoreContent() {
             {/* The 3 Cards */}
             <div className="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {collectionCards.map((card, i) => (
-                <Link key={i} href={card.link} className="group relative bg-[#F4F4F4] aspect-[4/5] sm:aspect-auto sm:h-[340px] flex flex-col justify-end p-0 overflow-hidden shadow-sm rounded-sm">
+                <Link key={i} href={card.link} className="group relative bg-[#F4F4F4] aspect-[4/5] sm:aspect-auto sm:h-[340px] flex flex-col justify-end p-0 overflow-hidden shadow-sm rounded-[20px] border border-[#E5E5E5] dark:border-border">
                   <div className="absolute inset-0 pb-16 pt-8 px-6">
                     <div className="relative w-full h-full">
                       <Image 
@@ -276,7 +276,7 @@ async function DynamicStoreContent() {
                       <h3 className="text-lg font-extrabold text-black dark:text-white tracking-tight">{card.title}</h3>
                       <p className="text-[11px] text-neutral-500 font-medium">{card.subtitle}</p>
                     </div>
-                    <div className="w-10 h-10 bg-[#B8926A] text-white flex items-center justify-center shrink-0 group-hover:bg-[#967654] transition-colors rounded-sm shadow-md">
+                    <div className="w-10 h-10 bg-[#B8926A] text-white flex items-center justify-center shrink-0 group-hover:bg-[#967654] transition-colors rounded-[12px] shadow-md">
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
