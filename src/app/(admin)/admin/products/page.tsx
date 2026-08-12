@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
-import { Plus, Search, Edit, Trash, Loader2, RefreshCw, PackageOpen } from 'lucide-react'
+import { Plus, Search, Edit, Trash, Loader2, RefreshCw, PackageOpen, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { formatPrice } from '@/lib/utils'
 import { toast } from '@/components/ui/Toaster'
@@ -27,6 +27,36 @@ export default function AdminProductsPage() {
   const [page, setPage] = useState(1)
   const [editProduct, setEditProduct] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsUploading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await fetch('/api/admin/products/import', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(data.message || 'File berhasil diunggah')
+        fetchProducts()
+      } else {
+        toast.error(data.message || 'Gagal mengunggah file')
+      }
+    } catch (err) {
+      toast.error('Terjadi kesalahan saat mengunggah file')
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
 
   const fetchProducts = useCallback(async () => {
     setIsLoading(true)
@@ -75,6 +105,11 @@ export default function AdminProductsPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".xlsx,.xls,.csv" className="hidden" />
+          <Button variant="outline" className="gap-2 shrink-0 border-slate-200" onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+            {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            Import Shopee
+          </Button>
           <Button variant="outline" className="gap-2 border-slate-200" onClick={fetchProducts}>
             <RefreshCw className="w-4 h-4" />
           </Button>
