@@ -1,21 +1,30 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-const FROM_EMAIL = 'Raxie <admin@raxie.my.id>' // Email resmi toko menggunakan domain yang sudah di-add di Resend
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.titan.email',
+  port: Number(process.env.SMTP_PORT) || 465,
+  secure: true, // true for 465, false for other ports
+  auth: {
+    user: process.env.SMTP_USER, 
+    pass: process.env.SMTP_PASSWORD,
+  },
+})
+
+const FROM_EMAIL = `"Raxie" <${process.env.SMTP_USER || 'admin@raxie.id'}>`
 
 export const sendWelcomeEmail = async (email: string, name: string) => {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not found. Skipping welcome email.')
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('SMTP credentials not found. Skipping welcome email.')
     return
   }
 
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
       subject: 'Selamat Datang di Raxie! 🎉',
       html: `
-        <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #333;">
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
           <h1 style="color: #a18a66;">Selamat Datang, ${name}!</h1>
           <p>Terima kasih telah bergabung dengan Raxie. Kami sangat senang bisa menjadi bagian dari perjalanan gaya Anda.</p>
           <p>Sebagai ucapan terima kasih, kami telah menambahkan <strong>100 Poin Loyalitas</strong> ke akun Anda yang bisa digunakan untuk diskon belanja selanjutnya!</p>
@@ -32,18 +41,18 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
 }
 
 export const sendOrderEmail = async (email: string, orderNumber: string, total: number) => {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not found. Skipping order email.')
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('SMTP credentials not found. Skipping order email.')
     return
   }
 
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
       subject: `Pesanan Diterima - ${orderNumber}`,
       html: `
-        <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #333;">
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
           <h1 style="color: #a18a66;">Pesanan Anda Sedang Diproses</h1>
           <p>Terima kasih telah berbelanja di Raxie!</p>
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 12px; margin: 20px 0;">
@@ -64,18 +73,18 @@ export const sendOrderEmail = async (email: string, orderNumber: string, total: 
 }
 
 export const sendShippingEmail = async (email: string, orderNumber: string, courierName: string, trackingNumber: string) => {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not found. Skipping shipping email.')
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('SMTP credentials not found. Skipping shipping email.')
     return
   }
 
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
       subject: `Pesanan Anda Telah Dikirim! - ${orderNumber}`,
       html: `
-        <div style="font-family: sans-serif; max-w: 600px; margin: 0 auto; color: #333;">
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
           <h1 style="color: #a18a66;">Yeay, Paket Anda Sedang Meluncur! 🚀</h1>
           <p>Kabar gembira! Pesanan Anda dengan nomor <strong>${orderNumber}</strong> telah diserahkan ke pihak kurir pengiriman.</p>
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 12px; margin: 20px 0;">
@@ -97,15 +106,15 @@ export const sendShippingEmail = async (email: string, orderNumber: string, cour
 }
 
 export const sendContactFormEmail = async (name: string, email: string, message: string) => {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not found. Skipping contact email.')
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('SMTP credentials not found. Skipping contact email.')
     return
   }
 
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: FROM_EMAIL,
-      to: 'raxieleather@gmail.com',
+      to: process.env.SMTP_USER, // Mengirim ke email admin itu sendiri
       subject: `📩 Pesan Baru dari Website RAXIE - ${name}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
@@ -118,7 +127,7 @@ export const sendContactFormEmail = async (name: string, email: string, message:
               ${message.replace(/\n/g, '<br/>')}
             </div>
           </div>
-          <p style="font-size: 12px; color: #666;">Pesan ini dikirimkan melalui formulir Hubungi Kami di raxie.my.id</p>
+          <p style="font-size: 12px; color: #666;">Pesan ini dikirimkan melalui formulir Hubungi Kami di raxie.id</p>
         </div>
       `,
     })
@@ -128,13 +137,13 @@ export const sendContactFormEmail = async (name: string, email: string, message:
 }
 
 export const sendPasswordResetEmail = async (email: string, resetUrl: string) => {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not found. Skipping password reset email.')
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+    console.warn('SMTP credentials not found. Skipping password reset email.')
     return
   }
 
   try {
-    await resend.emails.send({
+    await transporter.sendMail({
       from: FROM_EMAIL,
       to: email,
       subject: 'Reset Password Akun RAXIE Anda 🔐',
