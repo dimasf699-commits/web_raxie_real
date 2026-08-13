@@ -63,8 +63,8 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // Send welcome email asynchronously
-    sendWelcomeEmail(user.email, user.name || 'Pelanggan').catch(console.error)
+    // Send welcome email (Harus ditunggu agar Vercel tidak mematikan prosesnya di tengah jalan)
+    await sendWelcomeEmail(user.email, user.name || 'Pelanggan').catch(console.error)
 
     return NextResponse.json(
       { message: 'Akun berhasil dibuat!', userId: user.id },
