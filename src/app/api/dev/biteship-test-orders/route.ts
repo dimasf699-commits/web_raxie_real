@@ -58,7 +58,7 @@ export async function GET(req: NextRequest) {
           origin_address: 'Kp. Pasirkiamis, Garut',
           destination_contact_name: `Test Customer ${nameSuffix}`,
           destination_contact_phone: '081234567890',
-          destination_contact_email: 'test@raxie.my.id',
+          destination_contact_email: 'test@raxie.id',
           destination_address: 'Jl. Test No 123',
           destination_postal_code: 44161,
           destination_area_id: 'IDNP9IDNC122IDND450IDZ44161',

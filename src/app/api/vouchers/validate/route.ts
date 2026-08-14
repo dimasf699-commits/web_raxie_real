@@ -4,7 +4,7 @@ import { rateLimit } from '@/lib/redis'
 
 export async function POST(req: NextRequest) {
   try {
-    const identifier = req.ip || 'anonymous'
+    const identifier = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'anonymous'
     const limit = await rateLimit(`voucher_validate:${identifier}`, 10, 60)
     
     if (!limit.success) {

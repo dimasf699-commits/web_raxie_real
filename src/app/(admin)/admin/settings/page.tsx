@@ -30,7 +30,7 @@ export default function AdminSettingsPage() {
             <label className="block text-sm font-medium mb-1">Email Toko</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input defaultValue="hello@raxie.my.id" className="w-full pl-10 border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-amber-500" />
+              <input defaultValue="hello@raxie.id" className="w-full pl-10 border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
           </div>
           <div>
@@ -52,7 +52,7 @@ export default function AdminSettingsPage() {
             <label className="block text-sm font-medium mb-1">URL Website</label>
             <div className="relative">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input defaultValue="https://raxie.my.id" className="w-full pl-10 border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-amber-500" />
+              <input defaultValue="https://raxie.id" className="w-full pl-10 border border-border rounded-xl px-4 py-2.5 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
           </div>
         </div>

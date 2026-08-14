@@ -14,7 +14,7 @@ const registerSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
-    const identifier = req.ip || 'anonymous'
+    const identifier = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'anonymous'
     const limit = await rateLimit(`register:${identifier}`, 5, 900)
     if (!limit.success) {
       return NextResponse.json(

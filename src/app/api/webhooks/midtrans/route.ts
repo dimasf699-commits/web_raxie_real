@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
             origin_address: "Kp. Pasirkiamis, Desa Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat",
             destination_contact_name: order.shippingName,
             destination_contact_phone: order.shippingPhone,
-            destination_contact_email: order.guestEmail || "customer@raxie.my.id",
+            destination_contact_email: order.guestEmail || "customer@raxie.id",
             destination_address: order.shippingStreet,
             destination_postal_code: Number(order.shippingPostalCode) || 44161,
             destination_area_id: destinationAreaId,

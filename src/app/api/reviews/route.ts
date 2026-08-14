@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const session = await auth()
     
     // Rate Limiting: 3 reviews per minute per user/IP
-    const identifier = session?.user?.id || req.ip || 'anonymous'
+    const identifier = session?.user?.id || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'anonymous'
     const limit = await rateLimit(`review_create:${identifier}`, 3, 60)
     
     if (!limit.success) {

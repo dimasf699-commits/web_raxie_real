@@ -503,7 +503,7 @@ export default function CheckoutPage() {
                         <span className="font-bold uppercase tracking-wider">PEMBAYARAN OTOMATIS & 100% AMAN</span>
                       </div>
                       <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed font-medium">
-                        Anda dapat memilih metode pembayaran seperti **QRIS, Virtual Account BCA/Mandiri/BRI, Kartu Kredit, GoPay, atau ShopeePay** secara langsung melalui pop-up transaksi Midtrans yang aman.
+                        Anda dapat memilih metode pembayaran seperti <strong>QRIS, Virtual Account BCA/Mandiri/BRI, Kartu Kredit, GoPay, atau ShopeePay</strong> secara langsung melalui pop-up transaksi Midtrans yang aman.
                       </p>
                     </div>
 

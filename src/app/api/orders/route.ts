@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     const session = await auth()
     
     // Rate Limiting: 5 orders per minute per user/IP
-    const identifier = session?.user?.id || req.ip || 'anonymous'
+    const identifier = session?.user?.id || req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'anonymous'
     const limit = await rateLimit(`order_create:${identifier}`, 5, 60)
     
     if (!limit.success) {
@@ -265,7 +265,7 @@ export async function POST(req: NextRequest) {
         enabled_payments = ['credit_card']
       }
 
-      const appUrl = 'https://raxie.my.id'
+      const appUrl = process.env.NEXTAUTH_URL || 'https://raxie.id'
 
       const itemDetails: any[] = order.items.map((item: any) => ({
         id: item.sku || item.id,

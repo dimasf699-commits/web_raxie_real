@@ -6,7 +6,7 @@ import crypto from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
-    const identifier = req.ip || 'anonymous'
+    const identifier = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'anonymous'
     const limit = await rateLimit(`forgot_pw:${identifier}`, 3, 900)
     if (!limit.success) {
       return NextResponse.json(

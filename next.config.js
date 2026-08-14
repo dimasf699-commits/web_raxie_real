@@ -24,8 +24,8 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: [
         'localhost:3000',
-        'raxie.my.id',
-        'www.raxie.my.id',
+        'raxie.id',
+        'www.raxie.id',
       ],
     },
   },

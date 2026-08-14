@@ -4,7 +4,7 @@ import { rateLimit } from '@/lib/redis'
 
 export async function POST(req: NextRequest) {
   try {
-    const identifier = req.ip || 'anonymous'
+    const identifier = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.ip || 'anonymous'
     const limit = await rateLimit(`restock_alert:${identifier}`, 5, 3600) // 5x per jam
 
     if (!limit.success) {
