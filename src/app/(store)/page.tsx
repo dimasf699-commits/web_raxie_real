@@ -253,10 +253,21 @@ async function DynamicStoreContent() {
   return (
     <>
       {/* ─── 3. EXPLORE COLLECTION ──────────────── */}
-      <section className="py-12 pb-24">
+      <section className="py-6 lg:py-12">
         <div className="container-raxie">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-10">
-            {/* Header */}
+          {/* Header Mobile Category Title */}
+          <div className="flex lg:hidden items-center justify-between mb-4">
+            <div>
+              <span className="text-[#B89A6A] text-[9px] font-extrabold tracking-[0.2em] uppercase block mb-0.5">KATEGORI RAXIE</span>
+              <h2 className="text-xl font-serif font-extrabold text-black dark:text-white uppercase tracking-tight">Kategori Pilihan</h2>
+            </div>
+            <Link href="/products" className="text-[10px] font-bold text-[#B89A6A] flex items-center gap-1 hover:underline">
+              Lihat Semua <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-4 lg:mb-16 gap-10">
+            {/* Header Desktop */}
             <div className="hidden lg:block max-w-[340px]">
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-6 h-[2px] bg-[#C19A6B]" />
@@ -278,7 +289,7 @@ async function DynamicStoreContent() {
             
             {/* The 3 Cards - Mobile Horizontal Carousel, Desktop Grid */}
             <div className="w-full lg:flex-1 relative">
-              <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 sm:gap-6 pb-6 scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible">
+              <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 sm:gap-6 pb-4 scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible">
                 {collectionCards.map((card, i) => (
                   <Link 
                     key={i} 
@@ -321,7 +332,7 @@ async function DynamicStoreContent() {
               </div>
               
               {/* Pagination Indicator (Mobile Only) */}
-              <div className="flex lg:hidden items-center justify-center gap-1.5 mt-2 pb-4">
+              <div className="flex lg:hidden items-center justify-center gap-1.5 mt-1 pb-2">
                 <span className="w-6 h-[3px] bg-[#B89A6A] rounded-full" />
                 <span className="w-4 h-[3px] bg-neutral-300 dark:bg-neutral-700 rounded-full" />
                 <span className="w-4 h-[3px] bg-neutral-300 dark:bg-neutral-700 rounded-full" />
@@ -332,7 +343,7 @@ async function DynamicStoreContent() {
       </section>
 
       {/* ─── 4. BANNER GRID (NEW) ──────────────── */}
-      <section className="py-12">
+      <section className="py-4 lg:py-12">
         <div className="container-raxie">
           <BannerCarousel />
         </div>

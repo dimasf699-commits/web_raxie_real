@@ -263,33 +263,59 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
         </div>
 
         {/* Product Info */}
-        <div className="mt-2.5 sm:mt-4 px-0.5 text-left space-y-1 relative z-10">
-          <Link href={`/product/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
-            <h3 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
-              {product.name}
-            </h3>
-          </Link>
+        <div className="mt-2.5 sm:mt-4 px-0.5 text-left space-y-1.5 relative z-10 flex-1 flex flex-col justify-between">
+          <div>
+            <Link href={`/product/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
+              <h3 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
+                {product.name}
+              </h3>
+            </Link>
 
-          {/* Price */}
-          <div className="flex items-center justify-start gap-1.5 pt-0.5 flex-wrap">
-            <span className="font-bold text-[11px] sm:text-xs text-foreground">
-              {formatPrice(product.price)}
-            </span>
-            {product.compareAtPrice && product.compareAtPrice > product.price && (
-              <span className="text-[9px] sm:text-[11px] line-through text-muted-foreground">
-                {formatPrice(product.compareAtPrice)}
+            {/* Price */}
+            <div className="flex items-center justify-start gap-1.5 pt-0.5 flex-wrap">
+              <span className="font-bold text-[11px] sm:text-xs text-foreground">
+                {formatPrice(product.price)}
               </span>
-            )}
+              {product.compareAtPrice && product.compareAtPrice > product.price && (
+                <span className="text-[9px] sm:text-[11px] line-through text-muted-foreground">
+                  {formatPrice(product.compareAtPrice)}
+                </span>
+              )}
+            </div>
+
+            {/* Rating */}
+            <div className="flex items-center justify-start gap-1 text-[#8E6D4A] dark:text-[#C19A6B] pt-0.5">
+              <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[9px] sm:text-[10px]" aria-hidden="true">
+                ★ ★ ★ ★ ★
+              </div>
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground tracking-tight">
+                ({product.reviewCount || 128})
+              </span>
+            </div>
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center justify-start gap-1 text-[#8E6D4A] dark:text-[#C19A6B] pt-0.5">
-            <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[9px] sm:text-[10px]" aria-hidden="true">
-              ★ ★ ★ ★ ★
-            </div>
-            <span className="text-[9px] sm:text-[10px] text-muted-foreground tracking-tight">
-              ({product.reviewCount || 128})
-            </span>
+          {/* Add to Cart button */}
+          <div className="pt-2">
+            <button
+              onClick={handleAddToCart}
+              disabled={addingCart || product.stock === 0}
+              className="w-full flex items-center justify-center gap-1.5 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-[10px] sm:text-xs font-bold uppercase tracking-wider py-2 rounded-md shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {addingCart ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full"
+                />
+              ) : (
+                <ShoppingBag className="h-3.5 w-3.5" />
+              )}
+              {product.stock === 0
+                ? 'Stok Habis'
+                : addingCart
+                ? '...'
+                : 'Tambah Keranjang'}
+            </button>
           </div>
         </div>
       </div>
