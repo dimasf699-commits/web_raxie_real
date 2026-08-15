@@ -3,24 +3,29 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
+  const count = await prisma.product.count()
+  console.log(`Total products in DB: ${count}`)
+
   const products = await prisma.product.findMany({
-    take: 5,
+    take: 10,
     orderBy: { createdAt: 'desc' },
     include: {
       images: true,
       variants: true,
+      category: true,
     }
   })
 
-  console.log("Latest Products:")
+  console.log("Products:")
   products.forEach(p => {
-    console.log(`- ${p.name} (Base Price: ${p.basePrice})`)
-    console.log(`  Images: ${p.images.length}`)
-    if (p.images.length > 0) console.log(`  First Image URL: ${p.images[0].url}`)
-    console.log(`  Variants: ${p.variants.length}`)
-    if (p.variants.length > 0) {
-      console.log(`  First Variant: ${p.variants[0].name}, Price: ${p.variants[0].price}, Stock: ${p.variants[0].stock}`)
-    }
+    console.log(`\nProduct: "${p.name}" (ID: ${p.id})`)
+    console.log(`- Slug: ${p.slug}`)
+    console.log(`- Base Price: ${p.basePrice}`)
+    console.log(`- Category: ${p.category?.name}`)
+    console.log(`- Images count: ${p.images.length}`)
+    p.images.forEach((img, idx) => console.log(`  [${idx}] URL: "${img.url}"`))
+    console.log(`- Variants count: ${p.variants.length}`)
+    p.variants.forEach((v, idx) => console.log(`  [${idx}] Variant: "${v.name}", Price: ${v.price}, Stock: ${v.stock}`))
   })
 }
 

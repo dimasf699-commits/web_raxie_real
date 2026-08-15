@@ -58,6 +58,34 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'raxie.id',
       },
+      {
+        protocol: 'https',
+        hostname: 'cf.shopee.co.id',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.shopee.co.id',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.susercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'down-id.img.susercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'down-ws-id.img.susercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'down-tx-id.img.susercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'down-zl-id.img.susercontent.com',
+      },
     ],
   },
   async headers() {

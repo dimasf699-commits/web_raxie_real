@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { deleteCacheByPattern } from '@/lib/redis'
 import * as xlsx from 'xlsx'
 
 export async function POST(req: Request) {
@@ -37,12 +38,12 @@ export async function POST(req: Request) {
     }
 
     // Pastikan ada default category
-    let defaultCategory = await prisma.category.findFirst({ where: { name: 'Uncategorized' } })
+    let defaultCategory = await prisma.category.findFirst({ where: { name: 'Dompet' } })
     if (!defaultCategory) {
       defaultCategory = await prisma.category.findFirst()
       if (!defaultCategory) {
         defaultCategory = await prisma.category.create({
-          data: { name: 'Uncategorized', slug: 'uncategorized' }
+          data: { name: 'Dompet', slug: 'dompet', description: 'Koleksi Dompet Raxie' }
         })
       }
     }
@@ -54,26 +55,30 @@ export async function POST(req: Request) {
       const coverIdx = headerKeys.indexOf('ps_item_cover_image')
       const imgIndices = [1,2,3,4,5,6,7,8].map(i => headerKeys.indexOf(`ps_item_image.${i}`))
       
-      for (let i = 4; i < rawData.length; i++) {
+      for (let i = 5; i < rawData.length; i++) {
         const row = rawData[i]
+        if (!row) continue
         const name = row[nameIdx]
         
-        if (!name || name === 'Opsional' || name === 'Wajib') continue // Skip notes rows
+        if (!name || name === 'Opsional' || name === 'Wajib') continue
         
-        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Math.floor(Math.random() * 10000)
         
-        const images = []
-        if (row[coverIdx]) images.push(row[coverIdx])
+        const images: string[] = []
+        if (row[coverIdx] && typeof row[coverIdx] === 'string' && row[coverIdx].startsWith('http')) {
+          images.push(row[coverIdx])
+        }
         imgIndices.forEach(idx => {
-          if (idx !== -1 && row[idx]) images.push(row[idx])
+          if (idx !== -1 && row[idx] && typeof row[idx] === 'string' && row[idx].startsWith('http')) {
+            images.push(row[idx])
+          }
         })
 
         if (images.length === 0) continue
 
         // Update or create product
-        const existing = await prisma.product.findFirst({ where: { name } })
+        const existing = await prisma.product.findFirst({ where: { name: name.trim() } })
         if (existing) {
-          // Add images (simplification: delete old, add new to avoid duplicates)
           await prisma.productImage.deleteMany({ where: { productId: existing.id } })
           await prisma.productImage.createMany({
             data: images.map((url, index) => ({
@@ -84,16 +89,30 @@ export async function POST(req: Request) {
           })
           processedCount++
         } else {
-          // Create product with default data
+          // Create product with default variant
+          const skuCode = `RXE-IMP-${Date.now()}-${i}`
           await prisma.product.create({
             data: {
-              name,
-              slug: slug + '-' + Math.floor(Math.random()*1000),
-              description: 'Imported from Shopee',
-              basePrice: 0,
+              name: name.trim(),
+              slug,
+              description: `${name.trim()} - Produk premium dari RAXIE.`,
+              shortDescription: `Produk premium dari RAXIE.`,
+              basePrice: 49000,
+              compareAtPrice: 65000,
               categoryId: defaultCategory.id,
               images: {
                 create: images.map((url, index) => ({ url, sortOrder: index }))
+              },
+              variants: {
+                create: [
+                  {
+                    name: 'Default',
+                    price: 49000,
+                    stock: 50,
+                    sku: skuCode,
+                    sortOrder: 0
+                  }
+                ]
               }
             }
           })
@@ -107,41 +126,53 @@ export async function POST(req: Request) {
       const priceIdx = headerKeys.indexOf('et_title_variation_price')
       const stockIdx = headerKeys.indexOf('et_title_variation_stock')
       
-      for (let i = 4; i < rawData.length; i++) {
+      for (let i = 5; i < rawData.length; i++) {
         const row = rawData[i]
+        if (!row) continue
         const name = row[nameIdx]
         
         if (!name || name === 'Opsional' || name === 'Wajib') continue
         
-        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + Math.floor(Math.random() * 10000)
         const varName = row[varNameIdx] || 'Default'
         let sku = row[varSkuIdx] || ''
         if (!sku || sku.trim() === '') {
-          sku = `SKU-${Math.floor(Math.random() * 1000000)}-${i}`
+          sku = `RXE-VAR-${Date.now()}-${i}`
         }
         
         const priceStr = row[priceIdx]?.toString() || '0'
         const stockStr = row[stockIdx]?.toString() || '0'
         
-        const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0
-        const stock = parseInt(stockStr.replace(/[^0-9]/g, ''), 10) || 0
+        const price = parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 49000
+        const stock = parseInt(stockStr.replace(/[^0-9]/g, ''), 10) || 50
 
         // Find or create product
-        let product = await prisma.product.findFirst({ where: { name } })
+        let product = await prisma.product.findFirst({ where: { name: name.trim() } })
         if (!product) {
           product = await prisma.product.create({
             data: {
-              name,
-              slug: slug + '-' + Math.floor(Math.random()*1000),
-              description: 'Imported from Shopee',
-              basePrice: price, // Set base price from first variant
+              name: name.trim(),
+              slug,
+              description: `${name.trim()} - Produk premium dari RAXIE.`,
+              shortDescription: `Produk premium dari RAXIE.`,
+              basePrice: price,
+              compareAtPrice: Math.round(price * 1.25),
               categoryId: defaultCategory.id,
+              images: {
+                create: [{ url: 'https://i.imgur.com/1QtzAZ5.png', sortOrder: 0 }]
+              }
             }
           })
         } else {
-          // Update base price if it's currently 0
-          if (product.basePrice === 0) {
-            await prisma.product.update({ where: { id: product.id }, data: { basePrice: price } })
+          // Update base price
+          if (product.basePrice === 0 || price < product.basePrice) {
+            await prisma.product.update({
+              where: { id: product.id },
+              data: {
+                basePrice: price,
+                compareAtPrice: Math.round(price * 1.25)
+              }
+            })
           }
         }
 
@@ -153,16 +184,20 @@ export async function POST(req: Request) {
         if (existingVar) {
           await prisma.productVariant.update({
             where: { id: existingVar.id },
-            data: { price, stock, sku }
+            data: { price, stock, sku: existingVar.sku || sku }
           })
         } else {
+          // Check if SKU already exists globally
+          const skuConflict = await prisma.productVariant.findUnique({ where: { sku } })
+          const finalSku = skuConflict ? `RXE-${Date.now()}-${i}` : sku
+
           await prisma.productVariant.create({
             data: {
               productId: product.id,
               name: varName,
               price,
               stock,
-              sku,
+              sku: finalSku,
               sortOrder: 0
             }
           })
@@ -170,6 +205,9 @@ export async function POST(req: Request) {
         processedCount++
       }
     }
+
+    // Invalidate product public cache
+    await deleteCacheByPattern('api:products:*')
     
     return NextResponse.json({ 
       message: `Berhasil memproses ${processedCount} data dari file ${isMediaInfo ? 'Informasi Media' : 'Informasi Penjualan'}.`,
