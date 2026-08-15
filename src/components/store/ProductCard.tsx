@@ -107,73 +107,51 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
   if (variant === 'clean') {
     return (
       <div 
-        className="group flex flex-col relative bg-white dark:bg-[#1A1A1A] border border-[#E5D5C5] dark:border-[#C19A6B]/30 rounded-tl-[16px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] p-2.5 sm:p-3 shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_4px_10px_rgba(0,0,0,0.03)] hover:shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_8px_20px_rgba(0,0,0,0.06)] transition-all duration-300 h-full"
+        className="group flex flex-col relative bg-transparent h-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="bg-[#F9F7F5] dark:bg-neutral-900 aspect-square relative mb-3 rounded-tl-[12px] rounded-br-[12px] rounded-tr-[2px] rounded-bl-[2px] overflow-hidden flex items-center justify-center p-6 border border-neutral-100 dark:border-neutral-800">
+        <div className="bg-[#F8F6F2] dark:bg-neutral-900 aspect-square relative mb-3 rounded-[12px] overflow-hidden flex items-center justify-center p-4">
           {discount > 0 && (
-            <div className="absolute top-2 left-2 bg-[#C19A6B] text-white text-[10px] font-bold px-2 py-1 rounded-sm z-10">
+            <div className="absolute top-2 left-2 bg-[#B89A6A] text-white text-[10px] font-bold px-2 py-0.5 rounded-[4px] z-10">
               -{discount}%
             </div>
           )}
           
-          <Link href={`/products/${product.slug}`} className="relative w-full h-full mix-blend-multiply dark:mix-blend-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C19A6B]">
+          <Link href={`/products/${product.slug}`} className="relative w-full h-full mix-blend-multiply dark:mix-blend-normal focus-visible:outline-none">
             <Image 
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })} 
               alt={product.name} 
               fill 
-              className="object-contain group-hover:scale-110 transition-transform duration-500" 
+              className="object-contain group-hover:scale-105 transition-transform duration-500" 
               loading="lazy"
               decoding="async"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
           </Link>
 
-          {/* Clean Variant Action Buttons (Wishlist, Compare) */}
-          <div className="absolute top-2 right-2 flex flex-col gap-2 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
+          {/* Action Buttons (Wishlist) always visible on mobile in top right */}
+          <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
             <button
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-              className="w-8 h-8 rounded-sm bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white dark:bg-black/50 border border-neutral-100 dark:border-neutral-800 flex items-center justify-center shadow-sm hover:bg-neutral-50 transition-colors"
             >
-              <Heart className={`h-[14px] w-[14px] transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-neutral-600 dark:text-neutral-300'}`} />
-            </button>
-          </div>
-
-          {/* Clean Variant Add to Cart Overlay */}
-          <div className="absolute bottom-3 left-3 right-3 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 lg:translate-y-2 lg:group-hover:translate-y-0">
-            <button
-              onClick={handleAddToCart}
-              disabled={addingCart || product.stock === 0}
-              className="w-full flex items-center justify-center gap-2 bg-[#121212] dark:bg-white hover:bg-black dark:hover:bg-neutral-200 text-white dark:text-black text-[10px] font-bold uppercase tracking-[0.1em] py-2.5 rounded-sm shadow-md transition-all active:scale-[0.98] disabled:opacity-50"
-            >
-              {addingCart ? (
-                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }} className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full" />
-              ) : (
-                <ShoppingBag className="h-3 w-3" />
-              )}
-              {product.stock === 0 ? 'Stok Habis' : 'Add to Cart'}
+              <Heart className={`h-3.5 w-3.5 transition-colors ${isWishlisted ? 'fill-[#B89A6A] text-[#B89A6A]' : 'text-neutral-500'}`} />
             </button>
           </div>
         </div>
         
         <div className="flex-1 flex flex-col justify-between px-1">
           <div>
-            <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
-              <h3 className="text-[13px] font-extrabold text-black dark:text-white mb-1 truncate hover:text-[#C19A6B] transition-colors">{product.name}</h3>
+            <Link href={`/products/${product.slug}`} className="focus-visible:outline-none inline-block w-full">
+              <h3 className="text-[12px] sm:text-[13px] font-bold text-[#0B0B0B] dark:text-white mb-1 truncate hover:text-[#B89A6A] transition-colors">{product.name}</h3>
             </Link>
-            <div className="flex items-center gap-1 mb-2">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={`w-3 h-3 ${i < Math.round(product.avgRating) ? 'fill-[#C19A6B] text-[#C19A6B]' : 'fill-neutral-200 text-neutral-200 dark:fill-neutral-700 dark:text-neutral-700'}`} />
-              ))}
-              <span className="text-[10px] text-neutral-500 ml-1">({product.reviewCount || 0})</span>
-            </div>
           </div>
-          <div className="flex items-center gap-2 mt-auto pt-1">
-            <span className="text-[14px] font-bold text-black dark:text-white">{formatPrice(product.price)}</span>
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-auto pt-1">
+            <span className="text-[13px] sm:text-[14px] font-extrabold text-[#0B0B0B] dark:text-white">{formatPrice(product.price)}</span>
             {product.compareAtPrice && product.compareAtPrice > product.price && (
-              <span className="text-[11px] text-neutral-400 line-through">{formatPrice(product.compareAtPrice)}</span>
+              <span className="text-[10px] sm:text-[11px] text-neutral-400 line-through">{formatPrice(product.compareAtPrice)}</span>
             )}
           </div>
         </div>

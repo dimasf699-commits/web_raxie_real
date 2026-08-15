@@ -129,13 +129,13 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 items-start">
         <ImageGallery images={images} alt={product.name} />
 
-        <div className="flex flex-col bg-white dark:bg-[#151515] p-6 md:p-8 rounded-sm border border-neutral-200 dark:border-neutral-800 space-y-6 shadow-sm">
+        <div className="flex flex-col bg-white dark:bg-[#151515] p-5 md:p-8 rounded-sm border-0 md:border md:border-neutral-200 dark:md:border-neutral-800 space-y-5 md:space-y-6 md:shadow-sm">
           {/* Brand & Header Info */}
           <div>
-            <span className="text-[#C19A6B] text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1">
-              RAXIE LEATHER GOODS
+            <span className="text-[#B89A6A] text-[10px] md:text-[11px] font-extrabold tracking-[0.2em] uppercase block mb-1.5">
+              {product.categoryName || 'RAXIE LEATHER GOODS'}
             </span>
-            <h1 className="font-serif text-3xl md:text-5xl font-extrabold text-black dark:text-white tracking-tight uppercase leading-[1.1]">
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-5xl font-extrabold text-[#0B0B0B] dark:text-white tracking-tight uppercase leading-[1.1]">
               {product.name}
             </h1>
             
@@ -159,13 +159,13 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           </div>
 
           {/* Price Block */}
-          <div className="p-4 rounded-sm bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex items-center gap-4">
-            <span className="text-2xl md:text-3xl font-bold text-[#C19A6B]">
+          <div className="flex items-center gap-3 md:gap-4 md:p-4 rounded-sm bg-transparent md:bg-neutral-50 dark:md:bg-neutral-900 md:border md:border-neutral-200 dark:md:border-neutral-800">
+            <span className="text-xl md:text-3xl font-extrabold text-[#B89A6A]">
               {formatPrice(product.price)}
             </span>
             {product.compareAtPrice && (
               <>
-                <span className="text-sm text-neutral-400 line-through">
+                <span className="text-[11px] md:text-sm text-neutral-400 line-through">
                   {formatPrice(product.compareAtPrice)}
                 </span>
                 <span className="bg-[#121212] text-white text-[10px] font-bold px-2 py-1 rounded-sm border border-neutral-800 uppercase">
@@ -176,15 +176,21 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           </div>
 
           {/* Guarantee Badges */}
-          <div className="grid grid-cols-2 gap-3 text-xs text-neutral-500 dark:text-neutral-400 py-3 border-y border-neutral-200 dark:border-neutral-800 font-medium">
-            <div className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-[#C19A6B] shrink-0" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-neutral-500 dark:text-neutral-400 py-4 border-y border-neutral-100 dark:border-neutral-800/50 font-medium">
+            <div className="flex items-center gap-3">
+              <Truck className="h-4 w-4 text-[#B89A6A] shrink-0" />
               <span>Gratis Ongkir Seluruh Indonesia</span>
             </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-[#C19A6B] shrink-0" />
+            <div className="flex items-center gap-3">
+              <ShieldCheck className="h-4 w-4 text-[#B89A6A] shrink-0" />
               <span>Garansi 1 Tahun & Retur Mudah</span>
             </div>
+          </div>
+          
+          {/* Mobile Description Preview */}
+          <div className="block lg:hidden text-[12px] leading-relaxed text-neutral-600 dark:text-neutral-400 pb-2">
+            {product.description?.substring(0, 150)}...
+            <a href="#details" className="text-[#0B0B0B] dark:text-white font-bold ml-1 hover:underline">Selengkapnya</a>
           </div>
 
           {/* Variant Selector */}
@@ -226,9 +232,9 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </span>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <div className="hidden lg:flex flex-col sm:flex-row gap-3 pt-2">
               <Button
-                className="flex-1 bg-[#C19A6B] hover:bg-[#b08b5c] text-white font-bold text-xs uppercase tracking-wider py-4 rounded-sm flex items-center justify-center gap-2"
+                className="flex-1 bg-[#B89A6A] hover:bg-[#a3865a] text-white font-bold text-xs uppercase tracking-wider py-4 rounded-sm flex items-center justify-center gap-2"
                 onClick={handleAddToCart}
                 disabled={addingCart || selectedVariant.stock === 0}
               >
@@ -257,6 +263,32 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </div>
             </div>
 
+            {/* Mobile Sticky Bottom Bar */}
+            <div className="fixed bottom-0 left-0 right-0 z-[40] bg-white dark:bg-[#0B0B0B] border-t border-neutral-100 dark:border-neutral-900 p-4 px-6 flex items-center gap-3 lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
+              <button
+                onClick={() => toggleWishlist(product)}
+                className={`p-3 h-[48px] w-[48px] rounded-[8px] shrink-0 border flex items-center justify-center transition-colors ${isWishlisted ? 'border-red-500 bg-red-500 text-white' : 'border-neutral-200 dark:border-neutral-800 bg-transparent text-neutral-500'}`}
+              >
+                <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
+              </button>
+              <div className="flex gap-2 flex-1 h-[48px]">
+                <Button
+                  className="flex-1 h-full bg-transparent border border-neutral-300 dark:border-neutral-700 text-[#0B0B0B] dark:text-white font-extrabold text-[10px] uppercase tracking-wider rounded-[8px]"
+                  onClick={handleAddToCart}
+                  disabled={addingCart || selectedVariant.stock === 0}
+                >
+                  + KERANJANG
+                </Button>
+                <Button
+                  className="flex-1 h-full bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] font-extrabold text-[10px] uppercase tracking-wider rounded-[8px]"
+                  onClick={handleAddToCart}
+                  disabled={addingCart || selectedVariant.stock === 0}
+                >
+                  BELI SEKARANG
+                </Button>
+              </div>
+            </div>
+
             {selectedVariant.stock === 0 && (
               <RestockAlertButton productId={product.id} variantId={selectedVariant.id} />
             )}
@@ -265,7 +297,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       </div>
 
       {/* ─── Details & Specs Tabs ─────────────────────────────────────────── */}
-      <div className="mt-16 bg-white dark:bg-[#151515] rounded-sm border border-neutral-200 dark:border-neutral-800 p-6 md:p-10 shadow-sm">
+      <div id="details" className="mt-8 lg:mt-16 bg-white dark:bg-[#151515] rounded-sm border-y lg:border border-neutral-100 dark:border-neutral-800 p-6 md:p-10 shadow-sm lg:mb-0 mb-32">
         <Tabs defaultValue="deskripsi">
           <TabsList className="w-full justify-start h-auto p-0 bg-transparent border-b border-neutral-200 dark:border-neutral-800 rounded-none gap-6">
             {['Deskripsi', 'Spesifikasi', 'Ulasan'].map((tab) => (

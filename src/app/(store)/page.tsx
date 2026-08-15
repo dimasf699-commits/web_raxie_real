@@ -74,44 +74,44 @@ export default function HomePage() {
     <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen font-sans overflow-x-hidden">
       
       {/* ─── 1. HERO SECTION ──────────────── */}
-      <section className="w-full bg-[#FAF9F6] dark:bg-[#121212] overflow-hidden transition-colors">
-        <div className="flex flex-row w-full min-h-[400px] sm:min-h-[500px] lg:min-h-[650px] items-stretch">
+      <section className="w-full bg-[#F8F6F2] dark:bg-[#121212] transition-colors relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row w-full min-h-[500px] lg:min-h-[650px] items-stretch">
           
           {/* Left Text */}
-          <div className="w-[55%] lg:w-[45%] flex flex-col justify-center py-10 pl-5 pr-2 sm:pl-8 lg:py-16 lg:pl-16 xl:pl-32 lg:pr-12 z-10">
-            <div className="flex items-center gap-2 mb-3 lg:mb-6">
-              <span className="w-4 sm:w-6 lg:w-8 h-[1px] lg:h-[2px] bg-[#C19A6B]" />
-              <span className="text-[8px] sm:text-[9px] lg:text-[11px] font-bold tracking-[0.1em] lg:tracking-[0.2em] text-[#C19A6B]">KUALITAS PREMIUM</span>
+          <div className="w-full lg:w-[45%] flex flex-col justify-center px-6 pt-12 pb-6 lg:py-16 lg:pl-16 xl:pl-32 lg:pr-12 z-10">
+            <div className="flex items-center gap-3 mb-4 lg:mb-6">
+              <span className="w-6 lg:w-8 h-[2px] bg-[#B89A6A]" />
+              <span className="text-[10px] lg:text-[11px] font-bold tracking-[0.2em] text-[#B89A6A]">KUALITAS PREMIUM</span>
             </div>
             
-            <h1 className="text-[26px] sm:text-4xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-3 lg:mb-6 text-black dark:text-white">
+            <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-4 lg:mb-6 text-[#0B0B0B] dark:text-white">
               Didesain<br/>
-              <span className="text-[#C19A6B]">Untuk Anda.</span>
+              <span className="text-[#B89A6A]">Untuk Anda.</span>
             </h1>
             
-            <p className="text-neutral-500 text-[9px] sm:text-[11px] lg:text-[14px] leading-relaxed max-w-[380px] font-medium mb-6 lg:mb-10">
+            <p className="text-[#777777] dark:text-neutral-400 text-[13px] lg:text-[14px] leading-relaxed max-w-[380px] font-medium mb-8 lg:mb-10">
               RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-6">
+            <div className="flex flex-row items-center gap-4 lg:gap-6">
               <Link 
                 href="/products" 
-                className="bg-[#0f0f0f] dark:bg-white text-white dark:text-black text-[10px] lg:text-[12px] font-bold px-4 sm:px-5 lg:px-8 py-2.5 sm:py-3 lg:py-4 flex items-center justify-center gap-2 lg:gap-3 hover:bg-black dark:hover:bg-neutral-200 transition-colors rounded-[6px] lg:rounded-sm w-[130px] sm:w-auto"
+                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[12px] font-bold px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-[8px] lg:rounded-sm flex-1 sm:flex-none text-center"
               >
-                Lihat Koleksi <ArrowRight className="w-3 h-3 lg:w-4 lg:h-4" />
+                Lihat Koleksi <ArrowRight className="w-4 h-4" />
               </Link>
               <Link 
                 href="/about" 
-                className="text-black dark:text-white text-[10px] lg:text-[12px] font-bold flex items-center gap-1 sm:gap-2 hover:text-[#C19A6B] transition-colors px-1"
+                className="text-[#0B0B0B] dark:text-white text-[12px] font-bold flex items-center gap-2 hover:text-[#B89A6A] transition-colors"
               >
-                Eksplorasi <ArrowRight className="w-3 h-3 lg:w-4 lg:h-4" />
+                Eksplorasi <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
           
           {/* Right Image Container */}
-          <div className="w-[45%] lg:w-[55%] relative z-0 flex items-stretch">
-            <div className="w-full h-full bg-[#0f0f0f] rounded-bl-[30px] lg:rounded-none lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] shadow-2xl overflow-hidden relative">
+          <div className="w-full lg:w-[55%] relative z-0 flex flex-col lg:flex-row items-stretch pt-2 lg:pt-0 pb-10 px-6 lg:px-0 lg:pb-0">
+            <div className="w-full min-h-[340px] sm:min-h-[400px] lg:min-h-full h-full bg-[#0B0B0B] rounded-[24px] lg:rounded-none lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] shadow-2xl overflow-hidden relative">
               <Image 
                 src="https://i.imgur.com/1QtzAZ5.png"
                 alt="Raxie Wallet Premium" 
@@ -119,7 +119,7 @@ export default function HomePage() {
                 className="object-cover object-center lg:object-left mix-blend-lighten opacity-90"
                 priority
                 fetchPriority="high"
-                sizes="(max-width: 1024px) 45vw, 60vw"
+                sizes="(max-width: 1024px) 100vw, 60vw"
               />
             </div>
           </div>
@@ -138,26 +138,26 @@ export default function HomePage() {
                 OUR IMPACT
               </div>
               
-              <div className="grid grid-cols-4 gap-0 py-8 lg:py-14 px-4 sm:px-8 lg:pl-28 lg:pr-16 w-full relative z-10 divide-x divide-neutral-800">
-                <div className="flex flex-col items-center justify-center text-center px-2">
-                  <Users className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">975+</h3>
-                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Pelanggan Puas</p>
+              <div className="grid grid-cols-2 lg:grid-cols-4 w-full relative z-10">
+                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14 border-b border-r border-neutral-800 lg:border-b-0">
+                  <Users className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">975+</h3>
+                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Pelanggan Puas</p>
                 </div>
-                <div className="flex flex-col items-center justify-center text-center px-2">
-                  <Package className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">320+</h3>
-                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Produk Terjual</p>
+                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14 border-b border-neutral-800 lg:border-b-0 lg:border-r">
+                  <Package className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">320+</h3>
+                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Produk Terjual</p>
                 </div>
-                <div className="flex flex-col items-center justify-center text-center px-2">
-                  <Star className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">462+</h3>
-                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Ulasan Bintang 5</p>
+                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14 border-r border-neutral-800 lg:border-r">
+                  <Star className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">462+</h3>
+                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Ulasan Bintang 5</p>
                 </div>
-                <div className="flex flex-col items-center justify-center text-center px-2">
-                  <ShieldCheck className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">98%</h3>
-                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Tingkat Kepuasan</p>
+                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14">
+                  <ShieldCheck className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">98%</h3>
+                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Tingkat Kepuasan</p>
                 </div>
               </div>
               
@@ -273,37 +273,55 @@ async function DynamicStoreContent() {
             </div>
             
             {/* The 3 Cards - Mobile Horizontal Carousel, Desktop Grid */}
-            <div className="w-full lg:flex-1 flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 sm:gap-6 pb-4 scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible">
-              {collectionCards.map((card, i) => (
-                <Link 
-                  key={i} 
-                  href={card.link} 
-                  className="snap-start lg:snap-align-none shrink-0 w-[65%] sm:w-[45%] lg:w-auto group relative bg-[#F4F4F4] aspect-[4/5] sm:aspect-auto sm:h-[340px] flex flex-col justify-end p-0 overflow-hidden shadow-sm rounded-[20px] border border-[#E5E5E5] dark:border-border transition-all active:scale-[0.98] lg:active:scale-100"
-                >
-                  <div className="absolute inset-0 pb-16 pt-8 px-6">
-                    <div className="relative w-full h-full">
-                      <Image 
-                        src={card.image} 
-                        alt={card.title} 
-                        fill 
-                        className="object-contain group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply" 
-                        loading="lazy"
-                        decoding="async"
-                        sizes="(max-width: 768px) 65vw, (max-width: 1024px) 45vw, 33vw"
-                      />
+            <div className="w-full lg:flex-1 relative">
+              <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 sm:gap-6 pb-6 scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible">
+                {collectionCards.map((card, i) => (
+                  <Link 
+                    key={i} 
+                    href={card.link} 
+                    className="snap-center lg:snap-align-none shrink-0 w-[75%] sm:w-[45%] lg:w-auto group relative bg-white dark:bg-[#1A1A1A] flex flex-col p-4 overflow-hidden rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none border border-neutral-100 dark:border-neutral-800 transition-all active:scale-[0.98] lg:active:scale-100"
+                  >
+                    <div className="w-full bg-[#F8F6F2] dark:bg-[#242424] rounded-[16px] aspect-[4/3] relative mb-8 flex items-center justify-center p-6">
+                      <div className="relative w-full h-full">
+                        <Image 
+                          src={card.image} 
+                          alt={card.title} 
+                          fill 
+                          className="object-contain group-hover:scale-105 transition-transform duration-700 ease-out mix-blend-multiply dark:mix-blend-normal" 
+                          loading="lazy"
+                          decoding="async"
+                          sizes="(max-width: 768px) 75vw, (max-width: 1024px) 45vw, 33vw"
+                        />
+                      </div>
+                      
+                      {/* Circular Overlapping Icon */}
+                      <div className="absolute -bottom-5 left-4 w-10 h-10 bg-white dark:bg-[#121212] rounded-full flex items-center justify-center shadow-lg border border-neutral-100 dark:border-neutral-800 z-10">
+                        {i === 0 ? (
+                          <div className="w-4 h-3 rounded-[2px] border-[1.5px] border-[#B89A6A]" />
+                        ) : i === 1 ? (
+                          <div className="w-4 h-3.5 rounded-t-full border-[1.5px] border-[#B89A6A] border-b-0 relative after:absolute after:bottom-0 after:-left-1 after:-right-1 after:h-2 after:border-[1.5px] after:border-[#B89A6A] after:rounded-sm" />
+                        ) : (
+                          <div className="w-5 h-2 rounded-full border-[1.5px] border-[#B89A6A]" />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="relative z-10 flex justify-between items-end p-5 lg:p-6 bg-gradient-to-t from-[#F4F4F4] dark:from-neutral-900 via-[#F4F4F4]/80 dark:via-neutral-900/80 to-transparent">
-                    <div>
-                      <h3 className="text-base lg:text-lg font-extrabold text-black dark:text-white tracking-tight">{card.title}</h3>
-                      <p className="text-[10px] lg:text-[11px] text-neutral-500 font-medium">{card.subtitle}</p>
+                    
+                    <div className="px-2 text-center pb-2">
+                      <h3 className="text-[13px] font-extrabold text-[#0B0B0B] dark:text-white tracking-widest uppercase mb-1">{card.title}</h3>
+                      <p className="text-[10px] text-neutral-500 font-bold flex items-center justify-center gap-1">
+                        Lihat Koleksi <ArrowRight className="w-3 h-3" />
+                      </p>
                     </div>
-                    <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#B8926A] text-white flex items-center justify-center shrink-0 group-hover:bg-[#967654] transition-colors rounded-[10px] lg:rounded-[12px] shadow-md">
-                      <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
+              
+              {/* Pagination Indicator (Mobile Only) */}
+              <div className="flex lg:hidden items-center justify-center gap-2 mt-2 pb-4">
+                <span className="w-[18px] h-1 bg-[#B89A6A] rounded-full" />
+                <span className="w-1 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full" />
+                <span className="w-1 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full" />
+              </div>
             </div>
           </div>
         </div>

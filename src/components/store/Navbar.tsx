@@ -456,108 +456,65 @@ export function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Premium Menu (Full Screen) */}
       <AnimatePresence>
         {isMobileOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md lg:hidden"
-            onClick={() => setIsMobileOpen(false)}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] bg-[#0B0B0B] text-white flex flex-col lg:hidden"
           >
-            <motion.div
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              onClick={(e) => e.stopPropagation()}
-              className="w-4/5 max-w-sm h-full bg-black border-r border-neutral-800 p-6 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between pb-6 border-b border-neutral-800">
-                  <Link
-                    href="/"
-                    onClick={() => setIsMobileOpen(false)}
-                    className="flex items-center gap-2.5"
-                  >
-                    <Image
-                      src="https://i.imgur.com/SrBEKD5.png"
-                      alt="RAXIE Emblem"
-                      width={32}
-                      height={32}
-                      className="h-7 w-auto object-contain shrink-0"
-                    />
-                    <span className="font-serif font-extrabold text-xl tracking-[0.2em] text-[#C19A6B] uppercase">
-                      RAXIE
-                    </span>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label="Tutup menu"
-                    onClick={() => setIsMobileOpen(false)}
-                    className="text-neutral-400 hover:text-white focus-visible:ring-2 focus-visible:ring-[#C19A6B]"
-                  >
-                    <X className="h-5 w-5" />
-                  </Button>
+            {/* Header inside menu */}
+            <div className="h-20 flex items-center justify-between px-6 border-b border-neutral-900">
+              <Link href="/" onClick={() => setIsMobileOpen(false)} className="flex items-center gap-2.5">
+                <Image src="https://i.imgur.com/8YvnCvE.png" alt="RAXIE Logo" width={32} height={32} className="h-8 w-auto object-contain shrink-0" />
+                <span className="font-serif font-extrabold text-2xl tracking-[0.05em] uppercase">RAXIE</span>
+              </Link>
+              <Button variant="ghost" size="icon" onClick={() => setIsMobileOpen(false)} className="text-white hover:bg-neutral-900">
+                <X className="h-6 w-6" />
+              </Button>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="flex-1 overflow-y-auto px-8 py-10 flex flex-col justify-center">
+              <nav className="space-y-6 text-center">
+                <Link href="/" onClick={() => setIsMobileOpen(false)} className="block text-3xl font-extrabold uppercase tracking-tight text-white hover:text-[#B89A6A] transition-colors">Beranda</Link>
+                <Link href="/products" onClick={() => setIsMobileOpen(false)} className="block text-3xl font-extrabold uppercase tracking-tight text-white hover:text-[#B89A6A] transition-colors">Koleksi</Link>
+                
+                <div className="space-y-4 pt-2">
+                  <Link href="/products?category=dompet" onClick={() => setIsMobileOpen(false)} className="block text-lg font-bold text-neutral-400 uppercase tracking-widest hover:text-white">Dompet</Link>
+                  <Link href="/products?category=tas" onClick={() => setIsMobileOpen(false)} className="block text-lg font-bold text-neutral-400 uppercase tracking-widest hover:text-white">Tas</Link>
+                  <Link href="/products?category=sabuk" onClick={() => setIsMobileOpen(false)} className="block text-lg font-bold text-neutral-400 uppercase tracking-widest hover:text-white">Sabuk</Link>
                 </div>
 
-                <nav className="mt-6 space-y-3">
-                  {navLinks.map((link) => (
-                    <div key={link.href}>
-                      <Link
-                        href={link.href}
-                        onClick={() => setIsMobileOpen(false)}
-                        className={cn(
-                          'block py-2 text-sm font-bold tracking-wider uppercase transition-colors',
-                          pathname === link.href ? 'text-[#C19A6B]' : 'text-neutral-300'
-                        )}
-                      >
-                        {link.label}
-                      </Link>
-                      {link.children && (
-                        <div className="pl-4 space-y-2 mt-1 border-l border-neutral-800">
-                          {link.children.map((child: any) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              className="block text-xs font-semibold text-neutral-400 hover:text-[#C19A6B]"
-                              onClick={() => setIsMobileOpen(false)}
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </nav>
-              </div>
+                <div className="pt-6 border-t border-neutral-900 space-y-6">
+                  <Link href="/products?sort=popular" onClick={() => setIsMobileOpen(false)} className="block text-xl font-extrabold uppercase tracking-tight text-white hover:text-[#B89A6A]">Produk Terlaris</Link>
+                  <Link href="/about" onClick={() => setIsMobileOpen(false)} className="block text-xl font-extrabold uppercase tracking-tight text-white hover:text-[#B89A6A]">Tentang Raxie</Link>
+                  <Link href="/contact" onClick={() => setIsMobileOpen(false)} className="block text-xl font-extrabold uppercase tracking-tight text-white hover:text-[#B89A6A]">Bantuan</Link>
+                </div>
+              </nav>
+            </div>
 
-              <div className="pt-6 border-t border-neutral-800">
-                {session ? (
-                  <div className="space-y-3">
-                    <p className="text-xs font-bold text-white uppercase">{session.user?.name}</p>
-                    <Link
-                      href="/account"
-                      onClick={() => setIsMobileOpen(false)}
-                      className="block text-xs text-[#C19A6B] font-bold uppercase"
-                    >
-                      Profil Saya &rarr;
-                    </Link>
+            {/* Bottom Actions */}
+            <div className="p-8 border-t border-neutral-900">
+              {session ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-neutral-400 uppercase">Halo, {session.user?.name}</span>
+                    <Button variant="ghost" onClick={() => { setIsMobileOpen(false); signOut({ callbackUrl: '/' }); }} className="text-red-500 font-bold hover:bg-neutral-900 p-0 h-auto">KELUAR</Button>
                   </div>
-                ) : (
-                  <Link
-                    href="/login"
-                    onClick={() => setIsMobileOpen(false)}
-                    className="block w-full text-center bg-[#C19A6B] text-black font-bold text-xs uppercase py-3 rounded-none hover:bg-[#A8835A] transition-colors"
-                  >
-                    MASUK AKUN
-                  </Link>
-                )}
-              </div>
-            </motion.div>
+                  <Button asChild className="w-full bg-white text-black font-extrabold text-xs uppercase tracking-[0.1em] py-5 rounded-[8px] hover:bg-neutral-200">
+                    <Link href="/account" onClick={() => setIsMobileOpen(false)}>Profil & Pesanan Saya</Link>
+                  </Button>
+                </div>
+              ) : (
+                <Button asChild className="w-full bg-[#B89A6A] hover:bg-[#a3865a] text-black font-extrabold text-xs uppercase tracking-[0.1em] py-5 rounded-[8px]">
+                  <Link href="/login" onClick={() => setIsMobileOpen(false)}>MASUK / DAFTAR</Link>
+                </Button>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
