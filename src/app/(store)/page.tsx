@@ -85,7 +85,7 @@ async function getHomepageData() {
     }
   } catch (e) {
     console.error('[HOMEPAGE_DATA_ERROR]', e)
-    return { categories: [], bestSellers: [], discounted: [] }
+    return { categories: [], featuredProducts: [], discounted: [] }
   }
 }
 
