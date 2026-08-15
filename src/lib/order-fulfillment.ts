@@ -45,15 +45,16 @@ export async function processOrderFulfillment(orderNumber: string): Promise<Fulf
       )
     }
 
-    // 2. Increment totalSold for each product
     try {
       await Promise.all(
-        order.items.map((item) =>
-          prisma.product.update({
-            where: { id: item.productId },
-            data: { totalSold: { increment: item.quantity } },
-          })
-        )
+        order.items
+          .filter((item) => item.productId)
+          .map((item) =>
+            prisma.product.update({
+              where: { id: item.productId as string },
+              data: { totalSold: { increment: item.quantity } },
+            })
+          )
       )
     } catch (err) {
       console.error('[UPDATE_TOTAL_SOLD_ERROR]', err)
