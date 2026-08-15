@@ -174,7 +174,7 @@ export default function HomePage() {
             {[
               { icon: <Users className="w-4 h-4" strokeWidth={1.5} />, val: '975+', label: 'Pelanggan' },
               { icon: <Package className="w-4 h-4" strokeWidth={1.5} />, val: '320+', label: 'Terjual' },
-              { icon: <Star className="w-4 h-4" strokeWidth={1.5} />, val: '462+', label: 'Review ★5' },
+              { icon: <Star className="w-4 h-4" strokeWidth={1.5} />, val: '100%', label: 'Original' },
               { icon: <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />, val: '98%', label: 'Kepuasan' },
             ].map((s, i) => (
               <div key={i} className="flex flex-col items-center justify-center text-center px-1">
@@ -198,7 +198,7 @@ export default function HomePage() {
                   {[
                     { icon: <Users className="w-7 h-7" strokeWidth={1.5} />, val: '975+', label: 'Pelanggan Puas' },
                     { icon: <Package className="w-7 h-7" strokeWidth={1.5} />, val: '320+', label: 'Produk Terjual' },
-                    { icon: <Star className="w-7 h-7" strokeWidth={1.5} />, val: '462+', label: 'Ulasan Bintang 5' },
+                    { icon: <Star className="w-7 h-7" strokeWidth={1.5} />, val: '100%', label: 'Produk Original' },
                     { icon: <ShieldCheck className="w-7 h-7" strokeWidth={1.5} />, val: '98%', label: 'Tingkat Kepuasan' },
                   ].map((s, i) => (
                     <div key={i} className="flex flex-col items-center justify-center text-center px-4">
@@ -392,8 +392,8 @@ async function DynamicStoreContent() {
                 price: product.basePrice,
                 compareAtPrice: product.compareAtPrice,
                 image: product.images?.[0]?.url || '/placeholder.jpg',
-                avgRating: product.avgRating || 5,
-                reviewCount: product.reviewCount || 0,
+                avgRating: product.avgRating,
+                reviewCount: product.reviewCount,
                 isBestSeller: true,
                 isNew: false,
                 stock: product.stock || 10,
@@ -432,8 +432,8 @@ async function DynamicStoreContent() {
                 price: product.basePrice,
                 compareAtPrice: product.compareAtPrice,
                 image: product.images?.[0]?.url || '/placeholder.jpg',
-                avgRating: product.avgRating || 5,
-                reviewCount: product.reviewCount || 0,
+                avgRating: product.avgRating,
+                reviewCount: product.reviewCount,
                 isBestSeller: false,
                 isNew: false,
                 stock: product.stock || 10,
