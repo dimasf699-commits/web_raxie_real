@@ -18,7 +18,7 @@ import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/store/ProductCard'
 import { BrandVideo } from '@/components/store/BrandVideo'
 
-export const revalidate = 60 // ISR revalidate every 60 seconds
+export const dynamic = 'force-dynamic'
 
 async function getHomepageData() {
   try {
