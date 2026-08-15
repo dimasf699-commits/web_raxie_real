@@ -63,10 +63,29 @@ export async function deleteCache(key: string): Promise<void> {
 
 export async function deleteCacheByPattern(pattern: string): Promise<void> {
   try {
-    const keys = await redis.keys(pattern)
-    if (keys.length > 0) {
-      await redis.del(...keys)
-    }
+    const stream = redis.scanStream({ match: pattern, count: 100 })
+    const pipeline = redis.pipeline()
+    let hasKeys = false
+
+    await new Promise<void>((resolve, reject) => {
+      stream.on('data', (keys: string[]) => {
+        if (keys.length > 0) {
+          hasKeys = true
+          keys.forEach((key) => pipeline.del(key))
+        }
+      })
+      stream.on('end', async () => {
+        try {
+          if (hasKeys) {
+            await pipeline.exec()
+          }
+          resolve()
+        } catch (execErr) {
+          reject(execErr)
+        }
+      })
+      stream.on('error', (err) => reject(err))
+    })
   } catch (err) {
     console.error('[Redis] Delete pattern error:', err)
   }

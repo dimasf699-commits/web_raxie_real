@@ -51,9 +51,11 @@ export async function POST(req: NextRequest) {
     const actualSender = isAdmin && sender === 'ADMIN' ? 'ADMIN' : 'USER'
     const isUser = actualSender === 'USER'
 
-    // Ownership check: If conversation has a userId, non-admin user must match the userId
-    if (isUser && conversationExists.userId && session?.user?.id && conversationExists.userId !== session.user.id) {
-      return NextResponse.json({ error: 'Tidak memiliki akses ke percakapan ini' }, { status: 403 })
+    // Ownership check: If conversation belongs to a registered user, only that user or Admin can send messages
+    if (isUser && conversationExists.userId) {
+      if (!session?.user?.id || session.user.id !== conversationExists.userId) {
+        return NextResponse.json({ error: 'Tidak memiliki akses ke percakapan ini' }, { status: 403 })
+      }
     }
 
     const cleanMessage = sanitizeHtml(message || '')

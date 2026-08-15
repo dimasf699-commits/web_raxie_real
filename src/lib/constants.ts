@@ -19,3 +19,15 @@ export const COURIER_TRACKING_LINKS: Record<string, string> = {
   ANTERAJA: 'https://anteraja.id/tracking',
   GOSEND: 'https://driver.gojek.com/go-send',
 }
+
+export const STORE_CONFIG = {
+  name: 'RAXIE',
+  tagline: 'Leather Craft & Essentials',
+  phone: process.env.NEXT_PUBLIC_STORE_PHONE || '082128862433',
+  whatsapp: process.env.NEXT_PUBLIC_STORE_WA || '6282128862433',
+  email: process.env.NEXT_PUBLIC_STORE_EMAIL || 'raxieleather@gmail.com',
+  address: 'Kp. Pasirkiamis, Desa Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat 44161',
+  originAreaId: process.env.STORE_AREA_ID || 'IDNP9IDNC122IDND450IDZ44161',
+  instagram: 'https://www.instagram.com/raxie.official',
+  website: 'https://raxie.id',
+}

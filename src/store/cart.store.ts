@@ -15,9 +15,18 @@ export interface CartItem {
   sku: string
 }
 
+export interface AppliedVoucher {
+  id: string
+  code: string
+  name: string
+  type?: string
+  discountAmount: number
+}
+
 interface CartState {
   items: CartItem[]
   isOpen: boolean
+  appliedVoucher: AppliedVoucher | null
 
   // Actions
   addItem: (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => void
@@ -27,10 +36,14 @@ interface CartState {
   toggleCart: () => void
   openCart: () => void
   closeCart: () => void
+  setAppliedVoucher: (voucher: AppliedVoucher | null) => void
+  removeVoucher: () => void
 
   // Derived
   totalItems: () => number
   totalPrice: () => number
+  discountAmount: () => number
+  finalPrice: () => number
   hasItem: (id: string) => boolean
 }
 
@@ -39,6 +52,7 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       isOpen: false,
+      appliedVoucher: null,
 
       addItem: (item) => {
         const existing = get().items.find((i) => i.id === item.id)
@@ -84,10 +98,13 @@ export const useCartStore = create<CartState>()(
         }))
       },
 
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], appliedVoucher: null }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
+
+      setAppliedVoucher: (voucher) => set({ appliedVoucher: voucher }),
+      removeVoucher: () => set({ appliedVoucher: null }),
 
       totalItems: () =>
         get().items.reduce((sum, item) => sum + item.quantity, 0),
@@ -97,6 +114,17 @@ export const useCartStore = create<CartState>()(
           (sum, item) => sum + item.price * item.quantity,
           0
         ),
+
+      discountAmount: () => {
+        const voucher = get().appliedVoucher
+        return voucher ? voucher.discountAmount : 0
+      },
+
+      finalPrice: () => {
+        const subtotal = get().totalPrice()
+        const discount = get().discountAmount()
+        return Math.max(0, subtotal - discount)
+      },
 
       hasItem: (id) => get().items.some((i) => i.id === id),
     }),

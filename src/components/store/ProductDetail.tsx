@@ -49,7 +49,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
   const addItem = useCartStore((s) => s.addItem)
   const openCart = useCartStore((s) => s.openCart)
   const toggleWishlist = useWishlistStore((s) => s.toggleItem)
-  const isWishlisted = useWishlistStore((s) => s.hasItem(product.id))
+  const isWishlisted = useWishlistStore((s) => s.hasItem(product.productId || product.id))
   
   const { addItem: addCompare } = useCompareStore()
 

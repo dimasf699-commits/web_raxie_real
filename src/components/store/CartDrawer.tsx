@@ -17,11 +17,13 @@ export function CartDrawer() {
     updateQuantity,
     removeItem,
     totalPrice,
+    appliedVoucher,
+    setAppliedVoucher,
+    removeVoucher,
   } = useCartStore()
 
   const [voucherCode, setVoucherCode] = useState('')
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false)
-  const [appliedVoucher, setAppliedVoucher] = useState<any>(null)
   
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) return
@@ -36,7 +38,7 @@ export function CartDrawer() {
       
       if (data.error) {
         toast.error(data.error)
-        setAppliedVoucher(null)
+        removeVoucher()
       } else if (data.success) {
         setAppliedVoucher(data.voucher)
         toast.success(`Voucher ${data.voucher.name} berhasil digunakan!`)
@@ -184,23 +186,38 @@ export function CartDrawer() {
             {/* Footer / Summary */}
             {items.length > 0 && (
               <div className="p-6 bg-card border-t border-border space-y-4">
-                {/* Voucher Form */}
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Kode voucher (contoh: RAXIE20)"
-                    value={voucherCode}
-                    onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-                    className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground uppercase font-mono focus:outline-none focus:border-[#C19A6B]"
-                  />
-                  <button
-                    onClick={handleApplyVoucher}
-                    disabled={isApplyingVoucher || !voucherCode.trim()}
-                    className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase px-4 rounded-lg disabled:opacity-50"
-                  >
-                    {isApplyingVoucher ? '...' : 'TERAPKAN'}
-                  </button>
-                </div>
+                {/* Voucher Form / Applied Badge */}
+                {appliedVoucher ? (
+                  <div className="flex items-center justify-between p-2.5 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg text-xs">
+                    <div>
+                      <span className="font-bold text-green-600 dark:text-green-500 uppercase">{appliedVoucher.code}</span>
+                      <p className="text-[10px] text-green-700/80 dark:text-green-400/80">Hemat {formatPrice(appliedVoucher.discountAmount)}</p>
+                    </div>
+                    <button
+                      onClick={removeVoucher}
+                      className="text-[10px] text-red-500 hover:text-red-600 font-bold uppercase"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Kode voucher (contoh: RAXIE20)"
+                      value={voucherCode}
+                      onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                      className="flex-1 bg-background border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground uppercase font-mono focus:outline-none focus:border-[#C19A6B]"
+                    />
+                    <button
+                      onClick={handleApplyVoucher}
+                      disabled={isApplyingVoucher || !voucherCode.trim()}
+                      className="bg-[#C19A6B] hover:bg-[#b08b5c] text-black font-bold text-xs uppercase px-4 rounded-lg disabled:opacity-50"
+                    >
+                      {isApplyingVoucher ? '...' : 'TERAPKAN'}
+                    </button>
+                  </div>
+                )}
 
                 {/* Summary */}
                 <div className="space-y-1.5 text-xs pt-2 border-t border-border">

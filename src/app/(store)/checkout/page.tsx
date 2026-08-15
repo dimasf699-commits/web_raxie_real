@@ -20,6 +20,9 @@ export default function CheckoutPage() {
   const cartItems = useCartStore((s) => s.items)
   const totalPrice = useCartStore((s) => s.totalPrice())
   const clearCart = useCartStore((s) => s.clearCart)
+  const appliedVoucher = useCartStore((s) => s.appliedVoucher)
+  const setAppliedVoucher = useCartStore((s) => s.setAppliedVoucher)
+  const removeVoucher = useCartStore((s) => s.removeVoucher)
   
   const [step, setStep] = useState<CheckoutStep>(1)
   
@@ -42,19 +45,18 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<any[]>([])
   const [selectedSavedId, setSelectedSavedId] = useState<string>('')
 
-  // Voucher State
+  // Voucher Input State
   const [voucherCode, setVoucherCode] = useState('')
-  const [appliedVoucher, setAppliedVoucher] = useState<{ id: string; code: string; name: string; discountAmount: number } | null>(null)
   const [isValidatingVoucher, setIsValidatingVoucher] = useState(false)
 
   const handleApplyVoucher = async () => {
-    if (!voucherCode) return
+    if (!voucherCode.trim()) return
     setIsValidatingVoucher(true)
     try {
       const res = await fetch('/api/vouchers/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: voucherCode, cartSubtotal: totalPrice }),
+        body: JSON.stringify({ code: voucherCode.trim(), cartSubtotal: totalPrice }),
       })
       const data = await res.json()
       if (res.ok && data.success) {
@@ -71,7 +73,7 @@ export default function CheckoutPage() {
   }
 
   const handleRemoveVoucher = () => {
-    setAppliedVoucher(null)
+    removeVoucher()
     setVoucherCode('')
   }
 

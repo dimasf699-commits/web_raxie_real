@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MapPin, Plus, Trash2, CheckCircle2, Loader2, Home } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { MapPin, Plus, Trash2, CheckCircle2, Loader2, Edit3, Star } from 'lucide-react'
 import { toast } from '@/components/ui/Toaster'
 
 type Address = {
@@ -24,6 +23,8 @@ export default function AddressesPage() {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   // Form State
   const [form, setForm] = useState({
@@ -85,6 +86,42 @@ export default function AddressesPage() {
     return () => clearTimeout(timer)
   }, [form.searchArea])
 
+  const openAddModal = () => {
+    setEditingId(null)
+    setForm({
+      label: 'Rumah',
+      recipientName: '',
+      phone: '',
+      street: '',
+      searchArea: '',
+      areaId: '',
+      district: '',
+      city: '',
+      province: '',
+      postalCode: '',
+      isDefault: addresses.length === 0,
+    })
+    setShowModal(true)
+  }
+
+  const openEditModal = (addr: Address) => {
+    setEditingId(addr.id)
+    setForm({
+      label: addr.label,
+      recipientName: addr.recipientName,
+      phone: addr.phone,
+      street: addr.street,
+      searchArea: [addr.district, addr.city, addr.province].filter(Boolean).join(', '),
+      areaId: addr.areaId || '',
+      district: addr.district,
+      city: addr.city,
+      province: addr.province,
+      postalCode: addr.postalCode,
+      isDefault: addr.isDefault,
+    })
+    setShowModal(true)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.recipientName || !form.phone || !form.street || !form.areaId) {
@@ -94,35 +131,64 @@ export default function AddressesPage() {
 
     setIsSubmitting(true)
     try {
-      const res = await fetch('/api/account/addresses', {
-        method: 'POST',
+      const url = editingId ? `/api/account/addresses/${editingId}` : '/api/account/addresses'
+      const method = editingId ? 'PUT' : 'POST'
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
+
       if (!res.ok) {
         const data = await res.json()
         throw new Error(data.error || 'Gagal menyimpan alamat')
       }
-      toast.success('Alamat berhasil ditambahkan!')
+
+      toast.success(editingId ? 'Alamat berhasil diperbarui!' : 'Alamat berhasil ditambahkan!')
       setShowModal(false)
-      setForm({
-        label: 'Rumah',
-        recipientName: '',
-        phone: '',
-        street: '',
-        searchArea: '',
-        areaId: '',
-        district: '',
-        city: '',
-        province: '',
-        postalCode: '',
-        isDefault: false,
-      })
       fetchAddresses()
     } catch (err: any) {
       toast.error(err.message)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus alamat ini?')) return
+
+    setDeletingId(id)
+    try {
+      const res = await fetch(`/api/account/addresses/${id}`, {
+        method: 'DELETE',
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Gagal menghapus alamat')
+      }
+      toast.success('Alamat berhasil dihapus')
+      fetchAddresses()
+    } catch (err: any) {
+      toast.error(err.message)
+    } finally {
+      setDeletingId(null)
+    }
+  }
+
+  const handleSetDefault = async (addr: Address) => {
+    try {
+      const res = await fetch(`/api/account/addresses/${addr.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isDefault: true }),
+      })
+      if (res.ok) {
+        toast.success('Alamat utama berhasil diubah')
+        fetchAddresses()
+      }
+    } catch (err) {
+      toast.error('Gagal mengubah alamat utama')
     }
   }
 
@@ -133,57 +199,91 @@ export default function AddressesPage() {
           <h1 className="font-serif text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-black dark:text-white">Alamat Saya</h1>
           <p className="text-xs font-medium text-neutral-500 dark:text-neutral-400 mt-1">Kelola alamat pengiriman untuk mempermudah checkout</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-4 py-3 rounded-sm transition-colors flex items-center gap-2">
+        <button onClick={openAddModal} className="bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-4 py-3 rounded-sm transition-colors flex items-center gap-2">
           <Plus className="w-4 h-4" /> TAMBAH ALAMAT
         </button>
       </div>
 
       {loading ? (
         <div className="py-12 text-center text-muted-foreground flex items-center justify-center gap-2">
-          <Loader2 className="w-5 h-5 animate-spin text-tan-500" /> Memuat alamat...
+          <Loader2 className="w-5 h-5 animate-spin text-[#C19A6B]" /> Memuat alamat...
         </div>
       ) : addresses.length === 0 ? (
         <div className="text-center py-12 bg-neutral-50 dark:bg-neutral-900 rounded-sm border border-neutral-200 dark:border-neutral-800">
           <MapPin className="w-12 h-12 text-neutral-400 mx-auto mb-3 opacity-50" />
           <h3 className="font-bold text-sm uppercase tracking-wider text-black dark:text-white mb-2">Belum ada alamat tersimpan</h3>
           <p className="text-neutral-500 dark:text-neutral-400 text-xs mb-6 font-medium">Tambahkan alamat agar kamu tidak perlu mengisi ulang saat checkout.</p>
-          <button onClick={() => setShowModal(true)} className="bg-transparent border border-neutral-300 dark:border-neutral-700 text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 font-bold text-[11px] uppercase tracking-wider px-6 py-3 rounded-sm transition-colors flex items-center gap-2 mx-auto">
+          <button onClick={openAddModal} className="bg-transparent border border-neutral-300 dark:border-neutral-700 text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 font-bold text-[11px] uppercase tracking-wider px-6 py-3 rounded-sm transition-colors flex items-center gap-2 mx-auto">
             <Plus className="w-4 h-4" /> TAMBAH ALAMAT PERTAMA
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {addresses.map((addr) => (
-            <div key={addr.id} className="bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm p-5 shadow-sm space-y-3 relative">
-              <div className="flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-sm text-[10px] font-bold bg-[#FAF9F6] dark:bg-[#121212] text-[#C19A6B] border border-[#C19A6B]/30 uppercase tracking-wider">
-                  {addr.label}
-                </span>
-                {addr.isDefault && (
-                  <span className="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> UTAMA
+            <div key={addr.id} className="bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm p-5 shadow-sm space-y-3 relative flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="px-2.5 py-0.5 rounded-sm text-[10px] font-bold bg-[#FAF9F6] dark:bg-[#121212] text-[#C19A6B] border border-[#C19A6B]/30 uppercase tracking-wider">
+                    {addr.label}
                   </span>
-                )}
+                  {addr.isDefault && (
+                    <span className="text-[10px] text-green-600 dark:text-green-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> UTAMA
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-3">
+                  <p className="font-bold text-sm uppercase tracking-wider text-black dark:text-white">{addr.recipientName}</p>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium mt-1">{addr.phone}</p>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-2 leading-relaxed">{addr.street}</p>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1 font-medium">
+                    {[addr.district, addr.city, addr.province, addr.postalCode].filter(Boolean).join(', ')}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <p className="font-bold text-sm uppercase tracking-wider text-black dark:text-white">{addr.recipientName}</p>
-                <p className="text-xs text-neutral-500 dark:text-neutral-400 font-medium mt-1">{addr.phone}</p>
-                <p className="text-xs text-neutral-600 dark:text-neutral-300 mt-2 leading-relaxed">{addr.street}</p>
-                <p className="text-[11px] text-neutral-500 dark:text-neutral-400 mt-1 font-medium">
-                  {[addr.district, addr.city, addr.province, addr.postalCode].filter(Boolean).join(', ')}
-                </p>
+              {/* Action buttons */}
+              <div className="pt-3 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openEditModal(addr)}
+                    className="text-[11px] text-neutral-600 dark:text-neutral-300 hover:text-black dark:hover:text-white font-bold uppercase flex items-center gap-1 transition-colors"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Ubah
+                  </button>
+                  <span className="text-neutral-300 dark:text-neutral-700">|</span>
+                  <button
+                    onClick={() => handleDelete(addr.id)}
+                    disabled={deletingId === addr.id}
+                    className="text-[11px] text-red-500 hover:text-red-600 font-bold uppercase flex items-center gap-1 transition-colors disabled:opacity-50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {deletingId === addr.id ? 'Menghapus...' : 'Hapus'}
+                  </button>
+                </div>
+
+                {!addr.isDefault && (
+                  <button
+                    onClick={() => handleSetDefault(addr)}
+                    className="text-[10px] text-[#C19A6B] hover:underline font-bold uppercase flex items-center gap-1"
+                  >
+                    <Star className="w-3 h-3" /> Set Utama
+                  </button>
+                )}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal Tambah Alamat */}
+      {/* Modal Tambah / Ubah Alamat */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 w-full max-w-lg rounded-sm p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="font-bold text-sm uppercase tracking-wider text-black dark:text-white border-b border-neutral-200 dark:border-neutral-800 pb-3">Tambah Alamat Baru</h3>
+            <h3 className="font-bold text-sm uppercase tracking-wider text-black dark:text-white border-b border-neutral-200 dark:border-neutral-800 pb-3">
+              {editingId ? 'Ubah Alamat' : 'Tambah Alamat Baru'}
+            </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1 block">Label Alamat</label>
@@ -287,7 +387,7 @@ export default function AddressesPage() {
 
               <div className="flex gap-2 pt-4 border-t border-neutral-200 dark:border-neutral-800">
                 <button type="button" className="flex-1 bg-transparent border border-neutral-300 dark:border-neutral-700 text-black dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 font-bold text-[11px] uppercase tracking-wider px-4 py-3 rounded-sm transition-colors" onClick={() => setShowModal(false)}>BATAL</button>
-                <button type="submit" className="flex-1 bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-4 py-3 rounded-sm transition-colors disabled:opacity-50" disabled={isSubmitting}>{isSubmitting ? 'MENYIMPAN...' : 'SIMPAN ALAMAT'}</button>
+                <button type="submit" className="flex-1 bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-4 py-3 rounded-sm transition-colors disabled:opacity-50" disabled={isSubmitting}>{isSubmitting ? 'MENYIMPAN...' : (editingId ? 'SIMPAN PERUBAHAN' : 'SIMPAN ALAMAT')}</button>
               </div>
             </form>
           </div>

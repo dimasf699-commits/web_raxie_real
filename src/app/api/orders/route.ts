@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import { rateLimit } from '@/lib/redis'
-import { generateOrderNumber } from '@/lib/utils'
+import { generateOrderNumber } from '@/lib/server-utils'
 import { resolveOrSyncDbUser } from '@/lib/auth-user'
 
 const orderSchema = z.object({
@@ -224,6 +224,7 @@ export async function POST(req: NextRequest) {
           shippingCity: data.shipping.areaName || 'Jakarta', 
           shippingProvince: '', 
           shippingPostalCode: data.shipping.postalCode || '10000', 
+          shippingAreaId: data.shipping.areaId || null, 
           subtotal: verifiedSubtotal,
           shippingCost: data.shippingCost,
           discountAmount: calculatedDiscount,

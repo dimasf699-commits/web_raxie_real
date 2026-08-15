@@ -14,10 +14,10 @@ const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 // 5MB
 
 export async function POST(req: NextRequest) {
   try {
-    // ── AUTH CHECK ────────────────────────────────────────────────────────────
+    // ── AUTH & ROLE CHECK ───────────────────────────────────────────────────
     const session = await auth()
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized: Silakan login terlebih dahulu' }, { status: 401 })
+    if (!session?.user?.id || (session.user as any)?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Forbidden: Akses upload khusus Admin' }, { status: 403 })
     }
 
     // Rate Limiting: max 10 uploads per 10 minutes per user

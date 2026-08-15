@@ -332,6 +332,7 @@ model Order {
   shippingProvince String
   shippingPostalCode String
   shippingCountry String        @default("Indonesia")
+  shippingAreaId  String?
   status          OrderStatus   @default(PENDING_PAYMENT)
   subtotal        Float
   shippingCost    Float         @default(0)

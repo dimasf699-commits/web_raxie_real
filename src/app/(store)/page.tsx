@@ -22,15 +22,46 @@ export const revalidate = 60 // ISR revalidate every 60 seconds
 
 async function getHomepageData() {
   try {
-    const [categoriesRaw, productsRaw] = await Promise.all([
+    const [categoriesRaw, bestSellersRaw, discountedRaw, recentProductsRaw] = await Promise.all([
       prisma.category.findMany({
         where: { isActive: true, slug: { notIn: ['aksesoris'] } },
         orderBy: { sortOrder: 'asc' },
         select: { name: true, slug: true }
       }),
       prisma.product.findMany({
+        where: { isActive: true, isBestSeller: true },
+        take: 5,
+        orderBy: { totalSold: 'desc' },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basePrice: true,
+          compareAtPrice: true,
+          avgRating: true,
+          reviewCount: true,
+          images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } }
+        }
+      }),
+      prisma.product.findMany({
+        where: { isActive: true, compareAtPrice: { gt: 0 } },
+        take: 5,
+        orderBy: { updatedAt: 'desc' },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          basePrice: true,
+          compareAtPrice: true,
+          avgRating: true,
+          reviewCount: true,
+          images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } }
+        }
+      }),
+      prisma.product.findMany({
         where: { isActive: true },
         take: 10,
+        orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           name: true,
@@ -43,25 +74,14 @@ async function getHomepageData() {
         }
       })
     ])
-    
-    // Fallback dummy products if db is empty
-    const dummyProducts = Array.from({ length: 10 }).map((_, i) => ({
-      id: `dummy-${i}`,
-      name: `RAXIE Classic Wallet ${i + 1}`,
-      slug: `product-${i}`,
-      basePrice: 149000,
-      compareAtPrice: i >= 5 ? 199000 : null,
-      avgRating: 5.0,
-      reviewCount: 126,
-      images: [{ url: 'https://i.imgur.com/1QtzAZ5.png' }]
-    }))
 
-    const products = productsRaw.length > 0 ? productsRaw : dummyProducts
-    
+    const bestSellers = bestSellersRaw.length > 0 ? bestSellersRaw : recentProductsRaw.slice(0, 5)
+    const discounted = discountedRaw.length > 0 ? discountedRaw : recentProductsRaw.slice(5, 10)
+
     return { 
       categories: categoriesRaw, 
-      bestSellers: products.slice(0, 5),
-      discounted: products.slice(5, 10).map(p => ({ ...p, compareAtPrice: p.basePrice * 1.35 })) // Force discount for demo
+      bestSellers,
+      discounted,
     }
   } catch (e) {
     console.error('[HOMEPAGE_DATA_ERROR]', e)

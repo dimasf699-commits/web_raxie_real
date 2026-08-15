@@ -6,8 +6,16 @@ import { Button } from '@/components/ui/Button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from '@/components/ui/Toaster'
 
+export interface OrderTrackingData {
+  id: string
+  orderNumber: string
+  courierName?: string | null
+  courierCode?: string | null
+  status?: string
+}
+
 interface TrackingModalProps {
-  order: any | null
+  order: OrderTrackingData | null
   onClose: () => void
   onSuccess?: () => void
 }
@@ -19,18 +27,24 @@ export function TrackingModal({ order, onClose, onSuccess }: TrackingModalProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!order?.id || !trackingNumber) return
+    if (!order?.id || !trackingNumber.trim()) return
 
     setIsSubmitting(true)
     try {
+      const activeCourier = order?.courierName || courierName
       const res = await fetch(`/api/admin/orders/${order.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ trackingNumber, courierName: order?.courierName || courierName, courierCode: (order?.courierName || courierName).toLowerCase().replace(/\s/g,''), status: 'SHIPPED' })
+        body: JSON.stringify({
+          trackingNumber: trackingNumber.trim(),
+          courierName: activeCourier,
+          courierCode: activeCourier.toLowerCase().replace(/\s/g, ''),
+          status: 'SHIPPED',
+        }),
       })
 
       if (!res.ok) throw new Error('Gagal memperbarui resi')
-      
+
       toast.success('Nomor resi berhasil ditambahkan')
       if (onSuccess) onSuccess()
       onClose()

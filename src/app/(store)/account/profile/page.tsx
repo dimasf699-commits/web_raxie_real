@@ -1,17 +1,77 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Button } from '@/components/ui/Button'
-import { Mail, Phone, ShieldCheck } from 'lucide-react'
+import { Mail, Phone, ShieldCheck, Loader2 } from 'lucide-react'
+import { toast } from '@/components/ui/Toaster'
 
 export default function ProfilePage() {
-  const { data: session } = useSession()
+  const { data: session, update: updateSession } = useSession()
   const [isEditing, setIsEditing] = useState(false)
-  const [name, setName] = useState(session?.user?.name || '')
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const user = session?.user
   const isGoogleAccount = !!(user?.image && user.image.includes('googleusercontent'))
+
+  useEffect(() => {
+    async function loadProfile() {
+      setIsLoading(true)
+      try {
+        const res = await fetch('/api/account/profile')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.user) {
+            setName(data.user.name || '')
+            setPhone(data.user.phone || '')
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load profile', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (session?.user) {
+      setName(session.user.name || '')
+      loadProfile()
+    }
+  }, [session])
+
+  const handleSave = async () => {
+    if (!name.trim()) {
+      toast.error('Nama lengkap tidak boleh kosong')
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const res = await fetch('/api/account/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), phone: phone.trim() || null }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Gagal menyimpan perubahan')
+      }
+
+      toast.success('Profil Berhasil Diperbarui', 'Data profil Anda telah disimpan.')
+      setIsEditing(false)
+      if (updateSession) {
+        await updateSession({ ...session, user: { ...session?.user, name: data.user.name } })
+      }
+    } catch (err: any) {
+      toast.error('Gagal Menyimpan', err.message || 'Terjadi kesalahan saat menyimpan profil.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <div className="space-y-8 max-w-2xl">
@@ -31,36 +91,71 @@ export default function ProfilePage() {
           </button>
         </div>
 
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 items-center">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1 md:mb-0">Nama Lengkap</label>
-            <div className="md:col-span-2">
-              <input
-                type="text"
-                value={isEditing ? name : (user?.name || '-')}
-                onChange={(e) => setName(e.target.value)}
-                disabled={!isEditing}
-                className="w-full bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm disabled:opacity-50 disabled:bg-transparent disabled:border-transparent focus:outline-none focus:border-black dark:focus:border-white px-3 py-2 text-xs text-black dark:text-white transition-colors"
-              />
-            </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-6">
+            <Loader2 className="w-5 h-5 animate-spin text-[#C19A6B]" />
           </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 items-center">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1 md:mb-0">Nama Lengkap</label>
+              <div className="md:col-span-2">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="Nama Lengkap"
+                  className="w-full bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm disabled:opacity-75 disabled:bg-transparent disabled:border-transparent focus:outline-none focus:border-black dark:focus:border-white px-3 py-2 text-xs text-black dark:text-white transition-colors"
+                />
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 items-center">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1 md:mb-0">Email</label>
-            <div className="md:col-span-2">
-              <input
-                type="email"
-                value={user?.email || '-'}
-                disabled
-                className="w-full bg-transparent border-transparent opacity-50 px-3 py-2 text-xs text-black dark:text-white"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 items-center">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1 md:mb-0">Nomor HP / WA</label>
+              <div className="md:col-span-2">
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  disabled={!isEditing}
+                  placeholder="Contoh: 08123456789"
+                  className="w-full bg-white dark:bg-[#151515] border border-neutral-200 dark:border-neutral-800 rounded-sm disabled:opacity-75 disabled:bg-transparent disabled:border-transparent focus:outline-none focus:border-black dark:focus:border-white px-3 py-2 text-xs text-black dark:text-white transition-colors"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 items-center">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-1 md:mb-0">Email</label>
+              <div className="md:col-span-2">
+                <input
+                  type="email"
+                  value={user?.email || '-'}
+                  disabled
+                  className="w-full bg-transparent border-transparent opacity-50 px-3 py-2 text-xs text-black dark:text-white cursor-not-allowed"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {isEditing && (
-          <div className="pt-4 flex justify-end">
-            <button onClick={() => setIsEditing(false)} className="bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-6 py-3 rounded-sm transition-colors">SIMPAN PERUBAHAN</button>
+          <div className="pt-4 flex justify-end gap-3">
+            <button
+              onClick={() => setIsEditing(false)}
+              disabled={isSaving}
+              className="border border-neutral-300 dark:border-neutral-700 text-black dark:text-white font-bold text-[11px] uppercase tracking-wider px-4 py-2.5 rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="bg-[#121212] dark:bg-white text-white dark:text-black hover:bg-black dark:hover:bg-neutral-200 font-bold text-[11px] uppercase tracking-wider px-6 py-2.5 rounded-sm transition-colors flex items-center gap-2 disabled:opacity-50"
+            >
+              {isSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              {isSaving ? 'Menyimpan...' : 'SIMPAN PERUBAHAN'}
+            </button>
           </div>
         )}
       </div>
@@ -90,7 +185,9 @@ export default function ProfilePage() {
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-black dark:text-white">Nomor HP</p>
-              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium mt-0.5">Belum diatur</p>
+              <p className="text-[11px] text-neutral-500 dark:text-neutral-400 font-medium mt-0.5">
+                {phone || 'Belum diatur'}
+              </p>
             </div>
           </div>
         </div>
@@ -111,7 +208,7 @@ export default function ProfilePage() {
 
         {isGoogleAccount && (
           <div className="p-4 rounded-sm bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40 text-blue-700 dark:text-blue-300 text-xs font-medium">
-            Akun Anda terhubung melalui Google. Keamanan dikelola oleh Google.
+            Akun Anda terhubung melalui Google. Keamanan kata sandi dikelola secara otomatis oleh Google.
           </div>
         )}
       </div>

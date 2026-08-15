@@ -188,7 +188,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
       <div className="flex flex-col h-full">
         {/* Image Container with uniform rounded corners */}
         <div className="relative overflow-hidden rounded-[10px] sm:rounded-[14px] aspect-product bg-[#F9F7F5] dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800">
-          <Link href={`/product/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
+          <Link href={`/products/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
               alt={product.name}
@@ -285,7 +285,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
         {/* Product Info */}
         <div className="mt-2.5 sm:mt-4 px-0.5 text-left space-y-1.5 relative z-10 flex-1 flex flex-col justify-between">
           <div>
-            <Link href={`/product/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
+            <Link href={`/products/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
               <h3 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
                 {product.name}
               </h3>

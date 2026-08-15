@@ -8,6 +8,9 @@ export async function GET(
 ) {
   try {
     const conversationId = params.id
+    if (!conversationId) {
+      return NextResponse.json({ error: 'Conversation ID diperlukan' }, { status: 400 })
+    }
 
     const conversation = await prisma.chatConversation.findUnique({
       where: { id: conversationId },
@@ -21,6 +24,32 @@ export async function GET(
 
     if (!conversation) {
       return NextResponse.json({ error: 'Percakapan tidak ditemukan' }, { status: 404 })
+    }
+
+    const session = await auth()
+    const isAdmin = (session?.user as any)?.role === 'ADMIN'
+
+    // If conversation is linked to a registered user, only that user or Admin can access
+    if (conversation.userId) {
+      const isOwner = session?.user?.id === conversation.userId
+      if (!isAdmin && !isOwner) {
+        return NextResponse.json(
+          { error: 'Akses ditolak: Anda tidak memiliki izin untuk melihat percakapan ini' },
+          { status: 403 }
+        )
+      }
+    } else {
+      // Guest conversation
+      const guestIdFromHeader = req.headers.get('x-guest-id')
+      const guestIdFromQuery = req.nextUrl.searchParams.get('guestId')
+      const requesterGuestId = guestIdFromHeader || guestIdFromQuery
+
+      if (!isAdmin && conversation.guestId && requesterGuestId && conversation.guestId !== requesterGuestId) {
+        return NextResponse.json(
+          { error: 'Akses ditolak: Sesi percakapan tidak sesuai' },
+          { status: 403 }
+        )
+      }
     }
 
     return NextResponse.json({ conversation })
