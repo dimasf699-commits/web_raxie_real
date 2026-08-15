@@ -330,7 +330,7 @@ export async function POST(req: NextRequest) {
         },
         customer_details: {
           first_name: data.shipping.name,
-          email: customerEmail || 'customer@raxie.id',
+          email: session?.user?.email || data.shipping.email || 'customer@raxie.id',
           phone: data.shipping.phone,
         },
         item_details: itemDetails,
