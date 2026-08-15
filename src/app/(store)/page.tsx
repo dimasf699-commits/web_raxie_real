@@ -22,16 +22,16 @@ export const dynamic = 'force-dynamic'
 
 async function getHomepageData() {
   try {
-    const [categoriesRaw, bestSellersRaw, discountedRaw, recentProductsRaw] = await Promise.all([
+    const [categoriesRaw, featuredProductsRaw, discountedRaw, recentProductsRaw] = await Promise.all([
       prisma.category.findMany({
         where: { isActive: true, slug: { notIn: ['aksesoris'] } },
         orderBy: { sortOrder: 'asc' },
         select: { name: true, slug: true }
       }),
       prisma.product.findMany({
-        where: { isActive: true, isBestSeller: true },
+        where: { isActive: true, isFeatured: true },
         take: 5,
-        orderBy: { totalSold: 'desc' },
+        orderBy: { createdAt: 'desc' },
         select: {
           id: true,
           name: true,
@@ -75,12 +75,12 @@ async function getHomepageData() {
       })
     ])
 
-    const bestSellers = bestSellersRaw.length > 0 ? bestSellersRaw : recentProductsRaw.slice(0, 5)
+    const featuredProducts = featuredProductsRaw.length > 0 ? featuredProductsRaw : recentProductsRaw.slice(0, 5)
     const discounted = discountedRaw.length > 0 ? discountedRaw : recentProductsRaw.slice(5, 10)
 
     return { 
       categories: categoriesRaw, 
-      bestSellers,
+      featuredProducts,
       discounted,
     }
   } catch (e) {
@@ -262,7 +262,7 @@ export default function HomePage() {
 
 
 async function DynamicStoreContent() {
-  const { bestSellers, discounted } = await getHomepageData()
+  const { featuredProducts, discounted } = await getHomepageData()
   
   const collectionCards = [
     { title: 'DOMPET', subtitle: 'Koleksi', image: 'https://i.imgur.com/X1YcH8c.jpeg', link: '/products?category=dompet' },
@@ -369,13 +369,13 @@ async function DynamicStoreContent() {
         </div>
       </section>
 
-      {/* ─── 5. BEST SELLER RAIL (NEW) ──────────────── */}
+      {/* ─── 5. FEATURED RAIL (NEW) ──────────────── */}
       <section className="py-16">
         <div className="container-raxie">
           <div className="flex items-center justify-between mb-10 border-b border-neutral-200 dark:border-neutral-800 pb-4">
             <div className="flex items-center gap-3">
               <span className="w-6 h-[2px] bg-[#C19A6B]" />
-              <h2 className="text-[11px] font-extrabold tracking-[0.2em] text-black dark:text-white uppercase">BEST SELLER</h2>
+              <h2 className="text-[11px] font-extrabold tracking-[0.2em] text-black dark:text-white uppercase">FEATURED</h2>
             </div>
             <Link href="/products" className="text-[11px] font-bold text-black dark:text-white flex items-center gap-2 hover:text-[#C19A6B] transition-colors">
               View All <ArrowRight className="w-3 h-3" />
@@ -383,7 +383,7 @@ async function DynamicStoreContent() {
           </div>
           
           <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 md:gap-6 pb-4 scrollbar-hide md:grid md:grid-cols-3 xl:grid-cols-5 md:overflow-visible">
-            {bestSellers.map((product: any) => {
+            {featuredProducts.map((product: any) => {
               const mappedProduct = {
                 id: product.id,
                 productId: product.id,
@@ -394,13 +394,13 @@ async function DynamicStoreContent() {
                 image: product.images?.[0]?.url || '/placeholder.jpg',
                 avgRating: product.avgRating,
                 reviewCount: product.reviewCount,
-                isBestSeller: true,
+                isBestSeller: false,
                 isNew: false,
                 stock: product.stock || 10,
                 sku: product.sku || product.id,
               }
               return (
-                <div key={`best-${product.id}`} className="snap-center md:snap-align-none shrink-0 w-[78%] sm:w-[45%] md:w-auto">
+                <div key={`featured-${product.id}`} className="snap-center md:snap-align-none shrink-0 w-[78%] sm:w-[45%] md:w-auto">
                   <ProductCard product={mappedProduct} variant="clean" />
                 </div>
               )
