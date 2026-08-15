@@ -8,7 +8,11 @@ import {
   RefreshCcw,
   Lock,
   HeadphonesIcon,
-  Play
+  Play,
+  Users,
+  Package,
+  Star,
+  ShieldCheck
 } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import { ProductCard } from '@/components/store/ProductCard'
@@ -70,51 +74,54 @@ export default function HomePage() {
     <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen font-sans overflow-x-hidden">
       
       {/* ─── 1. HERO SECTION ──────────────── */}
-      <section className="relative w-full bg-[#FAF9F6] dark:bg-[#121212] flex flex-col lg:flex-row items-stretch lg:min-h-[650px] overflow-hidden transition-colors">
+      <section className="relative w-full bg-[#FAF9F6] dark:bg-[#121212] flex flex-col lg:flex-row items-stretch min-h-[480px] sm:min-h-[500px] lg:min-h-[650px] overflow-hidden transition-colors">
         
-        {/* Left Text */}
-        <div className="w-full lg:w-[45%] flex flex-col justify-center py-16 px-6 lg:pl-16 xl:pl-32 lg:pr-12 z-10 relative">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="w-8 h-[2px] bg-[#C19A6B]" />
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#C19A6B]">KUALITAS PREMIUM</span>
+        {/* Text Content */}
+        <div className="w-full lg:w-[45%] flex flex-col justify-end lg:justify-center pt-10 pb-8 lg:py-16 px-5 lg:pl-16 xl:pl-32 lg:pr-12 z-10 relative">
+          
+          <div className="w-[58%] sm:w-[60%] lg:w-full mb-8 lg:mb-10">
+            <div className="flex items-center gap-2 mb-4 lg:mb-6">
+              <span className="w-6 lg:w-8 h-[1px] lg:h-[2px] bg-[#C19A6B]" />
+              <span className="text-[9px] lg:text-[11px] font-bold tracking-[0.15em] lg:tracking-[0.2em] text-[#C19A6B]">KUALITAS PREMIUM</span>
+            </div>
+            
+            <h1 className="text-[34px] sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-4 lg:mb-6 text-black dark:text-white">
+              Didesain<br/>
+              <span className="text-[#C19A6B]">Untuk Anda.</span>
+            </h1>
+            
+            <p className="text-neutral-500 text-[11px] sm:text-[13px] lg:text-[14px] leading-relaxed max-w-[380px] font-medium pr-2 lg:pr-0">
+              RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
+            </p>
           </div>
           
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-black dark:text-white">
-            Didesain<br/>
-            <span className="text-[#C19A6B]">Untuk Anda.</span>
-          </h1>
-          
-          <p className="text-neutral-500 text-[14px] leading-relaxed max-w-[380px] mb-10 font-medium">
-            RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
-          </p>
-          
-          <div className="flex items-center gap-6 flex-wrap">
+          <div className="flex items-center gap-3 lg:gap-6 flex-row">
             <Link 
               href="/products" 
-              className="bg-[#121212] dark:bg-white text-white dark:text-black text-[12px] font-bold px-8 py-4 flex items-center gap-3 hover:bg-black dark:hover:bg-neutral-200 transition-colors rounded-sm"
+              className="bg-[#0f0f0f] dark:bg-white text-white dark:text-black text-[11px] lg:text-[12px] font-bold px-6 lg:px-8 py-3.5 lg:py-4 flex items-center justify-center gap-2 lg:gap-3 hover:bg-black dark:hover:bg-neutral-200 transition-colors rounded-[8px] lg:rounded-sm w-[160px] lg:w-auto"
             >
-              Lihat Koleksi <ArrowRight className="w-4 h-4" />
+              Lihat Koleksi <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
             </Link>
             <Link 
               href="/about" 
-              className="text-black dark:text-white text-[12px] font-bold flex items-center gap-2 hover:text-[#C19A6B] transition-colors"
+              className="text-black dark:text-white text-[11px] lg:text-[12px] font-bold flex items-center gap-2 hover:text-[#C19A6B] transition-colors px-2"
             >
-              Eksplorasi <ArrowRight className="w-4 h-4" />
+              Eksplorasi <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
             </Link>
           </div>
         </div>
         
         {/* Right Image Container - Clipped Diagonally */}
-        <div className="w-full lg:absolute lg:right-0 lg:top-0 lg:bottom-0 lg:w-[60%] h-[400px] sm:h-[500px] lg:h-full z-0">
-          <div className="relative w-full h-full [clip-path:polygon(0_0,100%_0,100%_100%,0_92%)] lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] bg-[#121212]">
+        <div className="absolute right-0 top-0 w-[45%] h-[72%] sm:h-[80%] lg:w-[60%] lg:h-full z-0">
+          <div className="relative w-full h-full [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] bg-[#0f0f0f] rounded-bl-[40px] lg:rounded-none shadow-2xl">
             <Image 
               src="https://i.imgur.com/1QtzAZ5.png"
               alt="Raxie Wallet Premium" 
               fill
-              className="object-cover object-center lg:object-left mix-blend-lighten"
+              className="object-cover object-center lg:object-left mix-blend-lighten opacity-90"
               priority
               fetchPriority="high"
-              sizes="(max-width: 1024px) 100vw, 60vw"
+              sizes="(max-width: 1024px) 50vw, 60vw"
             />
           </div>
         </div>
@@ -131,22 +138,26 @@ export default function HomePage() {
                 OUR IMPACT
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4 py-14 px-6 sm:px-8 lg:pl-28 lg:pr-16 w-full relative z-10">
-                <div>
-                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">975+</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Pelanggan Puas</p>
+              <div className="grid grid-cols-4 gap-0 py-8 lg:py-14 px-4 sm:px-8 lg:pl-28 lg:pr-16 w-full relative z-10 divide-x divide-neutral-800">
+                <div className="flex flex-col items-center justify-center text-center px-2">
+                  <Users className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">975+</h3>
+                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Pelanggan Puas</p>
                 </div>
-                <div>
-                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">320+</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Produk Terjual</p>
+                <div className="flex flex-col items-center justify-center text-center px-2">
+                  <Package className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">320+</h3>
+                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Produk Terjual</p>
                 </div>
-                <div>
-                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">462+</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Ulasan Bintang 5</p>
+                <div className="flex flex-col items-center justify-center text-center px-2">
+                  <Star className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">462+</h3>
+                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Ulasan Bintang 5</p>
                 </div>
-                <div>
-                  <h3 className="text-[#C19A6B] text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-2 sm:mb-3">98%</h3>
-                  <p className="text-[10px] sm:text-[12px] text-neutral-400 font-semibold tracking-wide">Tingkat Kepuasan</p>
+                <div className="flex flex-col items-center justify-center text-center px-2">
+                  <ShieldCheck className="w-5 h-5 lg:w-7 lg:h-7 text-neutral-400 mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#C19A6B] text-xl sm:text-4xl lg:text-5xl font-extrabold mb-1 sm:mb-2">98%</h3>
+                  <p className="text-[8px] sm:text-[12px] text-neutral-400 font-medium tracking-wide">Tingkat Kepuasan</p>
                 </div>
               </div>
               
