@@ -111,9 +111,9 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="bg-[#F8F6F2] dark:bg-neutral-900 aspect-square relative mb-3 rounded-[12px] overflow-hidden flex items-center justify-center p-4">
+        <div className="bg-[#F8F6F2] dark:bg-neutral-900 aspect-product relative mb-2.5 rounded-[12px] sm:rounded-[16px] overflow-hidden flex items-center justify-center p-3 border border-neutral-100 dark:border-neutral-800 shadow-sm">
           {discount > 0 && (
-            <div className="absolute top-2 left-2 bg-[#B89A6A] text-white text-[10px] font-bold px-2 py-0.5 rounded-[4px] z-10">
+            <div className="absolute top-2 left-2 bg-[#B89A6A] text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-md z-10">
               -{discount}%
             </div>
           )}
@@ -123,36 +123,56 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })} 
               alt={product.name} 
               fill 
-              className="object-contain group-hover:scale-105 transition-transform duration-500" 
+              className="object-cover group-hover:scale-105 transition-transform duration-500 rounded-[12px] sm:rounded-[16px]" 
               loading="lazy"
               decoding="async"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             />
           </Link>
 
-          {/* Action Buttons (Wishlist) always visible on mobile in top right */}
+          {/* Action Buttons (Wishlist) always visible on top right */}
           <div className="absolute top-2 right-2 flex flex-col gap-2 z-10">
             <button
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white dark:bg-black/50 border border-neutral-100 dark:border-neutral-800 flex items-center justify-center shadow-sm hover:bg-neutral-50 transition-colors"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 dark:bg-black/60 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
             >
-              <Heart className={`h-3.5 w-3.5 transition-colors ${isWishlisted ? 'fill-[#B89A6A] text-[#B89A6A]' : 'text-neutral-500'}`} />
+              <Heart className={`h-3.5 w-3.5 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-neutral-600 dark:text-neutral-300'}`} />
             </button>
           </div>
         </div>
         
-        <div className="flex-1 flex flex-col justify-between px-1">
+        <div className="flex-1 flex flex-col justify-between px-0.5 space-y-1">
           <div>
             <Link href={`/products/${product.slug}`} className="focus-visible:outline-none inline-block w-full">
-              <h3 className="text-[12px] sm:text-[13px] font-bold text-[#0B0B0B] dark:text-white mb-1 truncate hover:text-[#B89A6A] transition-colors">{product.name}</h3>
+              <h3 className="text-[11px] sm:text-[13px] font-bold text-[#0B0B0B] dark:text-white mb-1 truncate hover:text-[#B89A6A] transition-colors">{product.name}</h3>
             </Link>
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className="text-[12px] sm:text-[14px] font-extrabold text-[#0B0B0B] dark:text-white">{formatPrice(product.price)}</span>
+              {product.compareAtPrice && product.compareAtPrice > product.price && (
+                <span className="text-[9px] sm:text-[11px] text-neutral-400 line-through">{formatPrice(product.compareAtPrice)}</span>
+              )}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-auto pt-1">
-            <span className="text-[13px] sm:text-[14px] font-extrabold text-[#0B0B0B] dark:text-white">{formatPrice(product.price)}</span>
-            {product.compareAtPrice && product.compareAtPrice > product.price && (
-              <span className="text-[10px] sm:text-[11px] text-neutral-400 line-through">{formatPrice(product.compareAtPrice)}</span>
-            )}
+
+          {/* Add to Cart button */}
+          <div className="pt-1.5">
+            <button
+              onClick={handleAddToCart}
+              disabled={addingCart || product.stock === 0}
+              className="w-full flex items-center justify-center gap-1.5 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-[10px] sm:text-xs font-bold uppercase tracking-wider py-1.5 sm:py-2 rounded-md shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
+            >
+              {addingCart ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full"
+                />
+              ) : (
+                <ShoppingBag className="h-3.5 w-3.5" />
+              )}
+              {product.stock === 0 ? 'Stok Habis' : addingCart ? '...' : '+ Keranjang'}
+            </button>
           </div>
         </div>
       </div>
@@ -161,20 +181,20 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
 
   return (
     <div
-      className="group relative block bg-white dark:bg-[#1A1A1A] border border-[#E5D5C5] dark:border-[#C19A6B]/30 rounded-tl-[16px] rounded-br-[16px] rounded-tr-[4px] rounded-bl-[4px] p-2.5 sm:p-3 shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_4px_10px_rgba(0,0,0,0.03)] hover:shadow-[inset_0_1px_4px_rgba(0,0,0,0.02),0_8px_20px_rgba(0,0,0,0.06)] transition-all duration-300 h-full"
+      className="group relative block bg-white dark:bg-[#1A1A1A] border border-[#E5D5C5]/70 dark:border-[#C19A6B]/30 rounded-[14px] sm:rounded-[16px] p-2.5 sm:p-3 shadow-sm hover:shadow-md transition-all duration-300 h-full"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex flex-col h-full">
-        {/* Image Container */}
-        <div className="relative overflow-hidden rounded-tl-[12px] rounded-br-[12px] rounded-tr-[2px] rounded-bl-[2px] aspect-product bg-[#F9F7F5] dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800">
+        {/* Image Container with uniform rounded corners */}
+        <div className="relative overflow-hidden rounded-[10px] sm:rounded-[14px] aspect-product bg-[#F9F7F5] dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800">
           <Link href={`/product/${product.slug}`} className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8E6D4A] dark:focus-visible:ring-[#C19A6B]" aria-label={`Lihat detail produk ${product.name}`}>
             <Image
               src={getCloudinaryUrl(product.image, { width: 300, quality: 75 })}
               alt={product.name}
               fill
               loading="lazy"
-              className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+              className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105 rounded-[10px] sm:rounded-[14px]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </Link>
