@@ -253,7 +253,7 @@ async function DynamicStoreContent() {
         <div className="container-raxie">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-10">
             {/* Header */}
-            <div className="max-w-[340px]">
+            <div className="hidden lg:block max-w-[340px]">
               <div className="flex items-center gap-3 mb-4">
                 <span className="w-6 h-[2px] bg-[#C19A6B]" />
                 <span className="text-[10px] font-bold tracking-[0.2em] text-neutral-500">EKSPLORASI KOLEKSI</span>
