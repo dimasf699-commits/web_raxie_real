@@ -29,7 +29,7 @@ async function getHomepageData() {
         select: { name: true, slug: true }
       }),
       prisma.product.findMany({
-        where: { isActive: true, isFeatured: true },
+        where: { isActive: true, isNew: true },
         take: 5,
         orderBy: { createdAt: 'desc' },
         select: {
