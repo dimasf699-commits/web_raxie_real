@@ -304,14 +304,23 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
             </div>
 
             {/* Rating */}
-            <div className="flex items-center justify-start gap-1 text-[#8E6D4A] dark:text-[#C19A6B] pt-0.5">
-              <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[9px] sm:text-[10px]" aria-hidden="true">
-                ★ ★ ★ ★ ★
+            {product.reviewCount > 0 ? (
+              <div className="flex items-center justify-start gap-1 text-[#8E6D4A] dark:text-[#C19A6B] pt-0.5">
+                <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[9px] sm:text-[10px]" aria-hidden="true">
+                  {'★'.repeat(Math.min(5, Math.max(1, Math.round(product.avgRating || 5))))}
+                  {'☆'.repeat(Math.max(0, 5 - Math.min(5, Math.max(1, Math.round(product.avgRating || 5)))))}
+                </div>
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground tracking-tight font-medium">
+                  {product.avgRating ? product.avgRating.toFixed(1) : ''} ({product.reviewCount})
+                </span>
               </div>
-              <span className="text-[9px] sm:text-[10px] text-muted-foreground tracking-tight">
-                ({product.reviewCount || 128})
-              </span>
-            </div>
+            ) : (
+              <div className="pt-0.5">
+                <span className="text-[9px] sm:text-[10px] text-neutral-400 dark:text-neutral-500 font-normal">
+                  Belum ada ulasan
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Add to Cart button */}

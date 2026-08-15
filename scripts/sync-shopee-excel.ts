@@ -172,8 +172,8 @@ async function main() {
         isActive: true,
         isFeatured: count < 6,
         isBestSeller: count < 10,
-        avgRating: 4.8 + (count % 3) * 0.1,
-        reviewCount: 24 + (count * 7) % 150,
+        avgRating: 0,
+        reviewCount: 0,
         images: {
           create: (prod.images.length > 0 ? prod.images : ['https://i.imgur.com/1QtzAZ5.png']).map((url, idx) => ({
             url,

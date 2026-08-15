@@ -204,17 +204,26 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
                         {product.name}
                       </h2>
 
-                      {product.reviewCount > 0 && (
+                      {product.reviewCount > 0 ? (
                         <div className="flex items-center gap-1.5 mt-2">
                           <div className="flex items-center text-amber-400">
-                            {[1,2,3,4,5].map(s => (
-                              <Star key={s} className={`h-3 w-3 ${s <= Math.round(product.avgRating) ? 'fill-current' : 'opacity-30'}`} />
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star
+                                key={s}
+                                className={`h-3 w-3 ${
+                                  s <= Math.round(product.avgRating) ? 'fill-current' : 'opacity-30'
+                                }`}
+                              />
                             ))}
                           </div>
                           <span className="text-xs text-muted-foreground">
                             {product.avgRating?.toFixed(1)} ({product.reviewCount} ulasan)
                           </span>
                         </div>
+                      ) : (
+                        <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-2">
+                          Belum ada ulasan
+                        </p>
                       )}
                     </div>
 
