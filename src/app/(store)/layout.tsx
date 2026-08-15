@@ -1,4 +1,4 @@
-import { Navbar, MobileBottomNav } from '@/components/store/Navbar'
+import { Navbar } from '@/components/store/Navbar'
 import { Footer } from '@/components/store/Footer'
 import { CartDrawer } from '@/components/store/CartDrawer'
 import { CompareDrawer } from '@/components/store/CompareDrawer'
@@ -13,7 +13,7 @@ export default function StoreLayout({
       <Navbar />
       <main className="min-h-screen m-0 p-0 bg-background text-foreground">{children}</main>
       <Footer />
-      <MobileBottomNav />
+
       <CartDrawer />
       <CompareDrawer />
     </div>

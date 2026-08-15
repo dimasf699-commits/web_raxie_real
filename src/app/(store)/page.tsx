@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { BannerCarousel } from '@/components/store/BannerCarousel'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -260,10 +261,14 @@ async function DynamicStoreContent() {
               </Link>
             </div>
             
-            {/* The 3 Cards */}
-            <div className="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {/* The 3 Cards - Mobile Horizontal Carousel, Desktop Grid */}
+            <div className="w-full lg:flex-1 flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 sm:gap-6 pb-4 scrollbar-hide lg:grid lg:grid-cols-3 lg:overflow-visible">
               {collectionCards.map((card, i) => (
-                <Link key={i} href={card.link} className="group relative bg-[#F4F4F4] aspect-[4/5] sm:aspect-auto sm:h-[340px] flex flex-col justify-end p-0 overflow-hidden shadow-sm rounded-[20px] border border-[#E5E5E5] dark:border-border">
+                <Link 
+                  key={i} 
+                  href={card.link} 
+                  className="snap-start lg:snap-align-none shrink-0 w-[65%] sm:w-[45%] lg:w-auto group relative bg-[#F4F4F4] aspect-[4/5] sm:aspect-auto sm:h-[340px] flex flex-col justify-end p-0 overflow-hidden shadow-sm rounded-[20px] border border-[#E5E5E5] dark:border-border transition-all active:scale-[0.98] lg:active:scale-100"
+                >
                   <div className="absolute inset-0 pb-16 pt-8 px-6">
                     <div className="relative w-full h-full">
                       <Image 
@@ -273,17 +278,17 @@ async function DynamicStoreContent() {
                         className="object-contain group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply" 
                         loading="lazy"
                         decoding="async"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes="(max-width: 768px) 65vw, (max-width: 1024px) 45vw, 33vw"
                       />
                     </div>
                   </div>
-                  <div className="relative z-10 flex justify-between items-end p-6 bg-gradient-to-t from-[#F4F4F4] dark:from-neutral-900 via-[#F4F4F4]/80 dark:via-neutral-900/80 to-transparent">
+                  <div className="relative z-10 flex justify-between items-end p-5 lg:p-6 bg-gradient-to-t from-[#F4F4F4] dark:from-neutral-900 via-[#F4F4F4]/80 dark:via-neutral-900/80 to-transparent">
                     <div>
-                      <h3 className="text-lg font-extrabold text-black dark:text-white tracking-tight">{card.title}</h3>
-                      <p className="text-[11px] text-neutral-500 font-medium">{card.subtitle}</p>
+                      <h3 className="text-base lg:text-lg font-extrabold text-black dark:text-white tracking-tight">{card.title}</h3>
+                      <p className="text-[10px] lg:text-[11px] text-neutral-500 font-medium">{card.subtitle}</p>
                     </div>
-                    <div className="w-10 h-10 bg-[#B8926A] text-white flex items-center justify-center shrink-0 group-hover:bg-[#967654] transition-colors rounded-[12px] shadow-md">
-                      <ArrowRight className="w-4 h-4" />
+                    <div className="w-8 h-8 lg:w-10 lg:h-10 bg-[#B8926A] text-white flex items-center justify-center shrink-0 group-hover:bg-[#967654] transition-colors rounded-[10px] lg:rounded-[12px] shadow-md">
+                      <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
                     </div>
                   </div>
                 </Link>
@@ -296,44 +301,7 @@ async function DynamicStoreContent() {
       {/* ─── 4. BANNER GRID (NEW) ──────────────── */}
       <section className="py-12">
         <div className="container-raxie">
-          <div className="flex flex-col md:flex-row h-auto md:h-[300px]">
-            {/* Banner 1 */}
-            <div className="flex-1 bg-[#E8F0F8] dark:bg-slate-900 relative p-10 flex flex-col justify-center overflow-hidden [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] md:[clip-path:polygon(0_0,100%_0,calc(100%-40px)_100%,0_100%)] z-20">
-              <span className="text-[10px] font-bold tracking-[0.2em] text-neutral-500 mb-2 uppercase">DOMPET PRIA</span>
-              <h3 className="text-3xl font-extrabold text-black dark:text-white leading-tight max-w-[200px] mb-6">Simple Looks Bigger Impact.</h3>
-              <Link href="/products?category=dompet" className="text-[11px] font-bold text-black dark:text-white flex items-center gap-2 hover:text-[#C19A6B] transition-colors">
-                Lihat Koleksi <ArrowRight className="w-3 h-3" />
-              </Link>
-              {/* Image Placeholder */}
-              <div className="absolute right-[-20%] top-1/2 -translate-y-1/2 w-[250px] h-[250px] mix-blend-multiply dark:mix-blend-normal opacity-50 pointer-events-none">
-                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Dompet Pria" fill className="object-contain" loading="lazy" decoding="async" sizes="(max-width: 768px) 100vw, 33vw" />
-              </div>
-            </div>
-            
-            {/* Banner 2 */}
-            <div className="flex-1 bg-[#F5E6DE] dark:bg-stone-900 relative p-10 flex flex-col justify-center overflow-hidden [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] md:[clip-path:polygon(0_0,100%_0,calc(100%-40px)_100%,40px_100%)] md:-ml-[40px] z-10 pl-[40px] md:pl-[80px]">
-              <span className="text-[10px] font-bold tracking-[0.2em] text-[#A67C52] mb-2 uppercase">DOMPET WANITA</span>
-              <h3 className="text-3xl font-extrabold text-black dark:text-white leading-tight max-w-[200px] mb-6">Elegan di Setiap Langkah.</h3>
-              <Link href="/products?category=dompet" className="text-[11px] font-bold text-black dark:text-white flex items-center gap-2 hover:text-[#C19A6B] transition-colors">
-                Lihat Koleksi <ArrowRight className="w-3 h-3" />
-              </Link>
-              {/* Image Placeholder */}
-              <div className="absolute right-[-10%] bottom-0 w-[200px] h-[200px] mix-blend-multiply dark:mix-blend-normal opacity-50 pointer-events-none">
-                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Dompet Wanita" fill className="object-contain" loading="lazy" decoding="async" sizes="(max-width: 768px) 100vw, 33vw" />
-              </div>
-            </div>
-            
-            {/* Banner 3 */}
-            <div className="flex-1 bg-[#151515] text-white relative p-10 flex flex-col justify-center overflow-hidden [clip-path:polygon(0_0,100%_0,100%_100%,0_100%)] md:[clip-path:polygon(0_0,100%_0,100%_100%,40px_100%)] md:-ml-[40px] pl-[40px] md:pl-[80px]">
-              <span className="text-[11px] font-bold tracking-[0.3em] text-white mb-4 uppercase">RAXIE</span>
-              <h3 className="text-2xl font-extrabold text-white leading-tight max-w-[220px] mb-4">CRAFTED FOR A BETTER TOMORROW</h3>
-              <p className="text-[10px] text-neutral-400 font-medium mb-6">Kualitas, gaya, & fungsi dalam satu produk.</p>
-              {/* Image Placeholder */}
-              <div className="absolute right-0 bottom-0 top-0 w-[50%] opacity-40 pointer-events-none">
-                <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Crafted" fill className="object-cover" loading="lazy" decoding="async" sizes="(max-width: 768px) 100vw, 33vw" />
-              </div>
-            </div>
-          </div>
+          <BannerCarousel />
         </div>
       </section>
 
@@ -350,7 +318,7 @@ async function DynamicStoreContent() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
+          <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 md:gap-6 pb-4 scrollbar-hide md:grid md:grid-cols-3 xl:grid-cols-5 md:overflow-visible">
             {bestSellers.map((product: any) => {
               const mappedProduct = {
                 id: product.id,
@@ -367,7 +335,11 @@ async function DynamicStoreContent() {
                 stock: product.stock || 10,
                 sku: product.sku || product.id,
               }
-              return <ProductCard key={`best-${product.id}`} product={mappedProduct} variant="clean" />
+              return (
+                <div key={`best-${product.id}`} className="snap-center md:snap-align-none shrink-0 w-[78%] sm:w-[45%] md:w-auto">
+                  <ProductCard product={mappedProduct} variant="clean" />
+                </div>
+              )
             })}
           </div>
         </div>
@@ -386,7 +358,7 @@ async function DynamicStoreContent() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
+          <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 md:gap-6 pb-4 scrollbar-hide md:grid md:grid-cols-3 xl:grid-cols-5 md:overflow-visible">
             {discounted.map((product: any) => {
               const mappedProduct = {
                 id: product.id,
@@ -403,7 +375,11 @@ async function DynamicStoreContent() {
                 stock: product.stock || 10,
                 sku: product.sku || product.id,
               }
-              return <ProductCard key={`disc-${product.id}`} product={mappedProduct} variant="clean" />
+              return (
+                <div key={`disc-${product.id}`} className="snap-center md:snap-align-none shrink-0 w-[78%] sm:w-[45%] md:w-auto">
+                  <ProductCard product={mappedProduct} variant="clean" />
+                </div>
+              )
             })}
           </div>
         </div>
