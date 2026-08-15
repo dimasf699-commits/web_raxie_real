@@ -74,35 +74,35 @@ export default function HomePage() {
     <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen font-sans overflow-x-hidden">
       
       {/* ─── 1. HERO SECTION ──────────────── */}
-      <section className="w-full bg-[#F8F6F2] dark:bg-[#121212] transition-colors relative overflow-hidden">
+      <section className="w-full bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6] to-[#161616] dark:from-[#121212] dark:via-[#121212] dark:to-[#121212] transition-colors relative overflow-hidden">
         {/* Mobile Layout (matches photo exactly) */}
-        <div className="flex lg:hidden w-full min-h-[440px] relative px-5 pt-8 pb-10">
+        <div className="flex lg:hidden w-full min-h-[480px] relative px-5 pt-8 pb-16">
           {/* Left Content */}
-          <div className="w-[55%] relative z-10 flex flex-col justify-start">
+          <div className="w-[60%] relative z-10 flex flex-col justify-start">
             <div className="flex items-center gap-2 mb-3">
               <span className="w-6 h-[1.5px] bg-[#B89A6A]" />
               <span className="text-[8px] font-bold tracking-[0.2em] text-[#B89A6A] uppercase">KUALITAS PREMIUM</span>
             </div>
             
-            <h1 className="font-serif text-[38px] leading-[1.05] font-extrabold tracking-tight mb-3 text-[#0B0B0B] dark:text-white whitespace-nowrap">
-              Didesain<br/>
+            <h1 className="font-serif text-[42px] leading-[1.0] font-extrabold tracking-tight mb-4 whitespace-nowrap">
+              <span className="text-[#0B0B0B] dark:text-white">Didesain</span><br/>
               <span className="text-[#B89A6A]">Untuk Anda.</span>
             </h1>
             
-            <p className="text-[#777777] dark:text-neutral-400 text-[10px] leading-[1.6] font-medium mb-6 pr-2">
+            <p className="text-[#777777] dark:text-neutral-400 text-[10px] leading-[1.6] font-medium mb-8 max-w-[170px]">
               RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
             </p>
             
             <div className="flex flex-row items-center gap-3 mt-auto w-full whitespace-nowrap">
               <Link 
                 href="/products" 
-                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[9px] sm:text-[10px] font-bold py-2.5 px-3 flex items-center gap-2 hover:bg-neutral-800 transition-colors rounded-[4px]"
+                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[9px] font-bold py-2.5 px-3 flex items-center gap-1.5 hover:bg-neutral-800 transition-colors rounded-[4px]"
               >
                 Lihat Koleksi <ArrowRight className="w-2.5 h-2.5" />
               </Link>
               <Link 
                 href="/about" 
-                className="bg-transparent text-[#0B0B0B] dark:text-white text-[9px] sm:text-[10px] font-bold py-2 px-1 flex items-center gap-1.5 hover:text-[#B89A6A] transition-colors"
+                className="bg-transparent text-[#0B0B0B] dark:text-white text-[9px] font-bold py-2 px-1 flex items-center gap-1.5 hover:text-[#B89A6A] transition-colors"
               >
                 Eksplorasi <ArrowRight className="w-2.5 h-2.5" />
               </Link>
@@ -110,12 +110,12 @@ export default function HomePage() {
           </div>
           
           {/* Right Absolute Image Container */}
-          <div className="absolute right-0 top-[22%] bottom-[6%] w-[42%] bg-[#0B0B0B] rounded-l-[20px] shadow-2xl overflow-hidden z-0">
+          <div className="absolute right-0 top-[22%] bottom-[12%] w-[45%] bg-[#080808] rounded-l-[30px] shadow-2xl overflow-hidden z-0 border-l border-t border-b border-neutral-800/30">
             <Image 
               src="https://i.imgur.com/1QtzAZ5.png"
               alt="Raxie Wallet Premium" 
               fill
-              className="object-cover object-left mix-blend-lighten opacity-95"
+              className="object-cover object-left mix-blend-lighten opacity-95 scale-110 translate-y-4"
               priority
             />
           </div>
@@ -169,8 +169,8 @@ export default function HomePage() {
       </section>
 
       {/* ─── 2. STATS & FEATURES ──────────────── */}
-      <section className="relative pb-24 z-20">
-        <div className="container-raxie max-w-[1400px] mx-auto px-0 md:px-6">
+      <section className="relative pb-10 lg:pb-24 z-20 bg-[#161616] lg:bg-transparent dark:bg-[#121212]">
+        <div className="container-raxie max-w-[1400px] mx-auto px-0 md:px-6 pt-4 lg:pt-0">
           <div className="flex flex-col xl:flex-row shadow-2xl">
             {/* Dark Stats Box */}
             <div className="bg-[#151515] text-white flex-1 relative flex items-center min-h-[220px]">
