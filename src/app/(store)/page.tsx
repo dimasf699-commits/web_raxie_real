@@ -74,159 +74,136 @@ export default function HomePage() {
     <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen font-sans overflow-x-hidden">
       
       {/* ─── 1. HERO SECTION ──────────────── */}
-      <section className="w-full bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6] to-[#161616] dark:from-[#121212] dark:via-[#121212] dark:to-[#121212] transition-colors relative overflow-hidden">
-        {/* Mobile Layout (matches photo exactly) */}
-        <div className="flex lg:hidden w-full min-h-[480px] relative px-5 pt-8 pb-16">
-          {/* Left Content */}
-          <div className="w-[60%] relative z-10 flex flex-col justify-start">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-6 h-[1.5px] bg-[#B89A6A]" />
-              <span className="text-[8px] font-bold tracking-[0.2em] text-[#B89A6A] uppercase">KUALITAS PREMIUM</span>
+      <section className="w-full relative overflow-hidden">
+        {/* === MOBILE HERO === */}
+        <div className="lg:hidden relative w-full aspect-[3/4] max-h-[520px] bg-[#0B0B0B]">
+          <Image 
+            src="https://i.imgur.com/1QtzAZ5.png"
+            alt="Raxie Premium Collection" 
+            fill
+            className="object-cover object-center mix-blend-lighten opacity-80"
+            priority
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+          
+          {/* Content overlay at bottom */}
+          <div className="absolute bottom-0 left-0 right-0 p-5 pb-8 z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-5 h-[1.5px] bg-[#B89A6A]" />
+              <span className="text-[9px] font-bold tracking-[0.2em] text-[#B89A6A] uppercase">KUALITAS PREMIUM</span>
             </div>
-            
-            <h1 className="font-serif text-[42px] leading-[1.0] font-extrabold tracking-tight mb-4 whitespace-nowrap">
-              <span className="text-[#0B0B0B] dark:text-white">Didesain</span><br/>
-              <span className="text-[#B89A6A]">Untuk Anda.</span>
+            <h1 className="font-serif text-[32px] leading-[1.05] font-extrabold tracking-tight mb-3 text-white">
+              Didesain<br/><span className="text-[#B89A6A]">Untuk Anda.</span>
             </h1>
-            
-            <p className="text-[#777777] dark:text-neutral-400 text-[10px] leading-[1.6] font-medium mb-8 max-w-[170px]">
-              RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
+            <p className="text-neutral-300 text-[11px] leading-[1.5] font-medium mb-5 max-w-[280px]">
+              RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik.
             </p>
-            
-            <div className="flex flex-row items-center gap-3 mt-auto w-full whitespace-nowrap">
+            <div className="flex items-center gap-3">
               <Link 
                 href="/products" 
-                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[9px] font-bold py-2.5 px-3 flex items-center gap-1.5 hover:bg-neutral-800 transition-colors rounded-[4px]"
+                className="bg-white text-[#0B0B0B] text-[10px] font-bold py-3 px-5 flex items-center gap-2 rounded-full transition-colors active:scale-95"
               >
-                Lihat Koleksi <ArrowRight className="w-2.5 h-2.5" />
+                Lihat Koleksi <ArrowRight className="w-3 h-3" />
               </Link>
               <Link 
                 href="/about" 
-                className="bg-transparent text-[#0B0B0B] dark:text-white text-[9px] font-bold py-2 px-1 flex items-center gap-1.5 hover:text-[#B89A6A] transition-colors"
+                className="text-white text-[10px] font-bold py-3 px-4 flex items-center gap-1.5 border border-white/30 rounded-full"
               >
-                Eksplorasi <ArrowRight className="w-2.5 h-2.5" />
+                Eksplorasi <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
           </div>
-          
-          {/* Right Absolute Image Container */}
-          <div className="absolute right-0 top-[22%] bottom-[12%] w-[45%] bg-[#080808] rounded-l-[30px] shadow-2xl overflow-hidden z-0 border-l border-t border-b border-neutral-800/30">
-            <Image 
-              src="https://i.imgur.com/1QtzAZ5.png"
-              alt="Raxie Wallet Premium" 
-              fill
-              className="object-cover object-left mix-blend-lighten opacity-95 scale-110 translate-y-4"
-              priority
-            />
-          </div>
         </div>
 
-        {/* Desktop Layout */}
-        <div className="hidden lg:flex flex-row w-full min-h-[650px] items-stretch">
+        {/* === DESKTOP HERO === */}
+        <div className="hidden lg:flex flex-row w-full min-h-[650px] items-stretch bg-[#F8F6F2] dark:bg-[#121212]">
           <div className="w-[45%] flex flex-col justify-center py-16 pl-16 xl:pl-32 pr-12 z-10">
             <div className="flex items-center gap-3 mb-6">
               <span className="w-8 h-[2px] bg-[#B89A6A]" />
               <span className="text-[11px] font-bold tracking-[0.2em] text-[#B89A6A]">KUALITAS PREMIUM</span>
             </div>
-            
             <h1 className="font-serif text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-[#0B0B0B] dark:text-white">
-              Didesain<br/>
-              <span className="text-[#B89A6A]">Untuk Anda.</span>
+              Didesain<br/><span className="text-[#B89A6A]">Untuk Anda.</span>
             </h1>
-            
             <p className="text-[#777777] dark:text-neutral-400 text-[14px] leading-relaxed max-w-[380px] font-medium mb-10">
               RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
             </p>
-            
             <div className="flex flex-row items-center gap-6">
-              <Link 
-                href="/products" 
-                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[12px] font-bold px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors rounded-sm text-center"
-              >
+              <Link href="/products" className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[12px] font-bold px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors rounded-sm">
                 Lihat Koleksi <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link 
-                href="/about" 
-                className="text-[#0B0B0B] dark:text-white text-[12px] font-bold flex items-center gap-2 hover:text-[#B89A6A] transition-colors"
-              >
+              <Link href="/about" className="text-[#0B0B0B] dark:text-white text-[12px] font-bold flex items-center gap-2 hover:text-[#B89A6A] transition-colors">
                 Eksplorasi <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>
-          
           <div className="w-[55%] relative z-0 flex items-stretch">
             <div className="w-full h-full bg-[#0B0B0B] [clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] shadow-2xl overflow-hidden relative">
-              <Image 
-                src="https://i.imgur.com/1QtzAZ5.png"
-                alt="Raxie Wallet Premium" 
-                fill
-                className="object-cover object-left mix-blend-lighten opacity-90"
-                priority
-              />
+              <Image src="https://i.imgur.com/1QtzAZ5.png" alt="Raxie Wallet Premium" fill className="object-cover object-left mix-blend-lighten opacity-90" priority />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── 2. STATS & FEATURES ──────────────── */}
-      <section className="relative pb-10 lg:pb-24 z-20 bg-[#161616] lg:bg-transparent dark:bg-[#121212]">
-        <div className="container-raxie max-w-[1400px] mx-auto px-0 md:px-6 pt-4 lg:pt-0">
-          <div className="flex flex-col xl:flex-row shadow-2xl">
-            {/* Dark Stats Box */}
-            <div className="bg-[#151515] text-white flex-1 relative flex items-center min-h-[220px]">
-              {/* Left rotated text */}
-              <div className="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 -rotate-90 origin-left text-[9px] font-bold tracking-[0.4em] text-neutral-500 uppercase">
-                OUR IMPACT
+      {/* ─── 2. STATS ──────────────── */}
+      <section className="relative z-20">
+        {/* Mobile Stats */}
+        <div className="lg:hidden bg-[#0B0B0B] mx-4 -mt-6 rounded-2xl shadow-xl relative z-10">
+          <div className="grid grid-cols-4 divide-x divide-neutral-800 py-5">
+            {[
+              { icon: <Users className="w-4 h-4" strokeWidth={1.5} />, val: '975+', label: 'Pelanggan' },
+              { icon: <Package className="w-4 h-4" strokeWidth={1.5} />, val: '320+', label: 'Terjual' },
+              { icon: <Star className="w-4 h-4" strokeWidth={1.5} />, val: '462+', label: 'Review ★5' },
+              { icon: <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />, val: '98%', label: 'Kepuasan' },
+            ].map((s, i) => (
+              <div key={i} className="flex flex-col items-center justify-center text-center px-1">
+                <div className="text-neutral-500 mb-1.5">{s.icon}</div>
+                <span className="text-[#B89A6A] text-[14px] font-serif font-extrabold leading-none">{s.val}</span>
+                <span className="text-[7px] text-neutral-500 font-medium mt-1">{s.label}</span>
               </div>
-              
-              <div className="grid grid-cols-4 w-full relative z-10 divide-x divide-neutral-800 bg-[#0B0B0B] dark:bg-[#121212] lg:bg-transparent rounded-[16px] lg:rounded-none mx-4 lg:mx-0 py-6 lg:py-14 my-6 lg:my-0 shadow-xl lg:shadow-none">
-                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
-                  <Users className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">975+</h3>
-                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Pelanggan Puas</p>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop Stats */}
+        <div className="hidden lg:block">
+          <div className="container-raxie max-w-[1400px] mx-auto px-6 pb-24">
+            <div className="flex flex-col xl:flex-row shadow-2xl">
+              <div className="bg-[#151515] text-white flex-1 relative flex items-center min-h-[220px]">
+                <div className="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 -rotate-90 origin-left text-[9px] font-bold tracking-[0.4em] text-neutral-500 uppercase">
+                  OUR IMPACT
                 </div>
-                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
-                  <Package className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">320+</h3>
-                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Produk Terjual</p>
+                <div className="grid grid-cols-4 w-full relative z-10 py-14">
+                  {[
+                    { icon: <Users className="w-7 h-7" strokeWidth={1.5} />, val: '975+', label: 'Pelanggan Puas' },
+                    { icon: <Package className="w-7 h-7" strokeWidth={1.5} />, val: '320+', label: 'Produk Terjual' },
+                    { icon: <Star className="w-7 h-7" strokeWidth={1.5} />, val: '462+', label: 'Ulasan Bintang 5' },
+                    { icon: <ShieldCheck className="w-7 h-7" strokeWidth={1.5} />, val: '98%', label: 'Tingkat Kepuasan' },
+                  ].map((s, i) => (
+                    <div key={i} className="flex flex-col items-center justify-center text-center px-4">
+                      <div className="text-white mb-4">{s.icon}</div>
+                      <h3 className="text-[#B89A6A] text-5xl font-serif font-extrabold mb-1">{s.val}</h3>
+                      <p className="text-[12px] text-neutral-400 font-medium tracking-wide">{s.label}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
-                  <Star className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">462+</h3>
-                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Ulasan Bintang 5</p>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
-                  <ShieldCheck className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">98%</h3>
-                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Tingkat Kepuasan</p>
-                </div>
+                <div className="hidden xl:block absolute right-[-50px] top-0 bottom-0 w-[51px] bg-[#151515] z-0" style={{ clipPath: 'polygon(0 0, 100% 50%, 0 100%)' }} />
               </div>
-              
-              {/* The angled cut on the right side of the black box for large screens */}
-              <div 
-                className="hidden xl:block absolute right-[-50px] top-0 bottom-0 w-[51px] bg-[#151515] z-0"
-                style={{ clipPath: 'polygon(0 0, 100% 50%, 0 100%)' }}
-              />
-            </div>
-            
-            {/* Features Cards (overlapping or adjacent) */}
-            <div className="xl:w-auto flex xl:-ml-6 xl:-mt-10 xl:-mb-10 xl:relative z-20 overflow-x-auto pb-6 px-4 xl:px-0">
-              <div className="flex gap-4 min-w-max xl:min-w-0 xl:items-center xl:h-full py-4">
-                {[
-                  { icon: '💎', title: 'Material\nPremium' },
-                  { icon: '📐', title: 'Desain\nModern' },
-                  { icon: '🛡️', title: 'Kuat &\nTahan Lama' },
-                  { icon: '🏷️', title: 'Jaminan Harga\nTerbaik' }
-                ].map((feature, i) => (
-                  <div 
-                    key={i} 
-                    className="bg-white w-[140px] h-[160px] flex flex-col items-center justify-center text-center p-4 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] relative"
-                    style={{ clipPath: 'polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 0 100%)' }}
-                  >
-                    <div className="text-3xl mb-4 opacity-80 grayscale">{feature.icon}</div>
-                    <p className="text-[11px] font-extrabold text-black whitespace-pre-line leading-relaxed">{feature.title}</p>
-                  </div>
-                ))}
+              <div className="xl:w-auto flex xl:-ml-6 xl:-mt-10 xl:-mb-10 xl:relative z-20 overflow-x-auto pb-6 px-4 xl:px-0">
+                <div className="flex gap-4 min-w-max xl:min-w-0 xl:items-center xl:h-full py-4">
+                  {[
+                    { icon: '💎', title: 'Material\nPremium' },
+                    { icon: '📐', title: 'Desain\nModern' },
+                    { icon: '🛡️', title: 'Kuat &\nTahan Lama' },
+                    { icon: '🏷️', title: 'Jaminan Harga\nTerbaik' }
+                  ].map((feature, i) => (
+                    <div key={i} className="bg-white w-[140px] h-[160px] flex flex-col items-center justify-center text-center p-4 shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] relative" style={{ clipPath: 'polygon(0 0, calc(100% - 25px) 0, 100% 25px, 100% 100%, 0 100%)' }}>
+                      <div className="text-3xl mb-4 opacity-80 grayscale">{feature.icon}</div>
+                      <p className="text-[11px] font-extrabold text-black whitespace-pre-line leading-relaxed">{feature.title}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -238,37 +215,23 @@ export default function HomePage() {
       </Suspense>
 
       {/* ─── TRUST BAR ──────────────── */}
-      <section className="py-10 bg-white border-y border-neutral-200 mt-16">
+      <section className="py-6 lg:py-10 bg-white dark:bg-[#151515] border-y border-neutral-100 dark:border-neutral-800 mt-8 lg:mt-16">
         <div className="container-raxie">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6 lg:gap-0 lg:divide-x lg:divide-neutral-200 text-center lg:text-left">
-            <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
-              <Truck className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
-              <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Gratis Ongkir</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">Min. belanja 150Rb</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-4 lg:gap-0 lg:divide-x lg:divide-neutral-200 dark:lg:divide-neutral-800 text-center">
+            {[
+              { icon: <Truck className="w-5 h-5 lg:w-7 lg:h-7" strokeWidth={1.5} />, title: 'Gratis Ongkir', sub: 'Min. belanja 150Rb' },
+              { icon: <RefreshCcw className="w-5 h-5 lg:w-7 lg:h-7" strokeWidth={1.5} />, title: 'Retur Mudah', sub: 'Garansi 14 hari' },
+              { icon: <Lock className="w-5 h-5 lg:w-7 lg:h-7" strokeWidth={1.5} />, title: 'Pembayaran Aman', sub: '100% terlindungi' },
+              { icon: <HeadphonesIcon className="w-5 h-5 lg:w-7 lg:h-7" strokeWidth={1.5} />, title: 'Layanan 24/7', sub: 'Dukungan pelanggan' },
+            ].map((t, i) => (
+              <div key={i} className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 px-4 lg:px-6 justify-center">
+                <div className="text-neutral-700 dark:text-neutral-400 shrink-0">{t.icon}</div>
+                <div className="lg:text-left">
+                  <h4 className="text-[11px] lg:text-[13px] font-extrabold text-black dark:text-white mb-0.5">{t.title}</h4>
+                  <p className="text-[9px] lg:text-[11px] text-neutral-500 dark:text-neutral-400 font-medium">{t.sub}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
-              <RefreshCcw className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
-              <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Retur Mudah</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">Garansi 14 hari</p>
-              </div>
-            </div>
-            <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
-              <Lock className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
-              <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Pembayaran Aman</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">100% terlindungi</p>
-              </div>
-            </div>
-            <div className="flex flex-col lg:flex-row items-center gap-4 px-6 justify-center">
-              <HeadphonesIcon className="w-7 h-7 text-neutral-800 shrink-0" strokeWidth={1.5} />
-              <div>
-                <h4 className="text-[13px] font-extrabold text-black mb-1">Layanan Pelanggan</h4>
-                <p className="text-[11px] text-neutral-500 font-medium">Dukungan 24/7</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>

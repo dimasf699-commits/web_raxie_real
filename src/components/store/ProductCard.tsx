@@ -195,33 +195,33 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="absolute top-3 right-3 flex flex-col gap-2 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
+          {/* Action Buttons (Wishlist visible always, Compare/QuickView desktop only) */}
+          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex flex-col gap-1.5 sm:gap-2 z-10">
             {/* Wishlist */}
             <button
               onClick={handleWishlist}
               aria-label={isWishlisted ? 'Hapus dari wishlist' : 'Tambah ke wishlist'}
-              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+              className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white/90 dark:bg-black/70 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center shadow-sm hover:bg-white transition-colors"
             >
               <Heart
-                className={`h-4 w-4 transition-colors ${
+                className={`h-3.5 w-3.5 sm:h-4 sm:w-4 transition-colors ${
                   isWishlisted
                     ? 'fill-red-500 text-red-500'
-                    : 'text-foreground/70'
+                    : 'text-neutral-600 dark:text-neutral-300'
                 }`}
               />
             </button>
 
-            {/* Compare */}
+            {/* Compare (Desktop only) */}
             <button
               onClick={handleCompare}
               aria-label="Bandingkan produk"
-              className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+              className="hidden lg:flex w-9 h-9 rounded-full bg-card/90 border border-border items-center justify-center shadow-md hover:bg-card transition-colors opacity-0 group-hover:opacity-100"
             >
               <Scale className={`h-4 w-4 ${isCompared ? 'text-[#8E6D4A] dark:text-[#C19A6B]' : 'text-foreground/70'}`} />
             </button>
 
-            {/* Quick View */}
+            {/* Quick View (Desktop only) */}
             {onQuickView && (
               <button
                 onClick={(e) => {
@@ -230,15 +230,15 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
                   onQuickView(product.productId)
                 }}
                 aria-label="Quick view"
-                className="w-9 h-9 rounded-full bg-card/90 border border-border flex items-center justify-center shadow-md hover:bg-card transition-colors"
+                className="hidden lg:flex w-9 h-9 rounded-full bg-card/90 border border-border items-center justify-center shadow-md hover:bg-card transition-colors opacity-0 group-hover:opacity-100"
               >
                 <Eye className="h-4 w-4 text-foreground/70" />
               </button>
             )}
           </div>
 
-          {/* Add to Cart overlay on hover */}
-          <div className="absolute bottom-3 left-3 right-3 z-10 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 lg:translate-y-2 lg:group-hover:translate-y-0">
+          {/* Add to Cart overlay (Desktop only on hover) */}
+          <div className="hidden lg:block absolute bottom-3 left-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
             <button
               onClick={handleAddToCart}
               disabled={addingCart || product.stock === 0}
@@ -263,20 +263,20 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
         </div>
 
         {/* Product Info */}
-        <div className="mt-4 px-1 text-left space-y-1 relative z-10">
-          <Link href={`/product/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block">
-            <h3 className="font-bold text-xs uppercase tracking-widest text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
+        <div className="mt-2.5 sm:mt-4 px-0.5 text-left space-y-1 relative z-10">
+          <Link href={`/product/${product.slug}`} className="focus-visible:outline-none focus-visible:underline inline-block w-full">
+            <h3 className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-foreground group-hover:text-[#8E6D4A] dark:group-hover:text-[#C19A6B] transition-colors line-clamp-1">
               {product.name}
             </h3>
           </Link>
 
           {/* Price */}
-          <div className="flex items-center justify-start gap-2 pt-0.5">
-            <span className="font-bold text-xs text-foreground">
+          <div className="flex items-center justify-start gap-1.5 pt-0.5 flex-wrap">
+            <span className="font-bold text-[11px] sm:text-xs text-foreground">
               {formatPrice(product.price)}
             </span>
-            {product.compareAtPrice && (
-              <span className="text-[11px] line-through text-muted-foreground">
+            {product.compareAtPrice && product.compareAtPrice > product.price && (
+              <span className="text-[9px] sm:text-[11px] line-through text-muted-foreground">
                 {formatPrice(product.compareAtPrice)}
               </span>
             )}
@@ -284,10 +284,10 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
 
           {/* Rating */}
           <div className="flex items-center justify-start gap-1 text-[#8E6D4A] dark:text-[#C19A6B] pt-0.5">
-            <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[10px]" aria-hidden="true">
+            <div className="flex text-[#8E6D4A] dark:text-[#C19A6B] text-[9px] sm:text-[10px]" aria-hidden="true">
               ★ ★ ★ ★ ★
             </div>
-            <span className="text-[10px] text-muted-foreground tracking-widest">
+            <span className="text-[9px] sm:text-[10px] text-muted-foreground tracking-tight">
               ({product.reviewCount || 128})
             </span>
           </div>

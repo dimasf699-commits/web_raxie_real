@@ -256,20 +256,20 @@ export default function CheckoutPage() {
           </div>
 
           {/* Step Indicator */}
-          <div className="flex items-center justify-between max-w-xl mx-auto mb-10 pb-4 border-b border-neutral-200 dark:border-neutral-800">
+          <div className="flex items-center justify-between max-w-xl mx-auto mb-6 lg:mb-10 pb-3 border-b border-neutral-200 dark:border-neutral-800">
             {[
               { num: 1, label: 'ALAMAT' },
               { num: 2, label: 'PENGIRIMAN' },
               { num: 3, label: 'PEMBAYARAN' }
             ].map((s) => (
-              <div key={s.num} className="flex items-center gap-2">
+              <div key={s.num} className="flex items-center gap-1.5 sm:gap-2">
                 <div className={cn(
-                  "w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs",
+                  "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center font-bold text-[10px] sm:text-xs shrink-0",
                   step >= s.num ? "bg-[#C19A6B] text-white" : "bg-neutral-200 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400"
                 )}>
                   {s.num}
                 </div>
-                <span className={cn("text-[11px] font-bold tracking-wider", step >= s.num ? "text-black dark:text-white" : "text-neutral-500 dark:text-neutral-400")}>
+                <span className={cn("text-[9px] sm:text-[11px] font-bold tracking-wider uppercase", step >= s.num ? "text-black dark:text-white" : "text-neutral-500 dark:text-neutral-400")}>
                   {s.label}
                 </span>
               </div>

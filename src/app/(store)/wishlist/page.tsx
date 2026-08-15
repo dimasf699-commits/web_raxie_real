@@ -78,7 +78,7 @@ export default function WishlistPage() {
               </Button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
               {items.map((item) => (
                 <div key={item.productId} className="relative group">
                   <ProductCard
@@ -94,13 +94,13 @@ export default function WishlistPage() {
                       sku: ''
                     }}
                   />
-                  {/* Remove override for wishlist page */}
+                  {/* Remove button always visible on mobile */}
                   <button
                     onClick={() => {
                       removeItem(item.productId)
                       toast.success('Dihapus dari wishlist', item.name)
                     }}
-                    className="absolute top-3 left-3 z-20 w-8 h-8 bg-white dark:bg-black rounded-full flex items-center justify-center text-neutral-400 hover:text-red-500 transition-colors shadow-sm opacity-0 group-hover:opacity-100 border border-neutral-200 dark:border-neutral-800"
+                    className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 w-7 h-7 sm:w-8 sm:h-8 bg-white/90 dark:bg-black/80 rounded-full flex items-center justify-center text-neutral-500 hover:text-red-500 transition-colors shadow-sm opacity-100 lg:opacity-0 lg:group-hover:opacity-100 border border-neutral-200 dark:border-neutral-800"
                     title="Hapus dari Wishlist"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

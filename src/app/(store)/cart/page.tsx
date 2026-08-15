@@ -79,10 +79,10 @@ export default function CartPage() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white dark:bg-[#151515] rounded-sm border border-neutral-200 dark:border-neutral-800 gap-6 shadow-sm"
+                    className="flex flex-row items-center justify-between p-3.5 sm:p-5 bg-white dark:bg-[#151515] rounded-xl border border-neutral-200 dark:border-neutral-800 gap-3 sm:gap-6 shadow-sm"
                   >
-                    <div className="flex items-center gap-5">
-                      <div className="relative w-24 h-24 bg-neutral-50 dark:bg-neutral-900 rounded-sm overflow-hidden shrink-0 border border-neutral-200 dark:border-neutral-800">
+                    <div className="flex items-center gap-3 sm:gap-5 flex-1 min-w-0">
+                      <div className="relative w-16 h-16 sm:w-24 sm:h-24 bg-neutral-50 dark:bg-neutral-900 rounded-lg overflow-hidden shrink-0 border border-neutral-200 dark:border-neutral-800">
                         <Image
                           src={item.image || '/placeholder.jpg'}
                           alt={item.name}
@@ -91,48 +91,47 @@ export default function CartPage() {
                           sizes="96px"
                         />
                       </div>
-                      <div className="space-y-1.5">
-                        <Link href={`/products/${item.slug}`} className="font-bold text-xs uppercase tracking-wider text-black dark:text-white hover:text-[#C19A6B] transition-colors line-clamp-2">
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <Link href={`/products/${item.slug}`} className="font-bold text-[11px] sm:text-xs uppercase tracking-wider text-black dark:text-white hover:text-[#C19A6B] transition-colors line-clamp-1">
                           {item.name}
                         </Link>
                         {item.variantName && (
-                          <p className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400">Varian: {item.variantName}</p>
+                          <p className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">Varian: {item.variantName}</p>
                         )}
-                        <p className="text-xs font-bold text-[#C19A6B] pt-0.5">
+                        <p className="text-xs font-bold text-[#C19A6B]">
                           {formatPrice(item.price)}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between w-full sm:w-auto gap-8 border-t sm:border-t-0 border-neutral-200 dark:border-neutral-800 pt-4 sm:pt-0">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-2 sm:gap-8 shrink-0">
                       {/* Quantity Selector */}
-                      <div className="flex items-center border border-neutral-200 dark:border-neutral-700 rounded-sm bg-white dark:bg-neutral-900 px-2 py-1">
+                      <div className="flex items-center border border-neutral-200 dark:border-neutral-700 rounded-md bg-white dark:bg-neutral-900 px-1.5 py-0.5">
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-7 h-7 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white"
+                          className="w-6 h-6 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white text-xs"
                         >
                           -
                         </button>
-                        <span className="w-8 text-center text-xs font-bold text-black dark:text-white">{item.quantity}</span>
+                        <span className="w-6 text-center text-xs font-bold text-black dark:text-white">{item.quantity}</span>
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
                           disabled={item.quantity >= item.stock}
-                          className="w-7 h-7 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white disabled:opacity-30"
+                          className="w-6 h-6 flex items-center justify-center text-neutral-500 hover:text-black dark:hover:text-white text-xs disabled:opacity-30"
                         >
                           +
                         </button>
                       </div>
 
-                      <div className="text-right">
-                        <p className="font-bold text-sm text-black dark:text-white">{formatPrice(item.price * item.quantity)}</p>
-                        <div className="flex items-center justify-end gap-3 mt-1.5">
-                          <button
-                            onClick={() => removeItem(item.id)}
-                            className="text-neutral-400 hover:text-red-500 text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center gap-1"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" /> Hapus
-                          </button>
-                        </div>
+                      <div className="text-right flex items-center gap-2">
+                        <p className="font-bold text-xs sm:text-sm text-black dark:text-white">{formatPrice(item.price * item.quantity)}</p>
+                        <button
+                          onClick={() => removeItem(item.id)}
+                          className="text-neutral-400 hover:text-red-500 p-1 transition-colors"
+                          aria-label="Hapus item"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
                       </div>
                     </div>
                   </motion.div>

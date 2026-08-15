@@ -17,7 +17,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="bg-[#121212] text-white border-t border-neutral-800 pt-16 pb-8 transition-colors">
+    <footer className="bg-[#121212] text-white border-t border-neutral-800 pt-10 lg:pt-16 pb-20 lg:pb-8 transition-colors">
       <div className="container-raxie">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 pb-12 border-b border-neutral-800">
           {/* Col 1: Brand Info */}

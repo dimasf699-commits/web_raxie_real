@@ -4,7 +4,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ProductCard } from '@/components/store/ProductCard'
 import { QuickViewModal } from '@/components/store/QuickViewModal'
 import { ProductSort } from '@/components/store/ProductSort'
-import { Loader2, PackageSearch } from 'lucide-react'
+import { FilterSidebar } from '@/components/store/FilterSidebar'
+import { Loader2, PackageSearch, SlidersHorizontal, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface InfiniteProductGridProps {
   searchParams: {
@@ -29,6 +31,7 @@ export function InfiniteProductGrid({
   const [cursor, setCursor] = useState<string | null>(initialCursor)
   const [isLoading, setIsLoading] = useState(false)
   const [quickViewId, setQuickViewId] = useState<string | null>(null)
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   // Re-initialize when searchParams change (filter/sort changes)
@@ -79,14 +82,61 @@ export function InfiniteProductGrid({
 
   return (
     <>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-neutral-200 dark:border-neutral-800">
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Menampilkan <span className="font-semibold text-black dark:text-white">{products.length}</span> produk
-          {!cursor && ` (semua)`}
+      {/* Toolbar (Mobile & Desktop) */}
+      <div className="flex items-center justify-between mb-4 lg:mb-6 pb-3 border-b border-neutral-200 dark:border-neutral-800">
+        <p className="text-xs lg:text-sm text-neutral-500 dark:text-neutral-400">
+          <span className="font-semibold text-black dark:text-white">{products.length}</span> produk
         </p>
-        <ProductSort />
+
+        <div className="flex items-center gap-2">
+          {/* Mobile Filter Button */}
+          <button
+            onClick={() => setIsMobileFilterOpen(true)}
+            className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 text-black dark:text-white rounded-full text-xs font-bold"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            Filter
+          </button>
+
+          <ProductSort />
+        </div>
       </div>
+
+      {/* Mobile Filter Bottom Sheet */}
+      <AnimatePresence>
+        {isMobileFilterOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileFilterOpen(false)}
+              className="bottom-sheet-overlay lg:hidden"
+            />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="bottom-sheet lg:hidden max-h-[85vh] p-5 flex flex-col"
+            >
+              <div className="bottom-sheet-handle mb-3" />
+              <div className="flex items-center justify-between pb-3 mb-2 border-b border-neutral-200 dark:border-neutral-800">
+                <h3 className="font-serif font-extrabold text-sm uppercase tracking-wider">Filter Produk</h3>
+                <button
+                  onClick={() => setIsMobileFilterOpen(false)}
+                  className="p-1 text-neutral-500 hover:text-black dark:hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1 pb-4">
+                <FilterSidebar />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {products.length === 0 ? (
         <div className="py-24 text-center flex flex-col items-center">

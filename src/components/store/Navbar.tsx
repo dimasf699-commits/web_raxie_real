@@ -106,19 +106,31 @@ export function Navbar() {
       {/* Permanent Dark Sticky Navbar Header */}
       <header className="sticky top-0 left-0 right-0 z-50 bg-[#121212] text-white border-b border-neutral-800 transition-colors">
         <AnnouncementBar />
-        <div className="container-raxie h-20 flex items-center justify-between">
+        <div className="container-raxie h-14 lg:h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity group w-auto lg:w-[200px]">
+          {/* Mobile: Menu button (left) */}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Buka menu navigasi"
+            onClick={() => setIsMobileOpen(true)}
+            className="text-white hover:bg-neutral-800 lg:hidden touch-target"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+
+          {/* Logo — left on desktop, centered on mobile */}
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity group lg:w-[200px] absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0">
             <Image
               src="https://i.imgur.com/8YvnCvE.png"
               alt="RAXIE Logo"
-              width={32}
-              height={32}
+              width={28}
+              height={28}
               priority
               fetchPriority="high"
-              className="h-8 w-auto object-contain shrink-0"
+              className="h-7 lg:h-8 w-auto object-contain shrink-0"
             />
-            <span className="font-serif font-extrabold text-2xl tracking-[0.05em] text-white uppercase">
+            <span className="font-serif font-extrabold text-xl lg:text-2xl tracking-[0.05em] text-white uppercase">
               RAXIE
             </span>
           </Link>
@@ -179,37 +191,37 @@ export function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center justify-end gap-2 sm:gap-3 w-auto lg:w-[200px]">
+          <div className="flex items-center justify-end gap-1 lg:gap-3 w-auto lg:w-[200px]">
             {/* Search */}
             <Button
               variant="ghost"
               size="icon"
               aria-label="Cari produk"
               onClick={() => setIsSearchOpen(true)}
-              className="text-white hover:bg-neutral-800"
+              className="text-white hover:bg-neutral-800 touch-target"
             >
               <Search className="h-[18px] w-[18px]" />
             </Button>
 
-            {/* Theme Toggle */}
+            {/* Theme Toggle — desktop only */}
             <Button
               variant="ghost"
               size="icon"
               aria-label="Ganti tema"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="text-white hover:bg-neutral-800 hidden md:flex"
+              className="text-white hover:bg-neutral-800 hidden lg:flex"
             >
               <Moon className="h-[18px] w-[18px] hidden dark:block" />
               <Sun className="h-[18px] w-[18px] block dark:hidden" />
             </Button>
 
-            {/* Wishlist */}
+            {/* Wishlist — desktop only */}
             <Button
               variant="ghost"
               size="icon"
               aria-label="Wishlist"
               asChild
-              className="text-white hover:bg-neutral-800 relative"
+              className="text-white hover:bg-neutral-800 relative hidden lg:flex"
             >
               <Link href="/wishlist">
                 <Heart className="h-[18px] w-[18px]" />
@@ -231,7 +243,7 @@ export function Navbar() {
               size="icon"
               aria-label="Keranjang belanja"
               onClick={openCart}
-              className="text-white hover:bg-neutral-800 relative"
+              className="text-white hover:bg-neutral-800 relative touch-target"
             >
               <ShoppingBag className="h-[18px] w-[18px]" />
               <AnimatePresence>
@@ -249,8 +261,8 @@ export function Navbar() {
                 </AnimatePresence>
               </Button>
   
-              {/* Account */}
-              <div className="relative hidden sm:block">
+              {/* Account — desktop only */}
+              <div className="relative hidden lg:block">
                 {session ? (
                   <>
                     <Button
@@ -328,17 +340,6 @@ export function Navbar() {
                 </Button>
               )}
             </div>
-
-            {/* Mobile hamburger */}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Buka menu navigasi"
-              onClick={() => setIsMobileOpen(true)}
-              className="text-white hover:bg-neutral-800 lg:hidden"
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
           </div>
         </div>
       </header>
@@ -526,6 +527,7 @@ export function MobileBottomNav() {
   const pathname = usePathname()
   const [isMounted, setIsMounted] = useState(false)
   const cartItems = useCartStore((s) => s.totalItems())
+  const wishlistItems = useWishlistStore((s) => s.totalItems())
   const openCart = useCartStore((s) => s.openCart)
   const isAdmin = pathname.startsWith('/admin')
 
@@ -533,54 +535,69 @@ export function MobileBottomNav() {
     setIsMounted(true)
   }, [])
 
-  if (isAdmin) return null
+  // Hide on admin, checkout, and login pages
+  if (isAdmin || pathname.startsWith('/checkout') || pathname.startsWith('/login')) return null
 
   const navItems = [
-    { href: '/', icon: <HomeIcon />, label: 'Beranda' },
-    { href: '/products', icon: <Search className="h-5 w-5" />, label: 'Cari' },
+    { href: '/', icon: <HomeIcon />, label: 'Home' },
+    { href: '/products', icon: <Search className="h-5 w-5" />, label: 'Shop' },
     {
       icon: (
         <div className="relative">
           <ShoppingBag className="h-5 w-5" />
           {isMounted && cartItems > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#C19A6B] text-black text-[10px] font-bold flex items-center justify-center">
+            <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#C19A6B] text-black text-[9px] font-bold flex items-center justify-center">
               {cartItems > 9 ? '9+' : cartItems}
             </span>
           )}
         </div>
       ),
-      label: 'Keranjang',
+      label: 'Cart',
       onClick: openCart,
+    },
+    { 
+      href: '/wishlist', 
+      icon: (
+        <div className="relative">
+          <Heart className="h-5 w-5" />
+          {isMounted && wishlistItems > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#C19A6B] text-black text-[9px] font-bold flex items-center justify-center">
+              {wishlistItems > 9 ? '9+' : wishlistItems}
+            </span>
+          )}
+        </div>
+      ), 
+      label: 'Wishlist' 
     },
     { href: '/account', icon: <User className="h-5 w-5" />, label: 'Akun' },
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-black/95 backdrop-blur-xl border-t border-neutral-900 pb-safe lg:hidden text-white">
-      <div className="flex items-center justify-around py-2">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-[#0B0B0B] border-t border-neutral-200 dark:border-neutral-800 pb-safe lg:hidden">
+      <div className="flex items-center justify-around h-[56px]">
         {navItems.map((item, idx) =>
           item.onClick ? (
             <button
               key={idx}
               onClick={item.onClick}
-              className="flex flex-col items-center gap-0.5 px-4 py-1.5 text-neutral-400 hover:text-[#C19A6B] transition-colors"
+              className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-neutral-400 dark:text-neutral-500 hover:text-[#0B0B0B] dark:hover:text-white transition-colors"
             >
               {item.icon}
-              <span className="text-[10px] font-bold uppercase">{item.label}</span>
+              <span className="text-[9px] font-semibold">{item.label}</span>
             </button>
           ) : (
             <Link
               key={idx}
               href={item.href!}
               className={cn(
-                'flex flex-col items-[#C19A6B] gap-0.5 px-4 py-1.5 transition-colors',
-                pathname === item.href
-                  ? 'text-[#C19A6B]'
-                  : 'text-neutral-400 hover:text-[#C19A6B]'
+                'flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors',
+                pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href!))
+                  ? 'text-[#0B0B0B] dark:text-white'
+                  : 'text-neutral-400 dark:text-neutral-500 hover:text-[#0B0B0B] dark:hover:text-white'
               )}
             >
               {item.icon}
-              <span className="text-[10px] font-bold uppercase">{item.label}</span>
+              <span className="text-[9px] font-semibold">{item.label}</span>
             </Link>
           )
         )}

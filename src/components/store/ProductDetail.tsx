@@ -263,25 +263,28 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               </div>
             </div>
 
-            {/* Mobile Sticky Bottom Bar */}
-            <div className="fixed bottom-0 left-0 right-0 z-[40] bg-white dark:bg-[#0B0B0B] border-t border-neutral-100 dark:border-neutral-900 p-4 px-6 flex items-center gap-3 lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.06)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
+            {/* Mobile Sticky Bottom Bar (Positioned above MobileBottomNav) */}
+            <div className="fixed bottom-[56px] left-0 right-0 z-30 bg-white/95 dark:bg-[#0B0B0B]/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 p-3 px-4 flex items-center gap-2.5 lg:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
               <button
                 onClick={() => toggleWishlist(product)}
-                className={`p-3 h-[48px] w-[48px] rounded-[8px] shrink-0 border flex items-center justify-center transition-colors ${isWishlisted ? 'border-red-500 bg-red-500 text-white' : 'border-neutral-200 dark:border-neutral-800 bg-transparent text-neutral-500'}`}
+                className={`p-2.5 h-[44px] w-[44px] rounded-[8px] shrink-0 border flex items-center justify-center transition-colors ${isWishlisted ? 'border-red-500 bg-red-500 text-white' : 'border-neutral-200 dark:border-neutral-800 bg-transparent text-neutral-500'}`}
+                aria-label="Wishlist"
               >
-                <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
+                <Heart className={`h-4 w-4 ${isWishlisted ? 'fill-current' : ''}`} />
               </button>
-              <div className="flex gap-2 flex-1 h-[48px]">
+              <div className="flex gap-2 flex-1 h-[44px]">
                 <Button
-                  className="flex-1 h-full bg-transparent border border-neutral-300 dark:border-neutral-700 text-[#0B0B0B] dark:text-white font-extrabold text-[10px] uppercase tracking-wider rounded-[8px]"
+                  className="flex-1 h-full bg-transparent border border-neutral-300 dark:border-neutral-700 text-[#0B0B0B] dark:text-white font-bold text-[10px] uppercase tracking-wider rounded-[8px]"
                   onClick={handleAddToCart}
                   disabled={addingCart || selectedVariant.stock === 0}
                 >
                   + KERANJANG
                 </Button>
                 <Button
-                  className="flex-1 h-full bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] font-extrabold text-[10px] uppercase tracking-wider rounded-[8px]"
-                  onClick={handleAddToCart}
+                  className="flex-1 h-full bg-[#B89A6A] hover:bg-[#a3865a] text-white font-bold text-[10px] uppercase tracking-wider rounded-[8px]"
+                  onClick={() => {
+                    handleAddToCart()
+                  }}
                   disabled={addingCart || selectedVariant.stock === 0}
                 >
                   BELI SEKARANG
