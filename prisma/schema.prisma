@@ -697,3 +697,13 @@ model ChatAttachment {
   @@index([messageId])
   @@map("chat_attachments")
 }
+
+// ─── Store Settings ──────────────────────────────────────────────────────────
+
+model StoreSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String @db.Text
+  
+  @@map("store_settings")
+}

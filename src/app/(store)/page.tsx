@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic'
 
 async function getHomepageData() {
   try {
-    const [categoriesRaw, featuredProductsRaw, discountedRaw, recentProductsRaw] = await Promise.all([
+    const [categoriesRaw, featuredProductsRaw, discountedRaw, recentProductsRaw, storeSettingsRaw] = await Promise.all([
       prisma.category.findMany({
         where: { isActive: true, slug: { notIn: ['aksesoris'] } },
         orderBy: { sortOrder: 'asc' },
@@ -72,8 +72,16 @@ async function getHomepageData() {
           reviewCount: true,
           images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } }
         }
+      }),
+      prisma.storeSetting.findMany({
+        where: { key: { in: ['promoTitle', 'promoSubtitle'] } }
       })
     ])
+
+    const storeSettings = storeSettingsRaw.reduce((acc, curr) => {
+      acc[curr.key] = curr.value
+      return acc
+    }, {} as Record<string, string>)
 
     const featuredProducts = featuredProductsRaw.length > 0 ? featuredProductsRaw : recentProductsRaw.slice(0, 5)
     const discounted = discountedRaw.length > 0 ? discountedRaw : recentProductsRaw.slice(5, 10)
@@ -82,10 +90,11 @@ async function getHomepageData() {
       categories: categoriesRaw, 
       featuredProducts,
       discounted,
+      storeSettings
     }
   } catch (e) {
     console.error('[HOMEPAGE_DATA_ERROR]', e)
-    return { categories: [], featuredProducts: [], discounted: [] }
+    return { categories: [], featuredProducts: [], discounted: [], storeSettings: {} }
   }
 }
 
@@ -262,7 +271,7 @@ export default function HomePage() {
 
 
 async function DynamicStoreContent() {
-  const { featuredProducts, discounted } = await getHomepageData()
+  const { featuredProducts, discounted, storeSettings } = await getHomepageData()
   
   const collectionCards = [
     { title: 'DOMPET', subtitle: 'Koleksi', image: 'https://i.imgur.com/X1YcH8c.jpeg', link: '/products?category=dompet' },
@@ -375,7 +384,7 @@ async function DynamicStoreContent() {
           <div className="flex items-center justify-between mb-10 border-b border-neutral-200 dark:border-neutral-800 pb-4">
             <div className="flex items-center gap-3">
               <span className="w-6 h-[2px] bg-[#C19A6B]" />
-              <h2 className="text-[11px] font-extrabold tracking-[0.2em] text-black dark:text-white uppercase">FEATURED</h2>
+              <h2 className="text-[11px] font-extrabold tracking-[0.2em] text-black dark:text-white uppercase">NEW ARRIVALS</h2>
             </div>
             <Link href="/products" className="text-[11px] font-bold text-black dark:text-white flex items-center gap-2 hover:text-[#C19A6B] transition-colors">
               View All <ArrowRight className="w-3 h-3" />
@@ -414,8 +423,12 @@ async function DynamicStoreContent() {
         <div className="container-raxie">
           <div className="flex items-center justify-between mb-10 border-b border-neutral-200 dark:border-neutral-800 pb-4">
             <div className="flex flex-col">
-              <span className="text-[9px] font-bold tracking-[0.2em] text-neutral-400 uppercase mb-1">SPECIAL DISCOUNT</span>
-              <h2 className="text-2xl font-extrabold text-black dark:text-white">Discount Up To 35% Off</h2>
+              <span className="text-[9px] font-bold tracking-[0.2em] text-neutral-400 uppercase mb-1">
+                {storeSettings.promoSubtitle || 'SPECIAL DISCOUNT'}
+              </span>
+              <h2 className="text-2xl font-extrabold text-black dark:text-white">
+                {storeSettings.promoTitle || 'Discount Up To 35% Off'}
+              </h2>
             </div>
             <Link href="/products" className="text-[11px] font-bold text-black dark:text-white flex items-center gap-2 hover:text-[#C19A6B] transition-colors">
               View All <ArrowRight className="w-3 h-3" />
