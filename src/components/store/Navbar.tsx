@@ -179,7 +179,7 @@ export function Navbar() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center justify-end gap-1 sm:gap-2 w-auto lg:w-[200px]">
+          <div className="flex items-center justify-end gap-2 sm:gap-3 w-auto lg:w-[200px]">
             {/* Search */}
             <Button
               variant="ghost"

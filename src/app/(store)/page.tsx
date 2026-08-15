@@ -75,28 +75,73 @@ export default function HomePage() {
       
       {/* ─── 1. HERO SECTION ──────────────── */}
       <section className="w-full bg-[#F8F6F2] dark:bg-[#121212] transition-colors relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row w-full min-h-[500px] lg:min-h-[650px] items-stretch">
-          
-          {/* Left Text */}
-          <div className="w-full lg:w-[45%] flex flex-col justify-center px-6 pt-12 pb-6 lg:py-16 lg:pl-16 xl:pl-32 lg:pr-12 z-10">
-            <div className="flex items-center gap-3 mb-4 lg:mb-6">
-              <span className="w-6 lg:w-8 h-[2px] bg-[#B89A6A]" />
-              <span className="text-[10px] lg:text-[11px] font-bold tracking-[0.2em] text-[#B89A6A]">KUALITAS PREMIUM</span>
+        {/* Mobile Layout (matches photo exactly) */}
+        <div className="flex lg:hidden w-full min-h-[440px] relative px-5 pt-8 pb-10">
+          {/* Left Content */}
+          <div className="w-[55%] relative z-10 flex flex-col justify-start">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-6 h-[1.5px] bg-[#B89A6A]" />
+              <span className="text-[8px] font-bold tracking-[0.2em] text-[#B89A6A] uppercase">KUALITAS PREMIUM</span>
             </div>
             
-            <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-4 lg:mb-6 text-[#0B0B0B] dark:text-white">
+            <h1 className="font-serif text-[38px] leading-[1.05] font-extrabold tracking-tight mb-3 text-[#0B0B0B] dark:text-white whitespace-nowrap">
               Didesain<br/>
               <span className="text-[#B89A6A]">Untuk Anda.</span>
             </h1>
             
-            <p className="text-[#777777] dark:text-neutral-400 text-[13px] lg:text-[14px] leading-relaxed max-w-[380px] font-medium mb-8 lg:mb-10">
+            <p className="text-[#777777] dark:text-neutral-400 text-[10px] leading-[1.6] font-medium mb-6 pr-2">
               RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
             </p>
             
-            <div className="flex flex-row items-center gap-4 lg:gap-6">
+            <div className="flex flex-row items-center gap-3 mt-auto w-full whitespace-nowrap">
               <Link 
                 href="/products" 
-                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[12px] font-bold px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-[8px] lg:rounded-sm flex-1 sm:flex-none text-center"
+                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[9px] sm:text-[10px] font-bold py-2.5 px-3 flex items-center gap-2 hover:bg-neutral-800 transition-colors rounded-[4px]"
+              >
+                Lihat Koleksi <ArrowRight className="w-2.5 h-2.5" />
+              </Link>
+              <Link 
+                href="/about" 
+                className="bg-transparent text-[#0B0B0B] dark:text-white text-[9px] sm:text-[10px] font-bold py-2 px-1 flex items-center gap-1.5 hover:text-[#B89A6A] transition-colors"
+              >
+                Eksplorasi <ArrowRight className="w-2.5 h-2.5" />
+              </Link>
+            </div>
+          </div>
+          
+          {/* Right Absolute Image Container */}
+          <div className="absolute right-0 top-[22%] bottom-[6%] w-[42%] bg-[#0B0B0B] rounded-l-[20px] shadow-2xl overflow-hidden z-0">
+            <Image 
+              src="https://i.imgur.com/1QtzAZ5.png"
+              alt="Raxie Wallet Premium" 
+              fill
+              className="object-cover object-left mix-blend-lighten opacity-95"
+              priority
+            />
+          </div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden lg:flex flex-row w-full min-h-[650px] items-stretch">
+          <div className="w-[45%] flex flex-col justify-center py-16 pl-16 xl:pl-32 pr-12 z-10">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-8 h-[2px] bg-[#B89A6A]" />
+              <span className="text-[11px] font-bold tracking-[0.2em] text-[#B89A6A]">KUALITAS PREMIUM</span>
+            </div>
+            
+            <h1 className="font-serif text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-[#0B0B0B] dark:text-white">
+              Didesain<br/>
+              <span className="text-[#B89A6A]">Untuk Anda.</span>
+            </h1>
+            
+            <p className="text-[#777777] dark:text-neutral-400 text-[14px] leading-relaxed max-w-[380px] font-medium mb-10">
+              RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
+            </p>
+            
+            <div className="flex flex-row items-center gap-6">
+              <Link 
+                href="/products" 
+                className="bg-[#0B0B0B] dark:bg-white text-white dark:text-[#0B0B0B] text-[12px] font-bold px-6 py-3.5 flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors rounded-sm text-center"
               >
                 Lihat Koleksi <ArrowRight className="w-4 h-4" />
               </Link>
@@ -109,21 +154,17 @@ export default function HomePage() {
             </div>
           </div>
           
-          {/* Right Image Container */}
-          <div className="w-full lg:w-[55%] relative z-0 flex flex-col lg:flex-row items-stretch pt-2 lg:pt-0 pb-10 px-6 lg:px-0 lg:pb-0">
-            <div className="w-full min-h-[340px] sm:min-h-[400px] lg:min-h-full h-full bg-[#0B0B0B] rounded-[24px] lg:rounded-none lg:[clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] shadow-2xl overflow-hidden relative">
+          <div className="w-[55%] relative z-0 flex items-stretch">
+            <div className="w-full h-full bg-[#0B0B0B] [clip-path:polygon(15%_0,100%_0,100%_100%,0_100%)] shadow-2xl overflow-hidden relative">
               <Image 
                 src="https://i.imgur.com/1QtzAZ5.png"
                 alt="Raxie Wallet Premium" 
                 fill
-                className="object-cover object-center lg:object-left mix-blend-lighten opacity-90"
+                className="object-cover object-left mix-blend-lighten opacity-90"
                 priority
-                fetchPriority="high"
-                sizes="(max-width: 1024px) 100vw, 60vw"
               />
             </div>
           </div>
-          
         </div>
       </section>
 
@@ -138,26 +179,26 @@ export default function HomePage() {
                 OUR IMPACT
               </div>
               
-              <div className="grid grid-cols-2 lg:grid-cols-4 w-full relative z-10">
-                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14 border-b border-r border-neutral-800 lg:border-b-0">
-                  <Users className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">975+</h3>
-                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Pelanggan Puas</p>
+              <div className="grid grid-cols-4 w-full relative z-10 divide-x divide-neutral-800 bg-[#0B0B0B] dark:bg-[#121212] lg:bg-transparent rounded-[16px] lg:rounded-none mx-4 lg:mx-0 py-6 lg:py-14 my-6 lg:my-0 shadow-xl lg:shadow-none">
+                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
+                  <Users className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">975+</h3>
+                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Pelanggan Puas</p>
                 </div>
-                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14 border-b border-neutral-800 lg:border-b-0 lg:border-r">
-                  <Package className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">320+</h3>
-                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Produk Terjual</p>
+                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
+                  <Package className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">320+</h3>
+                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Produk Terjual</p>
                 </div>
-                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14 border-r border-neutral-800 lg:border-r">
-                  <Star className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">462+</h3>
-                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Ulasan Bintang 5</p>
+                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
+                  <Star className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">462+</h3>
+                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Ulasan Bintang 5</p>
                 </div>
-                <div className="flex flex-col items-center justify-center text-center p-6 lg:py-14">
-                  <ShieldCheck className="w-6 h-6 lg:w-7 lg:h-7 text-white mb-3 lg:mb-4" strokeWidth={1.5} />
-                  <h3 className="text-[#B89A6A] text-2xl lg:text-5xl font-serif font-extrabold mb-1">98%</h3>
-                  <p className="text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-wide">Tingkat Kepuasan</p>
+                <div className="flex flex-col items-center justify-center text-center px-1 lg:px-4">
+                  <ShieldCheck className="w-5 h-5 lg:w-7 lg:h-7 text-white mb-2 lg:mb-4" strokeWidth={1.5} />
+                  <h3 className="text-[#B89A6A] text-sm sm:text-xl lg:text-5xl font-serif font-extrabold mb-1">98%</h3>
+                  <p className="text-[7px] sm:text-[10px] lg:text-[12px] text-neutral-400 font-medium tracking-tight">Tingkat Kepuasan</p>
                 </div>
               </div>
               
@@ -317,10 +358,10 @@ async function DynamicStoreContent() {
               </div>
               
               {/* Pagination Indicator (Mobile Only) */}
-              <div className="flex lg:hidden items-center justify-center gap-2 mt-2 pb-4">
-                <span className="w-[18px] h-1 bg-[#B89A6A] rounded-full" />
-                <span className="w-1 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full" />
-                <span className="w-1 h-1 bg-neutral-300 dark:bg-neutral-700 rounded-full" />
+              <div className="flex lg:hidden items-center justify-center gap-1.5 mt-2 pb-4">
+                <span className="w-6 h-[3px] bg-[#B89A6A] rounded-full" />
+                <span className="w-4 h-[3px] bg-neutral-300 dark:bg-neutral-700 rounded-full" />
+                <span className="w-4 h-[3px] bg-neutral-300 dark:bg-neutral-700 rounded-full" />
               </div>
             </div>
           </div>
