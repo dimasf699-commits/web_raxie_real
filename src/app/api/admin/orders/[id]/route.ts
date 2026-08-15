@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { sendShippingEmail } from '@/lib/email'
+import { sendShippingEmail, sendOrderEmail } from '@/lib/email'
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -119,6 +119,14 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
           createdBy: (session.user as any)?.id,
         },
       })
+    }
+
+    // Send Order Email if status is updated to PAYMENT_CONFIRMED for the first time
+    if (status === 'PAYMENT_CONFIRMED' && existingOrder.status === 'PENDING_PAYMENT') {
+      const customerEmail = order.user?.email || order.guestEmail
+      if (customerEmail) {
+        sendOrderEmail(customerEmail, order.orderNumber, order.totalAmount).catch(console.error)
+      }
     }
 
     // Send Shipping Email if status is SHIPPED

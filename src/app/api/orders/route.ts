@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
-import { sendOrderEmail } from '@/lib/email'
 import { rateLimit } from '@/lib/redis'
 import { generateOrderNumber } from '@/lib/utils'
 import { resolveOrSyncDbUser } from '@/lib/auth-user'
@@ -82,15 +81,53 @@ export async function POST(req: NextRequest) {
       let verifiedSubtotal = 0
       const verifiedItems = await Promise.all(
         data.items.map(async (item) => {
-          const variant = item.variantId
-            ? await tx.productVariant.findUnique({ 
-                where: { id: item.variantId }, 
-                include: { product: true } 
-              })
-            : await tx.productVariant.findUnique({ 
-                where: { sku: item.sku }, 
-                include: { product: true } 
-              })
+          // Multi-stage fallback lookup for ProductVariant
+          let variant: any = null
+
+          if (item.variantId) {
+            variant = await tx.productVariant.findUnique({ 
+              where: { id: item.variantId }, 
+              include: { product: true } 
+            })
+          }
+
+          if (!variant && item.sku) {
+            variant = await tx.productVariant.findUnique({ 
+              where: { sku: item.sku }, 
+              include: { product: true } 
+            })
+          }
+
+          if (!variant && item.productId) {
+            variant = await tx.productVariant.findFirst({ 
+              where: { productId: item.productId }, 
+              include: { product: true } 
+            })
+          }
+
+          if (!variant && item.id) {
+            variant = await tx.productVariant.findFirst({
+              where: { OR: [{ id: item.id }, { productId: item.id }] },
+              include: { product: true }
+            })
+          }
+
+          if (!variant) {
+            const product = await tx.product.findFirst({
+              where: { 
+                OR: [
+                  ...(item.productId ? [{ id: item.productId }] : []),
+                  ...(item.id ? [{ id: item.id }] : []),
+                  { name: { equals: item.name, mode: 'insensitive' } }
+                ]
+              },
+              include: { variants: true }
+            })
+
+            if (product && product.variants.length > 0) {
+              variant = { ...product.variants[0], product }
+            }
+          }
 
           if (!variant || !variant.product) {
             throw new Error(`Produk "${item.name}" tidak ditemukan`)
@@ -233,12 +270,6 @@ export async function POST(req: NextRequest) {
       return newOrder
     })
 
-
-    // Send order confirmation email asynchronously
-    const customerEmail = session?.user?.email || data.shipping.email
-    if (customerEmail) {
-      sendOrderEmail(customerEmail, order.orderNumber, order.totalAmount).catch(console.error)
-    }
 
     // Midtrans Snap Token Request
     const midtransServerKey = process.env.MIDTRANS_SERVER_KEY

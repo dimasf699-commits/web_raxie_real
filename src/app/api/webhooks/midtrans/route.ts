@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 import { createBiteshipOrder } from '@/lib/biteship'
+import { sendOrderEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,8 +20,8 @@ export async function POST(req: NextRequest) {
     const isValidSignature = (expectedSig1 === data.signature_key || expectedSig2 === data.signature_key)
 
     if (serverKey && !isValidSignature) {
-      console.warn('Webhook signature mismatch:', { received: data.signature_key, sigRaw })
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
+      console.warn('[MIDTRANS_WEBHOOK] Signature mismatch:', { received: data.signature_key, sigRaw })
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 200 })
     }
 
     const { transaction_status, fraud_status, order_id } = data
@@ -49,10 +50,12 @@ export async function POST(req: NextRequest) {
     if (newStatus) {
       const existingOrder = await prisma.order.findUnique({
         where: { orderNumber: order_id },
+        include: { user: { select: { email: true } } }
       })
 
       if (!existingOrder) {
-        return NextResponse.json({ error: 'Order not found' }, { status: 404 })
+        console.warn(`[MIDTRANS_WEBHOOK] Order ${order_id} not found in database.`)
+        return NextResponse.json({ message: 'Order not found, acknowledged' }, { status: 200 })
       }
 
       // Idempotency check: Only process payment confirmation if order is currently PENDING_PAYMENT
@@ -73,6 +76,14 @@ export async function POST(req: NextRequest) {
           } 
         }
       })
+
+      // Send order confirmation email when payment is confirmed for the first time
+      if (isFirstPaymentConfirmation) {
+        const customerEmail = existingOrder.user?.email || existingOrder.guestEmail
+        if (customerEmail) {
+          sendOrderEmail(customerEmail, order.orderNumber, order.totalAmount).catch(console.error)
+        }
+      }
 
       // If paid for the first time, trigger automated shipping creation via Biteship
       if (isFirstPaymentConfirmation && !order.shippingOrderId && order.shippingCity && order.shippingPostalCode) {
@@ -160,6 +171,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
     console.error('[MIDTRANS_WEBHOOK_ERROR]', error)
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 })
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 200 })
   }
 }

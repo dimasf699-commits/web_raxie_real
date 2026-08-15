@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { createBiteshipOrder } from '@/lib/biteship'
 import { rateLimit } from '@/lib/redis'
+import { sendOrderEmail } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
 
     const order = await prisma.order.findUnique({
       where: { orderNumber },
-      include: { items: true },
+      include: { items: true, user: { select: { email: true } } },
     })
 
     if (!order) {
@@ -79,6 +80,12 @@ export async function POST(req: NextRequest) {
       },
       include: { items: true },
     })
+
+    // Send order confirmation email
+    const customerEmail = order.user?.email || updatedOrder.guestEmail || order.guestEmail
+    if (customerEmail) {
+      sendOrderEmail(customerEmail, updatedOrder.orderNumber, updatedOrder.totalAmount).catch(console.error)
+    }
 
     // Trigger Biteship shipping creation if not already created
     if (!updatedOrder.shippingOrderId && updatedOrder.shippingStreet) {
