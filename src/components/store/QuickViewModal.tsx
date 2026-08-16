@@ -18,11 +18,26 @@ import { useQuickViewStore } from '@/store/quickview.store'
 
 interface QuickViewModalProps {
   productId: string | null
+  initialData?: any
   onClose: () => void
 }
 
-export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
-  const [product, setProduct] = useState<any>(null)
+export function QuickViewModal({ productId, initialData, onClose }: QuickViewModalProps) {
+  const [product, setProduct] = useState<any>(() => {
+    if (!initialData) return null
+    const initialVariant = {
+      id: initialData.variantId || initialData.id,
+      name: initialData.variantName || 'Default',
+      price: initialData.price,
+      stock: initialData.stock ?? 10,
+      sku: initialData.sku || '',
+    }
+    return {
+      ...initialData,
+      variants: initialData.variants?.length ? initialData.variants : [initialVariant],
+      images: initialData.images?.length ? initialData.images : [initialData.image].filter(Boolean),
+    }
+  })
   const [loading, setLoading] = useState(false)
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0)
   const [qty, setQty] = useState(1)
@@ -42,15 +57,39 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
       setProduct(null)
       return
     }
-    setLoading(true)
+
+    if (initialData) {
+      const initialVariant = {
+        id: initialData.variantId || initialData.id,
+        name: initialData.variantName || 'Default',
+        price: initialData.price,
+        stock: initialData.stock ?? 10,
+        sku: initialData.sku || '',
+      }
+      setProduct({
+        ...initialData,
+        variants: initialData.variants?.length ? initialData.variants : [initialVariant],
+        images: initialData.images?.length ? initialData.images : [initialData.image].filter(Boolean),
+      })
+    } else {
+      setLoading(true)
+    }
+
     setSelectedVariantIdx(0)
     setQty(1)
     setImgIdx(0)
+
+    // Fast background fetch for full variant colors and high-res gallery
     fetch(`/api/products/${productId}`)
       .then(r => r.json())
-      .then(data => { setProduct(data); setLoading(false) })
+      .then(data => {
+        if (data && !data.error) {
+          setProduct(data)
+        }
+        setLoading(false)
+      })
       .catch(() => setLoading(false))
-  }, [productId])
+  }, [productId, initialData])
 
   // Close on Escape key
   useEffect(() => {
@@ -372,8 +411,8 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
 }
 
 export function GlobalQuickViewModal() {
-  const { productId, isOpen, closeQuickView } = useQuickViewStore()
+  const { productId, initialData, isOpen, closeQuickView } = useQuickViewStore()
   if (!isOpen && !productId) return null
-  return <QuickViewModal productId={productId} onClose={closeQuickView} />
+  return <QuickViewModal productId={productId} initialData={initialData} onClose={closeQuickView} />
 }
 

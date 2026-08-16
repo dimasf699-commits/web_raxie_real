@@ -65,7 +65,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
     if (onQuickView) {
       onQuickView(product.productId)
     } else {
-      openQuickView(product.productId)
+      openQuickView(product.productId, product)
     }
   }
 
