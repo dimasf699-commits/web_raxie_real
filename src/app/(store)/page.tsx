@@ -122,9 +122,10 @@ export default function HomePage() {
               <span className="w-5 h-[1.5px] bg-[#B89A6A]" />
               <span className="text-[9px] font-bold tracking-[0.2em] text-[#B89A6A] uppercase">KUALITAS PREMIUM</span>
             </div>
-            <h1 className="font-serif text-[32px] leading-[1.05] font-extrabold tracking-tight mb-3 text-white">
+            <h1 className="sr-only">RAXIE - Brand Dompet Kulit & Aksesori Pria Premium Indonesia</h1>
+            <h2 className="font-serif text-[32px] leading-[1.05] font-extrabold tracking-tight mb-3 text-white">
               Didesain<br/><span className="text-[#B89A6A]">Untuk Anda.</span>
-            </h1>
+            </h2>
             <p className="text-neutral-300 text-[11px] leading-[1.5] font-medium mb-5 max-w-[280px]">
               RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik.
             </p>
@@ -152,9 +153,9 @@ export default function HomePage() {
               <span className="w-8 h-[2px] bg-[#B89A6A]" />
               <span className="text-[11px] font-bold tracking-[0.2em] text-[#B89A6A]">KUALITAS PREMIUM</span>
             </div>
-            <h1 className="font-serif text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-[#0B0B0B] dark:text-white">
+            <h2 className="font-serif text-7xl font-extrabold tracking-tight leading-[1.05] mb-6 text-[#0B0B0B] dark:text-white">
               Didesain<br/><span className="text-[#B89A6A]">Untuk Anda.</span>
-            </h1>
+            </h2>
             <p className="text-[#777777] dark:text-neutral-400 text-[14px] leading-relaxed max-w-[380px] font-medium mb-10">
               RAXIE menghadirkan produk premium dengan desain modern dan kualitas terbaik untuk menemani setiap langkahmu.
             </p>

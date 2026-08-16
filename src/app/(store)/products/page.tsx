@@ -7,9 +7,34 @@ import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Koleksi Produk | Raxie',
-  description: 'Jelajahi koleksi dompet dan aksesoris kulit sintetis PU Leather premium dari Raxie.',
+export async function generateMetadata({ searchParams }: { searchParams: { category?: string } }): Promise<Metadata> {
+  const cat = searchParams.category?.toLowerCase()
+  if (cat === 'dompet') {
+    return {
+      title: 'Dompet Kulit Pria Premium - Desain Minimalis & Elegan | RAXIE',
+      description: 'Koleksi dompet pria kulit premium dari RAXIE. Dibuat dengan presisi tinggi, tahan lama, dan desain elegan. Beli dompet kulit asli kualitas terbaik sekarang.',
+      alternates: { canonical: 'https://raxie.id/products?category=dompet' }
+    }
+  }
+  if (cat === 'tas') {
+    return {
+      title: 'Tas Kulit Pria Premium - Sleek & Fungsional | RAXIE',
+      description: 'Tas kulit pria premium dengan bahan berkualitas. Cocok untuk profesional modern dengan gaya elegan.',
+      alternates: { canonical: 'https://raxie.id/products?category=tas' }
+    }
+  }
+  if (cat === 'sabuk') {
+    return {
+      title: 'Ikat Pinggang Kulit Pria Premium - Sabuk Kulit Elegan | RAXIE',
+      description: 'Sabuk kulit pria atau ikat pinggang kulit pria premium dengan durabilitas tinggi. Pelengkap gaya kasual maupun formal Anda.',
+      alternates: { canonical: 'https://raxie.id/products?category=sabuk' }
+    }
+  }
+  return {
+    title: 'Koleksi Produk Dompet, Tas & Aksesori Kulit Pria | RAXIE',
+    description: 'Jelajahi semua koleksi dompet pria premium, tas, sabuk, dan aksesoris elegan dari RAXIE Indonesia.',
+    alternates: { canonical: 'https://raxie.id/products' }
+  }
 }
 
 const LIMIT = 8
@@ -100,8 +125,24 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     }
   })
 
+  const jsonLdBreadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://raxie.id/' },
+      { '@type': 'ListItem', position: 2, name: 'Koleksi', item: 'https://raxie.id/products' },
+      ...(searchParams.category && searchParams.category.toLowerCase() !== 'semua produk' ? [{
+        '@type': 'ListItem',
+        position: 3,
+        name: category,
+        item: `https://raxie.id/products?category=${searchParams.category}`
+      }] : [])
+    ]
+  }
+
   return (
     <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen transition-colors duration-300">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
       {/* Header Banner */}
       <div className="bg-[#F5E6DE] dark:bg-stone-900 py-16 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
         <div className="container-raxie">
@@ -117,7 +158,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               RAXIE CATALOGUE
             </span>
             <h1 className="font-serif text-4xl md:text-5xl font-extrabold uppercase tracking-tight text-black dark:text-white">
-              {q ? `PENCARIAN: "${q}"` : category}
+              {q ? `PENCARIAN: "${q}"` : (
+                category.toLowerCase() === 'dompet' ? 'Dompet Kulit Pria' :
+                category.toLowerCase() === 'tas' ? 'Tas Kulit Pria' :
+                category.toLowerCase() === 'sabuk' ? 'Sabuk Kulit Pria' :
+                category
+              )}
             </h1>
             <p className="text-neutral-500 dark:text-neutral-400 text-sm font-medium max-w-md mx-auto mt-4 leading-relaxed">
               Temukan dompet dan aksesoris PU Leather premium bermutu tinggi untuk melengkapi gaya elegan Anda.

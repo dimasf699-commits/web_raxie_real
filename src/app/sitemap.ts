@@ -22,6 +22,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('[SITEMAP_FETCH_ERROR]', e)
   }
 
+  let categoryUrls: any[] = []
+  try {
+    const categories = await prisma.category.findMany({
+      where: { isActive: true },
+      select: { slug: true, updatedAt: true }
+    })
+    categoryUrls = categories.map((cat) => ({
+      url: `${baseUrl}/products?category=${cat.slug}`,
+      lastModified: cat.updatedAt,
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    }))
+  } catch (e) {
+    console.error('[SITEMAP_CATEGORY_FETCH_ERROR]', e)
+  }
+
   return [
     {
       url: baseUrl,
@@ -47,6 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    ...categoryUrls,
     ...productUrls
   ]
 }

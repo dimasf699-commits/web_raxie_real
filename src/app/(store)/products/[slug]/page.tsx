@@ -35,9 +35,21 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   const product = await getProductBySlug(params.slug)
   if (!product) return { title: 'Produk Tidak Ditemukan' }
 
+  const fallbackTitle = `${product.name} - ${product.category?.name === 'Dompet' ? 'Dompet Kulit Pria' : product.category?.name ?? 'Aksesori Pria'} | RAXIE`
+  const fallbackDesc = `Beli ${product.name} original dari RAXIE. ${product.category?.name === 'Dompet' ? 'Dompet kulit pria premium' : 'Produk premium'} dengan desain modern, tahan lama, dan harga terjangkau.`
+
   return {
-    title: product.seoTitle ?? product.name,
-    description: product.seoDescription ?? `Beli ${product.name} - dompet kulit premium Raxie.`,
+    title: product.seoTitle ?? fallbackTitle,
+    description: product.seoDescription ?? fallbackDesc,
+    alternates: {
+      canonical: `https://raxie.id/products/${product.slug}`
+    },
+    openGraph: {
+      title: product.seoTitle ?? fallbackTitle,
+      description: product.seoDescription ?? fallbackDesc,
+      url: `https://raxie.id/products/${product.slug}`,
+      images: product.images[0] ? [{ url: product.images[0].url }] : [],
+    }
   }
 }
 
@@ -143,7 +155,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     sku: product.sku,
     brand: {
       '@type': 'Brand',
-      name: 'Raxie',
+      name: 'RAXIE',
     },
     offers: {
       '@type': 'Offer',
@@ -154,7 +166,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       seller: {
         '@type': 'Organization',
-        name: 'Raxie Official Store',
+        name: 'RAXIE Official Store',
       },
     },
     ...(product.avgRating > 0 && product.reviewCount > 0 ? {
@@ -166,12 +178,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
     } : {})
   }
 
+  const jsonLdBreadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://raxie.id/' },
+      { '@type': 'ListItem', position: 2, name: 'Koleksi', item: 'https://raxie.id/products' },
+      { '@type': 'ListItem', position: 3, name: product.categoryName, item: `https://raxie.id/products?category=${product.categoryName.toLowerCase()}` },
+      { '@type': 'ListItem', position: 4, name: product.name, item: `https://raxie.id/products/${product.slug}` },
+    ]
+  }
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProduct) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdProduct) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }} />
       <div className="bg-[#FAF9F6] dark:bg-[#121212] text-black dark:text-white min-h-screen py-10 transition-colors duration-300">
         <div className="container-raxie">
           <Breadcrumbs
