@@ -1,4 +1,3 @@
-'use client'
 import { Truck } from 'lucide-react'
 
 export function AnnouncementBar() {

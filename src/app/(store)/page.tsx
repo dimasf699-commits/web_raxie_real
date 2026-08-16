@@ -113,8 +113,10 @@ export default function HomePage() {
             src="https://i.imgur.com/1QtzAZ5.png"
             alt="Raxie Premium Collection" 
             fill
+            sizes="100vw"
             className="object-cover object-center mix-blend-lighten opacity-80"
             priority
+            fetchPriority="high"
           />
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />

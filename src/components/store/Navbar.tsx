@@ -580,6 +580,7 @@ export function MobileBottomNav() {
             <button
               key={idx}
               onClick={item.onClick}
+              aria-label={item.label}
               className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-neutral-400 dark:text-neutral-500 hover:text-[#0B0B0B] dark:hover:text-white transition-colors"
             >
               {item.icon}
