@@ -12,6 +12,7 @@ import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { toast } from '@/components/ui/Toaster'
 import { useCompareStore } from '@/store/compare.store'
+import { trackAddToCart } from '@/components/analytics/MetaPixel'
 
 interface QuickViewModalProps {
   productId: string | null
@@ -82,6 +83,14 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
       sku: `${product.sku}-${selectedVariant.name}`,
     })
     toast.success(`Ditambahkan ke keranjang: ${product.name}`)
+    
+    trackAddToCart({
+      content_ids: [selectedVariant.id || product.productId],
+      content_name: product.name,
+      value: selectedVariant.price ?? product.price,
+      currency: 'IDR'
+    })
+    
     setAddingCart(false)
     onClose()
   }

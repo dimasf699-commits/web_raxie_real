@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -23,6 +23,7 @@ import { ProductCard } from '@/components/store/ProductCard'
 import { ImageGallery } from '@/components/store/ImageGallery'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import { toast } from '@/components/ui/Toaster'
+import { trackViewContent, trackAddToCart } from '@/components/analytics/MetaPixel'
 
 interface ProductDetailProps {
   product: any
@@ -51,6 +52,15 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     ? getDiscountPercent(product.compareAtPrice, product.price)
     : 0
 
+  useEffect(() => {
+    trackViewContent({
+      content_ids: [product.id],
+      content_name: product.name,
+      value: product.price,
+      currency: 'IDR'
+    })
+  }, [product.id, product.name, product.price])
+
   const handleAddToCart = () => {
     setAddingCart(true)
     addItem({
@@ -70,6 +80,13 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       setAddingCart(false)
       openCart()
       toast.success('Berhasil', `${product.name} telah ditambahkan ke keranjang belanja.`)
+      
+      trackAddToCart({
+        content_ids: [selectedVariant.id],
+        content_name: product.name,
+        value: selectedVariant.price ?? product.price,
+        currency: 'IDR'
+      })
     }, 400)
   }
 

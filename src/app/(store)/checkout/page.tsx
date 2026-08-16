@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button'
 import { toast } from '@/components/ui/Toaster'
 import { cn, formatPrice } from '@/lib/utils'
 import Script from 'next/script'
+import { trackInitiateCheckout, trackPurchase } from '@/components/analytics/MetaPixel'
 
 type CheckoutStep = 1 | 2 | 3
 
@@ -76,6 +77,17 @@ export default function CheckoutPage() {
     removeVoucher()
     setVoucherCode('')
   }
+
+  useEffect(() => {
+    if (cartItems.length > 0 && mounted) {
+      trackInitiateCheckout({
+        content_ids: cartItems.map(i => i.id),
+        num_items: cartItems.reduce((acc, i) => acc + i.quantity, 0),
+        value: totalPrice,
+        currency: 'IDR'
+      })
+    }
+  }, [mounted, cartItems.length, totalPrice])
 
   useEffect(() => {
     fetch('/api/account/addresses')
@@ -194,11 +206,21 @@ export default function CheckoutPage() {
         (window as any).snap.pay(data.snapToken, {
           onSuccess: async function () {
             try {
-              await fetch('/api/orders/confirm-payment', {
+              const verifyRes = await fetch('/api/orders/confirm-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orderNumber: data.orderNumber }),
               })
+              const verifyData = await verifyRes.json()
+              
+              if (verifyData.status === 'PAYMENT_CONFIRMED') {
+                trackPurchase(data.orderNumber, {
+                  value: data.totalAmount || (totalPrice + shippingCost - (appliedVoucher?.discountAmount || 0)),
+                  currency: 'IDR',
+                  content_ids: cartItems.map(i => i.id),
+                  num_items: cartItems.reduce((acc, i) => acc + i.quantity, 0)
+                })
+              }
             } catch (e) {}
             clearCart()
             toast.success('Pembayaran Berhasil!', 'Pesanan Anda sedang diproses.')

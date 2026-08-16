@@ -193,7 +193,12 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
         {/* Pay Now Button if Pending Payment */}
         {order.status === 'PENDING_PAYMENT' && order.midtransToken && (
           <div className="pt-4 border-t border-border flex justify-end print:hidden">
-            <PayNowButton snapToken={order.midtransToken} />
+            <PayNowButton 
+              snapToken={order.midtransToken} 
+              orderId={order.orderNumber}
+              totalAmount={order.totalAmount}
+              items={order.items}
+            />
           </div>
         )}
       </div>

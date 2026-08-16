@@ -198,7 +198,12 @@ export default async function OrdersPage({ searchParams }: OrdersPageProps) {
                   </Link>
                   
                   {order.status === 'PENDING_PAYMENT' && order.midtransToken && (
-                    <PayNowButton snapToken={order.midtransToken} />
+                    <PayNowButton 
+                      snapToken={order.midtransToken} 
+                      orderId={order.orderNumber}
+                      totalAmount={order.totalAmount}
+                      items={order.items}
+                    />
                   )}
 
                   {isShipped && (order.trackingNumber || order.shippingWaybill) ? (

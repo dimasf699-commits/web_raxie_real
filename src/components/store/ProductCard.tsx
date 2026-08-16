@@ -12,6 +12,7 @@ import { useCartStore } from '@/store/cart.store'
 import { useWishlistStore } from '@/store/wishlist.store'
 import { useCompareStore } from '@/store/compare.store'
 import { toast } from '@/components/ui/Toaster'
+import { trackAddToCart } from '@/components/analytics/MetaPixel'
 
 export interface ProductCardProduct {
   id: string
@@ -69,6 +70,13 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
       sku: product.sku,
     })
     toast.success('Ditambahkan ke keranjang!', product.name)
+    
+    trackAddToCart({
+      content_ids: [product.id],
+      content_name: product.name,
+      value: product.price,
+      currency: 'IDR'
+    })
   }
 
   function handleWishlist(e: React.MouseEvent) {

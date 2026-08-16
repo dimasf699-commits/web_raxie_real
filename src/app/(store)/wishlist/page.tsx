@@ -11,6 +11,7 @@ import { formatPrice, getDiscountPercent } from '@/lib/utils'
 import { toast } from '@/components/ui/Toaster'
 import { Button } from '@/components/ui/Button'
 import { ProductCard } from '@/components/store/ProductCard'
+import { trackAddToCart } from '@/components/analytics/MetaPixel'
 
 export default function WishlistPage() {
   const [isMounted, setIsMounted] = useState(false)
@@ -38,6 +39,13 @@ export default function WishlistPage() {
     })
     toast.success('Berhasil ditambahkan ke keranjang!', item.name)
     openCart()
+    
+    trackAddToCart({
+      content_ids: [item.productId],
+      content_name: item.name,
+      value: item.price,
+      currency: 'IDR'
+    })
   }
 
   return (
