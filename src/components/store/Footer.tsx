@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { Instagram, ArrowRight } from 'lucide-react'
 import { toast } from '@/components/ui/Toaster'
+import { STORE_CONFIG } from '@/lib/constants'
 
 export function Footer() {
   const [email, setEmail] = useState('')

@@ -5,7 +5,7 @@ import { QueryProvider } from '@/components/providers/QueryProvider'
 import { AuthProvider } from '@/components/providers/AuthProvider'
 import { Toaster } from '@/components/ui/Toaster'
 import './globals.css'
-
+import { STORE_CONFIG } from '@/lib/constants'
 const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--font-fraunces',
