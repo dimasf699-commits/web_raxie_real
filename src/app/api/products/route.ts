@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
           where: { isActive: true },
           orderBy: { sortOrder: 'asc' },
           take: 1,
-          select: { id: true, price: true, stock: true, sku: true }
+          select: { id: true, name: true, price: true, stock: true, sku: true }
         },
         images: {
           orderBy: { sortOrder: 'asc' },
@@ -101,6 +101,8 @@ export async function GET(req: NextRequest) {
       return {
         id: v?.id ?? p.id,
         productId: p.id,
+        variantId: v?.id,
+        variantName: v?.name && v.name !== 'Default' ? v.name : undefined,
         name: p.name,
         slug: p.slug,
         price: v?.price ?? p.basePrice,

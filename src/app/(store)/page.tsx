@@ -40,6 +40,7 @@ async function getHomepageData() {
           compareAtPrice: true,
           avgRating: true,
           reviewCount: true,
+          variants: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, take: 1, select: { id: true, name: true, price: true, stock: true, sku: true } },
           images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } }
         }
       }),
@@ -55,6 +56,7 @@ async function getHomepageData() {
           compareAtPrice: true,
           avgRating: true,
           reviewCount: true,
+          variants: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, take: 1, select: { id: true, name: true, price: true, stock: true, sku: true } },
           images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } }
         }
       }),
@@ -70,6 +72,7 @@ async function getHomepageData() {
           compareAtPrice: true,
           avgRating: true,
           reviewCount: true,
+          variants: { where: { isActive: true }, orderBy: { sortOrder: 'asc' }, take: 1, select: { id: true, name: true, price: true, stock: true, sku: true } },
           images: { orderBy: { sortOrder: 'asc' }, take: 1, select: { url: true } }
         }
       }),
@@ -394,20 +397,23 @@ async function DynamicStoreContent() {
           
           <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 md:gap-6 pb-4 scrollbar-hide md:grid md:grid-cols-3 xl:grid-cols-5 md:overflow-visible">
             {featuredProducts.map((product: any) => {
+              const firstVariant = product.variants?.[0]
               const mappedProduct = {
-                id: product.id,
+                id: firstVariant?.id || product.id,
                 productId: product.id,
+                variantId: firstVariant?.id,
+                variantName: firstVariant?.name && firstVariant.name !== 'Default' ? firstVariant.name : undefined,
                 name: product.name,
                 slug: product.slug,
-                price: product.basePrice,
+                price: firstVariant?.price ?? product.basePrice,
                 compareAtPrice: product.compareAtPrice,
-                image: product.images?.[0]?.url || '/placeholder.jpg',
+                image: typeof product.images?.[0] === 'string' ? product.images[0] : (product.images?.[0]?.url || product.image || '/placeholder.jpg'),
                 avgRating: product.avgRating,
                 reviewCount: product.reviewCount,
                 isBestSeller: false,
                 isNew: false,
-                stock: product.stock || 10,
-                sku: product.sku || product.id,
+                stock: firstVariant?.stock ?? product.stock ?? 10,
+                sku: firstVariant?.sku || product.sku || product.id,
               }
               return (
                 <div key={`featured-${product.id}`} className="snap-center md:snap-align-none shrink-0 w-[78%] sm:w-[45%] md:w-auto">
@@ -438,20 +444,23 @@ async function DynamicStoreContent() {
           
           <div className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-4 md:gap-6 pb-4 scrollbar-hide md:grid md:grid-cols-3 xl:grid-cols-5 md:overflow-visible">
             {discounted.map((product: any) => {
+              const firstVariant = product.variants?.[0]
               const mappedProduct = {
-                id: product.id,
+                id: firstVariant?.id || product.id,
                 productId: product.id,
+                variantId: firstVariant?.id,
+                variantName: firstVariant?.name && firstVariant.name !== 'Default' ? firstVariant.name : undefined,
                 name: product.name,
                 slug: product.slug,
-                price: product.basePrice,
+                price: firstVariant?.price ?? product.basePrice,
                 compareAtPrice: product.compareAtPrice,
-                image: product.images?.[0]?.url || '/placeholder.jpg',
+                image: typeof product.images?.[0] === 'string' ? product.images[0] : (product.images?.[0]?.url || product.image || '/placeholder.jpg'),
                 avgRating: product.avgRating,
                 reviewCount: product.reviewCount,
                 isBestSeller: false,
                 isNew: false,
-                stock: product.stock || 10,
-                sku: product.sku || product.id,
+                stock: firstVariant?.stock ?? product.stock ?? 10,
+                sku: firstVariant?.sku || product.sku || product.id,
               }
               return (
                 <div key={`disc-${product.id}`} className="snap-center md:snap-align-none shrink-0 w-[78%] sm:w-[45%] md:w-auto">

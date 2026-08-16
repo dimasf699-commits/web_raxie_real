@@ -61,6 +61,10 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
     })
   }, [product.id, product.name, product.price])
 
+  const productImage = typeof product.images?.[0] === 'string'
+    ? product.images[0]
+    : product.images?.[0]?.url || product.image || '/placeholder.jpg'
+
   const handleAddToCart = () => {
     setAddingCart(true)
     addItem({
@@ -69,7 +73,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       name: product.name,
       slug: product.slug,
       price: selectedVariant.price ?? product.price,
-      image: product.images?.[0]?.url || '/placeholder.jpg',
+      image: productImage,
       variantName: selectedVariant.name !== 'Default' ? selectedVariant.name : undefined,
       quantity: qty,
       stock: selectedVariant.stock,
@@ -98,7 +102,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       slug: product.slug,
       price: product.price,
       compareAtPrice: product.compareAtPrice ?? undefined,
-      image: product.images?.[0]?.url || '/placeholder.jpg',
+      image: productImage,
     })
     toast.success(
       isWishlisted ? 'Dihapus dari Wishlist' : 'Ditambahkan ke Wishlist',
@@ -112,7 +116,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
       name: product.name,
       slug: product.slug,
       price: product.price,
-      image: product.images?.[0]?.url || '/placeholder.jpg',
+      image: productImage,
       material: product.material ?? undefined,
       dimensions: product.dimensions ?? undefined,
       weight: product.weight ?? undefined,

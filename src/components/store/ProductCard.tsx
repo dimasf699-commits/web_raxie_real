@@ -59,10 +59,13 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
+    const variantId = product.variantId || product.id
     addItem({
-      id: product.id,
+      id: variantId,
       productId: product.productId,
+      variantId: variantId,
       name: product.name,
+      variantName: product.variantName && product.variantName !== 'Default' ? product.variantName : undefined,
       slug: product.slug,
       price: product.price,
       image: product.image,

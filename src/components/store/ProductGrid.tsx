@@ -71,6 +71,8 @@ export async function ProductGrid({ searchParams }: ProductGridProps) {
     return {
       id:             firstVariant?.id ?? p.id,
       productId:      p.id,
+      variantId:      firstVariant?.id,
+      variantName:    firstVariant?.name && firstVariant.name !== 'Default' ? firstVariant.name : undefined,
       name:           p.name,
       slug:           p.slug,
       price:          firstVariant?.price ?? p.basePrice,
