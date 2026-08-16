@@ -45,6 +45,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const dbProduct = await getProductBySlug(params.slug)
 
   if (!dbProduct) {
+    // Attempt fuzzy match for slugs with random number suffixes (e.g. from seed duplication)
+    const fuzzyMatch = await prisma.product.findFirst({
+      where: { slug: { startsWith: `${params.slug}-` } },
+      select: { slug: true }
+    })
+    
+    if (fuzzyMatch) {
+      const { redirect } = await import('next/navigation')
+      redirect(`/products/${fuzzyMatch.slug}`)
+    }
+    
     notFound()
   }
 
