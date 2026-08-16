@@ -20,7 +20,11 @@ export async function GET() {
       orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
     })
 
-    return NextResponse.json({ addresses })
+    return NextResponse.json({ addresses }, {
+      headers: {
+        'Cache-Control': 'private, no-store, must-revalidate',
+      },
+    })
   } catch (error) {
     console.error('[ADDRESSES_GET_ERROR]', error)
     return NextResponse.json({ error: 'Gagal mengambil daftar alamat' }, { status: 500 })

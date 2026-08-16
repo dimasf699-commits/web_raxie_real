@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { invalidateProductCache } from '@/lib/cache-invalidation'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,6 +70,13 @@ export async function GET(req: NextRequest) {
           },
         })
       })
+
+      // Invalidate product caches on-demand due to stock restoration
+      for (const item of order.items) {
+        if (item.productId) {
+          invalidateProductCache({ productId: item.productId }).catch(() => {})
+        }
+      }
 
       cancelledCount++
     }

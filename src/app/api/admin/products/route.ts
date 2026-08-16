@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { invalidateProductCache } from '@/lib/cache-invalidation'
 
 export async function GET(req: Request) {
   try {
@@ -95,8 +96,10 @@ export async function POST(req: Request) {
           })),
         },
       },
-      include: { images: true, variants: true },
     })
+
+    // Invalidate caches across Redis & Next.js ISR
+    await invalidateProductCache({ productId: product.id, slug: product.slug })
 
     return NextResponse.json(product, { status: 201 })
   } catch (error: any) {

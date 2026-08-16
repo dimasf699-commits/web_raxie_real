@@ -73,6 +73,10 @@ export async function POST(req: NextRequest) {
         type: voucher.type,
         discountAmount,
       }
+    }, {
+      headers: {
+        'Cache-Control': 'private, no-store, must-revalidate',
+      },
     })
   } catch (error) {
     console.error('[VOUCHER_VALIDATE_ERROR]', error)

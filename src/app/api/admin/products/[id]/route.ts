@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { deleteCacheByPattern } from '@/lib/redis'
+import { invalidateProductCache } from '@/lib/cache-invalidation'
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -125,8 +125,8 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
       timeout: 20000,
     })
 
-    // Invalidate product public cache
-    await deleteCacheByPattern('api:products:*')
+    // Invalidate product public cache comprehensively
+    await invalidateProductCache({ productId: product.id, slug: product.slug })
 
     return NextResponse.json(product)
   } catch (error: any) {
@@ -142,8 +142,13 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 
+    const existing = await prisma.product.findUnique({
+      where: { id: params.id },
+      select: { id: true, slug: true },
+    })
+
     await prisma.product.delete({ where: { id: params.id } })
-    await deleteCacheByPattern('api:products:*')
+    await invalidateProductCache({ productId: params.id, slug: existing?.slug })
     return NextResponse.json({ message: 'Produk berhasil dihapus' })
   } catch (error: any) {
     console.error('Admin product DELETE error:', error)

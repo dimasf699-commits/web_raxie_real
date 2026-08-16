@@ -36,9 +36,17 @@ export async function GET() {
       totalOrders,
       recentOrders,
       points: Math.max(0, pointsData._sum.points ?? 0),
+    }, {
+      headers: {
+        'Cache-Control': 'private, no-store, must-revalidate',
+      }
     })
   } catch (error) {
     console.error('Account stats error:', error)
-    return NextResponse.json({ points: 0, activeOrders: 0, totalOrders: 0, recentOrders: [] })
+    return NextResponse.json({ points: 0, activeOrders: 0, totalOrders: 0, recentOrders: [] }, {
+      headers: {
+        'Cache-Control': 'private, no-store, must-revalidate',
+      }
+    })
   }
 }

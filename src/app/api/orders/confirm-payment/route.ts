@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { rateLimit } from '@/lib/redis'
 import { processOrderFulfillment } from '@/lib/order-fulfillment'
+import { invalidateProductCache } from '@/lib/cache-invalidation'
 
 export async function POST(req: NextRequest) {
   try {
@@ -90,6 +91,14 @@ export async function POST(req: NextRequest) {
           }).catch(() => {})
         }
       })
+
+      // Invalidate product caches on-demand if cancellation restored stock
+      for (const item of order.items) {
+        if (item.productId) {
+          invalidateProductCache({ productId: item.productId }).catch(() => {})
+        }
+      }
+
       return NextResponse.json({ success: true, status: 'CANCELLED' })
     }
 
@@ -106,6 +115,13 @@ export async function POST(req: NextRequest) {
         paidAt: new Date(),
       },
     })
+
+    // Invalidate product caches on-demand
+    for (const item of order.items) {
+      if (item.productId) {
+        invalidateProductCache({ productId: item.productId }).catch(() => {})
+      }
+    }
 
     // Trigger centralized order fulfillment
     await processOrderFulfillment(order.orderNumber)

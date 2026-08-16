@@ -34,7 +34,11 @@ export async function GET() {
       return NextResponse.json({ error: 'User tidak ditemukan' }, { status: 404 })
     }
 
-    return NextResponse.json({ user })
+    return NextResponse.json({ user }, {
+      headers: {
+        'Cache-Control': 'private, no-store, must-revalidate',
+      },
+    })
   } catch (error) {
     console.error('[PROFILE_GET_ERROR]', error)
     return NextResponse.json({ error: 'Gagal memuat profil' }, { status: 500 })

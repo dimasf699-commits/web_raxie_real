@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { rateLimit } from '@/lib/redis'
 import { generateOrderNumber } from '@/lib/server-utils'
 import { resolveOrSyncDbUser } from '@/lib/auth-user'
+import { invalidateProductCache } from '@/lib/cache-invalidation'
 
 const orderSchema = z.object({
   items: z.array(z.object({
@@ -271,6 +272,13 @@ export async function POST(req: NextRequest) {
       return newOrder
     })
 
+    // Invalidate product caches on-demand due to stock reservation
+    for (const item of order.items) {
+      if (item.productId) {
+        invalidateProductCache({ productId: item.productId }).catch(() => {})
+      }
+    }
+
 
     // Midtrans Snap Token Request
     const midtransServerKey = process.env.MIDTRANS_SERVER_KEY
@@ -375,7 +383,12 @@ export async function POST(req: NextRequest) {
       orderId: order.id, 
       orderNumber: order.orderNumber,
       snapToken 
-    }, { status: 201 })
+    }, { 
+      status: 201,
+      headers: {
+        'Cache-Control': 'private, no-store, must-revalidate',
+      },
+    })
   } catch (error: any) {
     console.error('[ORDER_CREATE_ERROR]', error)
     return NextResponse.json({ error: error.message || 'Gagal memproses pesanan' }, { status: 500 })
