@@ -45,11 +45,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const dbProduct = await getProductBySlug(params.slug)
 
   if (!dbProduct) {
-    // Attempt fuzzy match for slugs with random number suffixes (e.g. from seed duplication)
-    const fuzzyMatch = await prisma.product.findFirst({
-      where: { slug: { startsWith: `${params.slug}-` } },
-      select: { slug: true }
-    })
+    // Attempt relaxed fuzzy match (ignoring hyphens/special chars) for old Google links
+    const allProducts = await prisma.product.findMany({ select: { slug: true } })
+    
+    const normalize = (s: string) => s.replace(/[^a-z0-9]/g, '')
+    const normalizedTarget = normalize(params.slug)
+    
+    const fuzzyMatch = allProducts.find(p => 
+      normalize(p.slug).startsWith(normalizedTarget) || normalizedTarget.startsWith(normalize(p.slug).replace(/\d+$/, ''))
+    )
     
     if (fuzzyMatch) {
       const { redirect } = await import('next/navigation')
