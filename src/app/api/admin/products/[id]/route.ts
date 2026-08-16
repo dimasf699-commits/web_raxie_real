@@ -120,6 +120,9 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
           category: true,
         },
       })
+    }, {
+      maxWait: 5000,
+      timeout: 20000,
     })
 
     // Invalidate product public cache
