@@ -28,6 +28,8 @@ export const STORE_CONFIG = {
   email: process.env.NEXT_PUBLIC_STORE_EMAIL || 'raxieleather@gmail.com',
   address: 'Kp. Pasirkiamis, Desa Pasirkiamis, Kec. Pasirwangi, Kab. Garut, Jawa Barat 44161',
   originAreaId: process.env.STORE_AREA_ID || 'IDNP9IDNC122IDND450IDZ44161',
-  instagram: 'https://www.instagram.com/raxie.official',
+  instagram: 'https://www.instagram.com/raxie_leather?igsh=MTZ2MnV4Z2t1NnA4ZQ==',
+  tiktok: 'https://www.tiktok.com/@raxie_leather?_r=1&_t=ZS-98vL20EMAJM',
+  shopee: 'https://shopee.co.id/susinika?categoryId=100533&entryPoint=ShopByPDP&itemId=40657429359',
   website: 'https://raxie.id',
 }

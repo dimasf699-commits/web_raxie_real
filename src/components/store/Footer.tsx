@@ -31,17 +31,14 @@ export function Footer() {
               RAXIE hadir untuk memberikan produk premium dengan desain modern dan kualitas terbaik untuk Anda.
             </p>
             <div className="flex items-center gap-3 pt-4">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors" aria-label="Instagram">
+              <a href={STORE_CONFIG.instagram} target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors" aria-label="Instagram">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="TikTok">
+              <a href={STORE_CONFIG.tiktok} target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="TikTok">
                 🎵
               </a>
-              <a href="https://shopee.co.id" target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="Shopee">
+              <a href={STORE_CONFIG.shopee} target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="Shopee">
                 🛍️
-              </a>
-              <a href="https://wa.me" target="_blank" rel="noreferrer" className="w-8 h-8 bg-[#1A1A1A] text-white flex items-center justify-center rounded-sm hover:bg-neutral-800 transition-colors text-xs font-bold" aria-label="WhatsApp">
-                💬
               </a>
             </div>
           </div>

@@ -97,8 +97,10 @@ const jsonLdOrganization = {
   logo: 'https://i.imgur.com/X1YcH8c.jpeg',
   description: 'Brand fashion Indonesia terkemuka untuk dompet PU Leather premium, tas, & aksesoris pria modern.',
   sameAs: [
-    'https://www.instagram.com/raxie.official',
-    'https://raxie.id'
+    STORE_CONFIG.instagram,
+    STORE_CONFIG.tiktok,
+    STORE_CONFIG.shopee,
+    'https://www.facebook.com/raxie.official'
   ],
 }
 
