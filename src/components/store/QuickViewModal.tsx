@@ -14,6 +14,8 @@ import { toast } from '@/components/ui/Toaster'
 import { useCompareStore } from '@/store/compare.store'
 import { trackAddToCart } from '@/components/analytics/MetaPixel'
 
+import { useQuickViewStore } from '@/store/quickview.store'
+
 interface QuickViewModalProps {
   productId: string | null
   onClose: () => void
@@ -28,6 +30,7 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
   const [addingCart, setAddingCart] = useState(false)
 
   const addItem = useCartStore(s => s.addItem)
+  const openCart = useCartStore(s => s.openCart)
   const toggleWishlist = useWishlistStore(s => s.toggleItem)
   const isWishlisted = useWishlistStore(s => product ? s.hasItem(product.productId) : false)
 
@@ -68,31 +71,38 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
   const handleAddToCart = async () => {
     if (!product || !selectedVariant) return
     setAddingCart(true)
-    await new Promise(r => setTimeout(r, 300))
+    
+    const productImage = typeof product.images?.[0] === 'string'
+      ? product.images[0]
+      : (product.images?.[0]?.url || product.image || '/placeholder.jpg')
+
     addItem({
-      id: `${product.productId}-${selectedVariant.id}`,
-      productId: product.productId,
+      id: selectedVariant.id,
+      productId: product.productId || product.id,
       variantId: selectedVariant.id,
       name: product.name,
-      variantName: selectedVariant.name,
+      variantName: selectedVariant.name !== 'Default' ? selectedVariant.name : undefined,
       slug: product.slug,
       price: selectedVariant.price ?? product.price,
-      image: product.images?.[0] ?? product.image,
+      image: productImage,
       quantity: qty,
       stock: selectedVariant.stock,
-      sku: `${product.sku}-${selectedVariant.name}`,
+      sku: product.sku || '',
     })
-    toast.success(`Ditambahkan ke keranjang: ${product.name}`)
-    
-    trackAddToCart({
-      content_ids: [selectedVariant.id || product.productId],
-      content_name: product.name,
-      value: selectedVariant.price ?? product.price,
-      currency: 'IDR'
-    })
-    
-    setAddingCart(false)
-    onClose()
+
+    setTimeout(() => {
+      setAddingCart(false)
+      onClose()
+      openCart()
+      toast.success('Berhasil', `${product.name} telah ditambahkan ke keranjang belanja.`)
+      
+      trackAddToCart({
+        content_ids: [selectedVariant.id || product.productId],
+        content_name: product.name,
+        value: selectedVariant.price ?? product.price,
+        currency: 'IDR'
+      })
+    }, 300)
   }
 
   const handleCompare = () => {
@@ -360,3 +370,10 @@ export function QuickViewModal({ productId, onClose }: QuickViewModalProps) {
     </AnimatePresence>
   )
 }
+
+export function GlobalQuickViewModal() {
+  const { productId, isOpen, closeQuickView } = useQuickViewStore()
+  if (!isOpen && !productId) return null
+  return <QuickViewModal productId={productId} onClose={closeQuickView} />
+}
+

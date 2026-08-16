@@ -14,6 +14,8 @@ import { useCompareStore } from '@/store/compare.store'
 import { toast } from '@/components/ui/Toaster'
 import { trackAddToCart } from '@/components/analytics/MetaPixel'
 
+import { useQuickViewStore } from '@/store/quickview.store'
+
 export interface ProductCardProduct {
   id: string
   productId: string
@@ -44,11 +46,10 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 'default' }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const addItem = useCartStore((s) => s.addItem)
   const toggleItem = useWishlistStore((s) => s.toggleItem)
   const isWishlisted = useWishlistStore((s) => s.hasItem(product.productId))
   const { addItem: addCompare, items: compareItems } = useCompareStore()
-  const [addingCart, setAddingCart] = useState(false)
+  const openQuickView = useQuickViewStore((s) => s.openQuickView)
 
   const isCompared = compareItems.some(item => item.id === product.productId)
   
@@ -58,30 +59,14 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
     ? getDiscountPercent(product.compareAtPrice, product.price)
     : 0
 
-  function handleAddToCart(e: React.MouseEvent) {
+  function handleCardAction(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
-    const variantId = product.variantId || product.id
-    addItem({
-      id: variantId,
-      productId: product.productId,
-      variantId: variantId,
-      name: product.name,
-      variantName: product.variantName && product.variantName !== 'Default' ? product.variantName : undefined,
-      slug: product.slug,
-      price: product.price,
-      image: product.image,
-      stock: product.stock,
-      sku: product.sku,
-    })
-    toast.success('Ditambahkan ke keranjang!', product.name)
-    
-    trackAddToCart({
-      content_ids: [product.id],
-      content_name: product.name,
-      value: product.price,
-      currency: 'IDR'
-    })
+    if (onQuickView) {
+      onQuickView(product.productId)
+    } else {
+      openQuickView(product.productId)
+    }
   }
 
   function handleWishlist(e: React.MouseEvent) {
@@ -171,20 +156,12 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
           {/* Add to Cart button */}
           <div className="pt-1.5">
             <button
-              onClick={handleAddToCart}
-              disabled={addingCart || product.stock === 0}
+              onClick={handleCardAction}
+              disabled={product.stock === 0}
               className="w-full flex items-center justify-center gap-1.5 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-[10px] sm:text-xs font-bold uppercase tracking-wider py-1.5 sm:py-2 rounded-md shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
             >
-              {addingCart ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full"
-                />
-              ) : (
-                <ShoppingBag className="h-3.5 w-3.5" />
-              )}
-              {product.stock === 0 ? 'Stok Habis' : addingCart ? '...' : '+ Keranjang'}
+              <ShoppingBag className="h-3.5 w-3.5" />
+              {product.stock === 0 ? 'Stok Habis' : 'Pilih Varian'}
             </button>
           </div>
         </div>
@@ -255,42 +232,24 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
             </button>
 
             {/* Quick View (Desktop only) */}
-            {onQuickView && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  onQuickView(product.productId)
-                }}
-                aria-label="Quick view"
-                className="hidden lg:flex w-9 h-9 rounded-full bg-card/90 border border-border items-center justify-center shadow-md hover:bg-card transition-colors opacity-0 group-hover:opacity-100"
-              >
-                <Eye className="h-4 w-4 text-foreground/70" />
-              </button>
-            )}
+            <button
+              onClick={handleCardAction}
+              aria-label="Quick view"
+              className="hidden lg:flex w-9 h-9 rounded-full bg-card/90 border border-border items-center justify-center shadow-md hover:bg-card transition-colors opacity-0 group-hover:opacity-100"
+            >
+              <Eye className="h-4 w-4 text-foreground/70" />
+            </button>
           </div>
 
           {/* Add to Cart overlay (Desktop only on hover) */}
           <div className="hidden lg:block absolute bottom-3 left-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
             <button
-              onClick={handleAddToCart}
-              disabled={addingCart || product.stock === 0}
+              onClick={handleCardAction}
+              disabled={product.stock === 0}
               className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-lg shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
             >
-              {addingCart ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full"
-                />
-              ) : (
-                <ShoppingBag className="h-4 w-4" />
-              )}
-              {product.stock === 0
-                ? 'Stok Habis'
-                : addingCart
-                ? 'Menambahkan...'
-                : 'Tambah ke Keranjang'}
+              <ShoppingBag className="h-4 w-4" />
+              {product.stock === 0 ? 'Stok Habis' : 'Pilih Varian'}
             </button>
           </div>
         </div>
@@ -339,24 +298,12 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
           {/* Add to Cart button */}
           <div className="pt-2">
             <button
-              onClick={handleAddToCart}
-              disabled={addingCart || product.stock === 0}
+              onClick={handleCardAction}
+              disabled={product.stock === 0}
               className="w-full flex items-center justify-center gap-1.5 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-[10px] sm:text-xs font-bold uppercase tracking-wider py-2 rounded-md shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
             >
-              {addingCart ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full"
-                />
-              ) : (
-                <ShoppingBag className="h-3.5 w-3.5" />
-              )}
-              {product.stock === 0
-                ? 'Stok Habis'
-                : addingCart
-                ? '...'
-                : 'Tambah Keranjang'}
+              <ShoppingBag className="h-3.5 w-3.5" />
+              {product.stock === 0 ? 'Stok Habis' : 'Pilih Varian'}
             </button>
           </div>
         </div>
