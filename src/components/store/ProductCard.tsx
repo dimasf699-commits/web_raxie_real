@@ -31,6 +31,8 @@ export interface ProductCardProduct {
   material?: string
   dimensions?: string
   weight?: number
+  variantId?: string
+  variantName?: string
 }
 
 interface ProductCardProps {
