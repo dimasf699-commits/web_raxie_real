@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
 
     const order = await prisma.order.findUnique({
       where: { orderNumber },
+      include: { items: true },
     })
 
     if (!order) {
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
       : `https://api.sandbox.midtrans.com/v2/${orderNumber}/status`
 
     let isPaid = false
+    let isCancelled = false
 
     try {
       const authString = Buffer.from(serverKey + ':').toString('base64')
@@ -59,10 +61,36 @@ export async function POST(req: NextRequest) {
         const status = midtransData.transaction_status
         if (status === 'settlement' || (status === 'capture' && midtransData.fraud_status === 'accept')) {
           isPaid = true
+        } else if (status === 'cancel' || status === 'deny' || status === 'expire') {
+          isCancelled = true
         }
       }
     } catch (err) {
       console.error('[MIDTRANS_STATUS_CHECK_ERROR]', err)
+    }
+
+    if (isCancelled) {
+      await prisma.$transaction(async (tx) => {
+        await tx.order.update({
+          where: { id: order.id },
+          data: { status: 'CANCELLED', cancelledAt: new Date() },
+        })
+        for (const item of order.items) {
+          if (item.variantId) {
+            await tx.productVariant.update({
+              where: { id: item.variantId },
+              data: { stock: { increment: item.quantity } },
+            }).catch((e) => console.error('[RESTORE_STOCK_ERROR]', e))
+          }
+        }
+        if (order.voucherId) {
+          await tx.voucher.update({
+            where: { id: order.voucherId },
+            data: { usageCount: { decrement: 1 } },
+          }).catch(() => {})
+        }
+      })
+      return NextResponse.json({ success: true, status: 'CANCELLED' })
     }
 
     if (!isPaid) {

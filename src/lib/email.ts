@@ -105,6 +105,16 @@ export const sendShippingEmail = async (email: string, orderNumber: string, cour
   }
 }
 
+function escapeHtml(str: string): string {
+  if (!str) return ''
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
 export const sendContactFormEmail = async (name: string, email: string, message: string) => {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
     console.warn('SMTP credentials not found. Skipping contact email.')
@@ -112,19 +122,23 @@ export const sendContactFormEmail = async (name: string, email: string, message:
   }
 
   try {
+    const cleanName = escapeHtml(name)
+    const cleanEmail = escapeHtml(email)
+    const cleanMessage = escapeHtml(message).replace(/\n/g, '<br/>')
+
     await transporter.sendMail({
       from: FROM_EMAIL,
       to: process.env.SMTP_USER, // Mengirim ke email admin itu sendiri
-      subject: `📩 Pesan Baru dari Website RAXIE - ${name}`,
+      subject: `📩 Pesan Baru dari Website RAXIE - ${cleanName}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
           <h2 style="color: #C19A6B;">Pesan Kontak Baru dari Website RAXIE</h2>
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 12px; margin: 20px 0;">
-            <p style="margin: 0 0 10px 0;"><strong>Nama Pengirim:</strong> ${name}</p>
-            <p style="margin: 0 0 10px 0;"><strong>Email Pengirim:</strong> ${email}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Nama Pengirim:</strong> ${cleanName}</p>
+            <p style="margin: 0 0 10px 0;"><strong>Email Pengirim:</strong> ${cleanEmail}</p>
             <p style="margin: 0 0 5px 0;"><strong>Isi Pesan:</strong></p>
             <div style="background-color: #ffffff; border: 1px solid #ddd; padding: 12px; border-radius: 8px; font-style: italic;">
-              ${message.replace(/\n/g, '<br/>')}
+              ${cleanMessage}
             </div>
           </div>
           <p style="font-size: 12px; color: #666;">Pesan ini dikirimkan melalui formulir Hubungi Kami di raxie.id</p>

@@ -16,28 +16,35 @@ export async function POST(req: NextRequest) {
 
     const { email, productId } = await req.json()
 
-    if (!email || !productId) {
+    if (!email || typeof email !== 'string' || !email.trim() || !productId) {
       return NextResponse.json({ error: 'Email dan produk wajib diisi' }, { status: 400 })
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.trim())) {
+      return NextResponse.json({ error: 'Format email tidak valid' }, { status: 400 })
+    }
+
+    const cleanEmail = email.trim().toLowerCase()
 
     // Check if alert already exists for this email & product
     const existing = await prisma.restockAlert.findFirst({
       where: {
-        email: email.toLowerCase(),
-        productId,
+        email: cleanEmail,
+        productId: String(productId),
       }
     })
 
     if (!existing) {
       await prisma.restockAlert.create({
         data: {
-          email: email.toLowerCase(),
-          productId,
+          email: cleanEmail,
+          productId: String(productId),
         }
       })
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, message: 'Notifikasi restock berhasil didaftarkan' })
   } catch (error) {
     console.error('[RESTOCK_ALERT_ERROR]', error)
     return NextResponse.json({ error: 'Terjadi kesalahan' }, { status: 500 })

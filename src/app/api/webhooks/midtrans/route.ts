@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
     if (newStatus) {
       const existingOrder = await prisma.order.findUnique({
         where: { orderNumber: order_id },
+        include: { items: true },
       })
 
       if (!existingOrder) {
@@ -67,13 +68,35 @@ export async function POST(req: NextRequest) {
 
       // Idempotency check: Only trigger fulfillment if transitioning from PENDING_PAYMENT
       const isFirstPaymentConfirmation = shouldFulfill && existingOrder.status === 'PENDING_PAYMENT'
+      const isCancellation = newStatus === 'CANCELLED' && existingOrder.status === 'PENDING_PAYMENT'
 
-      await prisma.order.update({
-        where: { orderNumber: order_id },
-        data: { 
-          status: newStatus as any,
-          ...(paidAt && !existingOrder.paidAt ? { paidAt } : {})
-        },
+      await prisma.$transaction(async (tx) => {
+        await tx.order.update({
+          where: { orderNumber: order_id },
+          data: { 
+            status: newStatus as any,
+            ...(paidAt && !existingOrder.paidAt ? { paidAt } : {}),
+            ...(isCancellation ? { cancelledAt: new Date() } : {})
+          },
+        })
+
+        // Restore reserved stock & voucher if cancelled
+        if (isCancellation) {
+          for (const item of existingOrder.items) {
+            if (item.variantId) {
+              await tx.productVariant.update({
+                where: { id: item.variantId },
+                data: { stock: { increment: item.quantity } },
+              }).catch((e) => console.error('[RESTORE_STOCK_ERROR]', e))
+            }
+          }
+          if (existingOrder.voucherId) {
+            await tx.voucher.update({
+              where: { id: existingOrder.voucherId },
+              data: { usageCount: { decrement: 1 } },
+            }).catch(() => {})
+          }
+        }
       })
 
       // If paid for the first time, trigger centralized order fulfillment

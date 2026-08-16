@@ -36,19 +36,19 @@ export async function POST(req: NextRequest) {
 
     const { productId, rating, comment } = parsed.data
 
-    // Check if user has purchased the product
+    // Check if user has purchased and received the product
     const hasPurchased = await prisma.orderItem.findFirst({
       where: {
         productId,
         order: {
           userId: session.user.id,
-          status: 'COMPLETED'
+          status: { in: ['DELIVERED', 'COMPLETED'] }
         }
       }
     })
 
     if (!hasPurchased) {
-      return NextResponse.json({ error: 'Anda harus membeli produk ini terlebih dahulu' }, { status: 403 })
+      return NextResponse.json({ error: 'Anda harus menyelesaikan pesanan produk ini terlebih dahulu untuk memberikan ulasan' }, { status: 403 })
     }
 
     // Check if user already reviewed

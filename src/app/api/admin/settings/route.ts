@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
+    const session = await auth()
+    if (!session || (session.user as any)?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized: Akses khusus Admin' }, { status: 401 })
+    }
+
     const settings = await prisma.storeSetting.findMany()
     const config = settings.reduce((acc, curr) => {
       acc[curr.key] = curr.value
@@ -18,6 +24,11 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const session = await auth()
+    if (!session || (session.user as any)?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized: Akses khusus Admin' }, { status: 401 })
+    }
+
     const body = await req.json()
     const { key, value } = body
 

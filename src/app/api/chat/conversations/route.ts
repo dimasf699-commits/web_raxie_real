@@ -107,7 +107,7 @@ export async function POST(req: NextRequest) {
     // Ensure database tables exist automatically
     await ensureTablesExist()
 
-    // Check existing conversation ID if passed
+    // Check existing conversation ID if passed with strict ownership verification
     if (conversationId && typeof conversationId === 'string' && conversationId.trim()) {
       try {
         const existing = await prisma.chatConversation.findUnique({
@@ -120,6 +120,20 @@ export async function POST(req: NextRequest) {
           },
         })
         if (existing) {
+          const session = await auth()
+          const isAdmin = (session?.user as any)?.role === 'ADMIN'
+          
+          // If conversation belongs to registered user, verify session ownership
+          if (existing.userId) {
+            if (!isAdmin && (!session?.user?.id || session.user.id !== existing.userId)) {
+              return NextResponse.json({ error: 'Akses percakapan ditolak' }, { status: 403 })
+            }
+          } else if (existing.guestId) {
+            // If guest conversation, verify guestId matches
+            if (!isAdmin && (!guestId || existing.guestId !== guestId)) {
+              return NextResponse.json({ error: 'Akses percakapan ditolak' }, { status: 403 })
+            }
+          }
           return NextResponse.json({ conversation: existing })
         }
       } catch (err) {

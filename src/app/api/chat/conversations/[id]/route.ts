@@ -39,12 +39,12 @@ export async function GET(
         )
       }
     } else {
-      // Guest conversation
+      // Guest conversation: require matching guest identifier
       const guestIdFromHeader = req.headers.get('x-guest-id')
       const guestIdFromQuery = req.nextUrl.searchParams.get('guestId')
       const requesterGuestId = guestIdFromHeader || guestIdFromQuery
 
-      if (!isAdmin && conversation.guestId && requesterGuestId && conversation.guestId !== requesterGuestId) {
+      if (!isAdmin && conversation.guestId && (!requesterGuestId || conversation.guestId !== requesterGuestId)) {
         return NextResponse.json(
           { error: 'Akses ditolak: Sesi percakapan tidak sesuai' },
           { status: 403 }
