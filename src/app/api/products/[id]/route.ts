@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getCache, setCache, CACHE_TTL } from '@/lib/redis'
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
+    const cacheKey = `product_detail:${params.id}`
+    const cached = await getCache(cacheKey)
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'X-Cache': 'HIT',
+          'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600',
+        },
+      })
+    }
+
     const product = await prisma.product.findUnique({
       where: { id: params.id },
       include: {
@@ -47,7 +59,14 @@ export async function GET(
       sku: product.variants[0]?.sku ?? '',
     }
 
-    return NextResponse.json(formatted)
+    await setCache(cacheKey, formatted, CACHE_TTL.LONG)
+
+    return NextResponse.json(formatted, {
+      headers: {
+        'X-Cache': 'MISS',
+        'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600',
+      },
+    })
   } catch (error) {
     console.error('[PRODUCT_ID_API_ERROR]', error)
     return NextResponse.json({ error: 'Gagal memuat produk' }, { status: 500 })

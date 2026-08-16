@@ -161,7 +161,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
               className="w-full flex items-center justify-center gap-1.5 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-[10px] sm:text-xs font-bold uppercase tracking-wider py-1.5 sm:py-2 rounded-md shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
             >
               <ShoppingBag className="h-3.5 w-3.5" />
-              {product.stock === 0 ? 'Stok Habis' : 'Pilih Varian'}
+              {product.stock === 0 ? 'Stok Habis' : '+ Keranjang'}
             </button>
           </div>
         </div>
@@ -249,7 +249,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
               className="w-full flex items-center justify-center gap-2 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-xs font-bold uppercase tracking-[0.15em] py-3 rounded-lg shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
             >
               <ShoppingBag className="h-4 w-4" />
-              {product.stock === 0 ? 'Stok Habis' : 'Pilih Varian'}
+              {product.stock === 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
             </button>
           </div>
         </div>
@@ -303,7 +303,7 @@ export function ProductCard({ product, onQuickView, isDarkBg = false, variant = 
               className="w-full flex items-center justify-center gap-1.5 bg-[#C19A6B] hover:bg-[#b08b5c] text-black text-[10px] sm:text-xs font-bold uppercase tracking-wider py-2 rounded-md shadow-sm transition-all active:scale-[0.98] disabled:opacity-50"
             >
               <ShoppingBag className="h-3.5 w-3.5" />
-              {product.stock === 0 ? 'Stok Habis' : 'Pilih Varian'}
+              {product.stock === 0 ? 'Stok Habis' : 'Tambah Keranjang'}
             </button>
           </div>
         </div>

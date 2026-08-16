@@ -5,7 +5,7 @@ import { FilterSidebar } from '@/components/store/FilterSidebar'
 import { InfiniteProductGrid } from '@/components/store/InfiniteProductGrid'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60
 
 export async function generateMetadata({ searchParams }: { searchParams: { category?: string } }): Promise<Metadata> {
   const cat = searchParams.category?.toLowerCase()

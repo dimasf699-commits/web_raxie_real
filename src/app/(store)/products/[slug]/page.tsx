@@ -5,7 +5,8 @@ import { prisma } from '@/lib/prisma'
 import { ProductDetail } from '@/components/store/ProductDetail'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 120
+export const dynamicParams = true
 
 interface ProductPageProps {
   params: {
