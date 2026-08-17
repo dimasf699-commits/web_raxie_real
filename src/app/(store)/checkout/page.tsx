@@ -190,6 +190,7 @@ export default function CheckoutPage() {
         courierName: courierName || 'Reguler',
         paymentMethod,
         voucherId: appliedVoucher?.id || undefined,
+        voucherCode: appliedVoucher?.code || undefined,
         discountAmount: appliedVoucher?.discountAmount || undefined,
       }
 

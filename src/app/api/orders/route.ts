@@ -32,6 +32,7 @@ const orderSchema = z.object({
   courierName: z.string(),
   paymentMethod: z.string(),
   voucherId: z.string().optional(),
+  voucherCode: z.string().optional(),
   discountAmount: z.number().optional(),
 })
 
@@ -166,9 +167,14 @@ export async function POST(req: NextRequest) {
       let calculatedDiscount = 0
       let validVoucherId: string | null = null
 
-      if (data.voucherId) {
-        const voucher = await tx.voucher.findUnique({
-          where: { id: data.voucherId }
+      if (data.voucherId || data.voucherCode) {
+        const voucher = await tx.voucher.findFirst({
+          where: {
+            OR: [
+              ...(data.voucherId ? [{ id: data.voucherId }] : []),
+              ...(data.voucherCode ? [{ code: data.voucherCode.trim().toUpperCase() }] : []),
+            ]
+          }
         })
 
         if (voucher && voucher.isActive) {
@@ -190,12 +196,12 @@ export async function POST(req: NextRequest) {
           if (isValidTime && isValidUsage && isValidMinPurchase && isPerUserValid) {
             validVoucherId = voucher.id
             if (voucher.type === 'PERCENTAGE') {
-              calculatedDiscount = (verifiedSubtotal * voucher.value) / 100
+              calculatedDiscount = Math.round((verifiedSubtotal * voucher.value) / 100)
               if (voucher.maxDiscount && calculatedDiscount > voucher.maxDiscount) {
                 calculatedDiscount = voucher.maxDiscount
               }
             } else if (voucher.type === 'FIXED_AMOUNT') {
-              calculatedDiscount = voucher.value
+              calculatedDiscount = Math.min(verifiedSubtotal, voucher.value)
             } else if (voucher.type === 'FREE_SHIPPING') {
               calculatedDiscount = Math.min(data.shippingCost, voucher.value)
             }
