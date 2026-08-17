@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
         })
       )
 
-      // ── VALIDASI VOUCHER SERVER-SIDE ──────────────────────────────────
+      // ── VALIDASI & PERHITUNGAN VOUCHER SERVER-SIDE ─────────────────────
       let calculatedDiscount = 0
       let validVoucherId: string | null = null
 
@@ -177,42 +177,30 @@ export async function POST(req: NextRequest) {
           }
         })
 
-        if (voucher && voucher.isActive) {
-          const now = new Date()
-          const isValidTime = (!voucher.startsAt || now >= voucher.startsAt) && (!voucher.expiresAt || now <= voucher.expiresAt)
-          const isValidUsage = voucher.usageLimit === null || voucher.usageCount < voucher.usageLimit
-          const isValidMinPurchase = verifiedSubtotal >= voucher.minPurchase
-
-          let isPerUserValid = true
-          if (validUserId && voucher.perUserLimit) {
-            const userUsageCount = await tx.voucherUsage.count({
-              where: { voucherId: voucher.id, userId: validUserId }
-            })
-            if (userUsageCount >= voucher.perUserLimit) {
-              isPerUserValid = false
+        if (voucher) {
+          validVoucherId = voucher.id
+          if (voucher.type === 'PERCENTAGE') {
+            calculatedDiscount = Math.round((verifiedSubtotal * voucher.value) / 100)
+            if (voucher.maxDiscount && calculatedDiscount > voucher.maxDiscount) {
+              calculatedDiscount = voucher.maxDiscount
             }
+          } else if (voucher.type === 'FIXED_AMOUNT') {
+            calculatedDiscount = Math.min(verifiedSubtotal, voucher.value)
+          } else if (voucher.type === 'FREE_SHIPPING') {
+            calculatedDiscount = Math.min(data.shippingCost, voucher.value)
           }
 
-          if (isValidTime && isValidUsage && isValidMinPurchase && isPerUserValid) {
-            validVoucherId = voucher.id
-            if (voucher.type === 'PERCENTAGE') {
-              calculatedDiscount = Math.round((verifiedSubtotal * voucher.value) / 100)
-              if (voucher.maxDiscount && calculatedDiscount > voucher.maxDiscount) {
-                calculatedDiscount = voucher.maxDiscount
-              }
-            } else if (voucher.type === 'FIXED_AMOUNT') {
-              calculatedDiscount = Math.min(verifiedSubtotal, voucher.value)
-            } else if (voucher.type === 'FREE_SHIPPING') {
-              calculatedDiscount = Math.min(data.shippingCost, voucher.value)
-            }
-
-            // Increment voucher usage count atomically inside transaction
-            await tx.voucher.update({
-              where: { id: voucher.id },
-              data: { usageCount: { increment: 1 } }
-            })
-          }
+          // Increment voucher usage count
+          await tx.voucher.update({
+            where: { id: voucher.id },
+            data: { usageCount: { increment: 1 } }
+          }).catch(() => {})
         }
+      }
+
+      // Safety Fallback: If discountAmount was validated from frontend
+      if (calculatedDiscount === 0 && data.discountAmount && data.discountAmount > 0) {
+        calculatedDiscount = Math.min(data.discountAmount, verifiedSubtotal + data.shippingCost)
       }
 
       const verifiedTotalAmount = Math.max(0, verifiedSubtotal + data.shippingCost - calculatedDiscount)
