@@ -301,29 +301,34 @@ export async function POST(req: NextRequest) {
 
       const appUrl = process.env.NEXTAUTH_URL || 'https://raxie.id'
 
-      const itemDetails: any[] = order.items.map((item: any) => ({
-        id: item.sku || item.id,
-        price: Math.round(item.price),
-        quantity: item.quantity,
-        name: item.productName.substring(0, 50),
-      }))
-
-      if (data.shippingCost > 0) {
-        itemDetails.push({
-          id: 'SHIPPING',
-          price: Math.round(data.shippingCost),
-          quantity: 1,
-          name: 'Ongkos Kirim',
-        })
-      }
+      let itemDetails: any[] = []
 
       if (order.discountAmount && order.discountAmount > 0) {
-        itemDetails.push({
-          id: 'DISCOUNT',
-          price: -Math.round(order.discountAmount),
+        // [MIDTRANS BUG FIX]: Midtrans silently rejects or drops negative prices on QRIS/GoPay.
+        // To strictly guarantee gross_amount matches item_details sum without rounding errors,
+        // we compress the entire discounted order into a single line item.
+        itemDetails = [{
+          id: 'ORDER_TOTAL',
+          price: Math.round(order.totalAmount),
           quantity: 1,
-          name: 'Diskon Voucher',
-        })
+          name: `Pesanan ${order.orderNumber} (Disc Applied)`,
+        }]
+      } else {
+        itemDetails = order.items.map((item: any) => ({
+          id: item.sku || item.id,
+          price: Math.round(item.price),
+          quantity: item.quantity,
+          name: item.productName.substring(0, 50),
+        }))
+
+        if (data.shippingCost > 0) {
+          itemDetails.push({
+            id: 'SHIPPING',
+            price: Math.round(data.shippingCost),
+            quantity: 1,
+            name: 'Ongkos Kirim',
+          })
+        }
       }
 
       const payload: any = {
